@@ -1,0 +1,380 @@
+/* 
+
+STYLE SHEET FOR OCENA
+Created by MILES, 
+Edited by Ben Siech
+
+ToC
+
+        1. defaults
+        2. structure
+        3. links and navigation
+        4. fonts
+        5. images
+        6. tables
+        7. lists
+
+Notes
+
+*/
+
+
+
+/* --------- 1. defaults  --------- */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 100%;
+}
+
+body{
+
+}
+
+/*  --------- 2. structure  --------- */
+
+#index-wrapper { 
+    position: absolute;
+    width: 776px;
+    height: 200px;
+    top: 50%;
+    left: 50%;    
+    margin-top: -99px;
+    margin-left: -387px;
+    /*border: 1px solid #000;*/
+}
+
+#wrapper {
+    width: 776px;
+    margin: 0 auto;
+}
+
+.container{
+    width: 1270px;
+}
+
+.dropdown button{
+    margin: 10px 4px; 
+}
+
+.dialog{
+    display: none;
+}
+
+#masthead {
+}
+
+#logo {
+}
+
+#navContainer {
+}
+
+#content {
+    padding: 54px 5px 18px 5px;
+}
+
+#footer {
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #eff;
+    padding: 5px;
+}
+
+th{
+    text-transform: uppercase;
+    font-weight: normal;
+    text-align: left;
+    background: rosybrown;
+    color: #fff;
+}
+
+tfoot td {
+    font-size: 0.8em;
+    text-align: center;
+}
+
+
+.even td{
+    background-color: #efefef;
+}
+
+/* float-clearing rules */
+.separator {
+    clear: both;
+}
+
+.separatorInvisible {
+    clear: both;
+    height: 1px;
+}
+
+.clearFix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}		
+
+#create-account-btn{
+    clear: left;
+}
+
+#admission-dropdown{
+    margin-right: 20px;
+    width: 150px;
+}
+
+#degree-dropdown{
+    margin-right: 20px;
+    width: 250px;
+}
+
+#course-dropdown{
+    margin-right: 20px;
+    width: 250px;
+}
+
+#accordion{
+    margin-top: 36px;
+}
+
+#upgrade-user-number{
+    margin-left: 20px;
+}
+
+#upgrade-retrieve-button{
+    margin-left: 20px;
+}
+
+#upgrade-member-institution{
+    width: 500px;;
+}
+
+#information-box{
+    margin-left: 20px;
+}
+
+#edit-evaluation-session-button{
+    margin-left: 20px;
+}
+
+#close-evaluation-session-button{
+    margin-left: 20px;
+}
+
+#login-strip{
+    text-align: center;
+    background: url(../img/stripe.gif);
+}
+
+#login-strip:hover{
+    cursor: pointer;
+    background: url(../img/stripe-darker.gif);
+}
+
+#signup-btn{
+    margin-left: 20px;
+}
+
+.central{
+    padding: auto auto;
+}
+
+.ui-datepicker-month{
+    color: #000;
+}
+
+.ui-datepicker-year{
+    color: #000;
+}
+
+#rating-labels{
+    text-transform: uppercase;
+    font-size: 1.1em;
+    color: #6E6E6D;
+    font-weight: normal;
+    padding-top: 7px;
+    margin-bottom: 7px;
+    text-align: center;
+}
+
+#rating-labels button{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+/* ---------- 3. links and navigation ---------- */
+
+a {
+}
+
+a:hover {
+}
+
+#navigation {
+}
+
+#navigation a {
+}
+
+#navigation ul {
+}
+
+#navigation li {
+}
+
+/* ---------- 4. fonts ---------- */
+
+body {
+    font-size: 62.5%;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #000;
+}
+
+h1, h2, h3, h4, p, ul {
+}
+
+h1 {
+    text-transform: uppercase;
+    font-size: 1.2em;
+    font-weight: normal;
+    color: #999;
+    padding-bottom: 7px;
+    margin-bottom: 7px;
+    border-bottom: 1px solid orange;
+}
+
+h2 {
+    font-size: 1.4em;
+    line-height: 1.285714285714286em;
+    margin-top: 0.6428571428571429em;
+    margin-bottom: 1.928571428571429em;
+}
+
+h3 {
+    font-size: 1.2em;
+    line-height: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+h4 {
+}
+
+p, a, ul, li {
+    font-size: 1.1em;
+    line-height: 1.6363636363em;
+    line-height: 1.6363636363em;
+}
+
+li li {
+    font-size: 1em;
+}
+
+p {
+}
+
+ul {
+}
+
+/* ---------- 5. images ---------- */
+
+a img {
+}
+
+.fa {
+    font-size: 1.4em;
+}
+
+/* ---------- 6. tables ---------- */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+caption{
+    text-align: center;
+    font-size: 1.2em;
+}
+
+th{
+    font-size: 1.2em;
+    font-weight: normal;
+}
+
+td{
+    font-size: 1.1em;
+    font-weight: normal;
+}
+
+tfoot td{
+    text-align: center;
+    font-size: 1.1em;
+}
+
+table.table tr td div.btn-group { 
+    display:none;
+}
+
+table.table tr:hover td div.btn-group { 
+    display:inline-block;
+}
+
+tr .has-button{
+    padding:0px;
+    background-color: #eff;
+}
+
+.parent-table tbody tr:hover{
+    cursor: pointer;
+    background: #eaeaea;
+}
+
+#institution-information{
+    border: 1px solid #79c9ec;
+}
+
+.evaluation-question-holder{
+    width: 270px;
+}
+
+.evaluation-question-holder-extensive{
+    width: 270px;
+}
+
+.evaluation-rating-holder{
+    width: 5px;
+}
+
+/* ---------- 7. Lists ---------- */
+
+.dropdown-menu > li > a {
+    font-size: 0.9em;
+    line-height: 2em;
+}
+
+.dropdown-menu > li > li > a {
+    font-size: 1em;
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+    color: red;
+    background-color: #eaeaea;
+    filter: none;
+}
+
+.bottom-up {top: auto; bottom: 100%; }
+.navbar .dropdown-menu.bottom-up:before { border-bottom: 0px solid transparent !important; border-top: 7px solid rgba(0, 0, 0, 0.2); top: auto !important; bottom: -7px; }
+.navbar .dropdown-menu.bottom-up:after  { border-bottom: 0px solid transparent !important; border-top: 6px solid white;              top: auto !important; bottom: -6px; }
+

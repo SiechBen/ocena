@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+  <Resource id="jdbc/ocena" type="javax.sql.DataSource">#Sun May 31 13:50:39 EAT 2015
+jdbcDriver=com.mysql.jdbc.Driver
+password=complex
+userName=root
+jdbcUrl=jdbc\:mysql\://localhost\:3306/ocena?zeroDateTimeBehavior\=convertToNull
+</Resource>
+</resources>
