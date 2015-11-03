@@ -18,8 +18,11 @@
     <jsp:attribute name="content">
         <div class="content-container">
 
+            <div id="course-evaluated-info">
+                <p> ${sessionScope.courseEvaluationInfo} </p>
+            </div> 
             <div id="evaluation-questions-holder">
-                <h1> Perform evaluation</h1>
+                <h1> Select a course to evaluate upon </h1>
                 <div>
                     <span id="admission-holder">
                         <label for="admission-dropdown"> Admission </label>

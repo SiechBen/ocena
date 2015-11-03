@@ -418,12 +418,28 @@ public class EvaluationController extends Controller {
                         }
                     }
 
+                    String name = ((PersonDetails) session.getAttribute("person")).getFirstName().toLowerCase();
+                    String uppedName = "";
+                    for (String split : name.split(" ")) {
+                        split = Character.toUpperCase(split.charAt(0)) + split.substring(1);
+                        uppedName += ((uppedName.equals("") ? "" : " ") + split);
+                    }
+
+                    //Set the feedback string for a single completed course evaluation
+                    String courseEvaluationInfo = uppedName + ", "
+                            + "you have completed the course/lecturer evaluation for " + courseOfSession.getCourse().getTitle() + ". "
+                            + "Kindly select the next course to evaluate below.";
+                    session.setAttribute("courseEvaluationInfo", courseEvaluationInfo);
+
                     //Go back to the evaluation arena
                     path = "/evaluationArena";
                     logger.log(Level.INFO, "Path is : {0}", path);
 
                     //Inform user that evaluation is complete
                     if ((Boolean) session.getAttribute("complete") == true) {
+
+                        courseEvaluationInfo = "";
+                        session.setAttribute("courseEvaluationInfo", courseEvaluationInfo);
 
                         //Retrieve student feedbacks
                         logger.log(Level.INFO, "Retrieving student feedbacks");
@@ -452,7 +468,7 @@ public class EvaluationController extends Controller {
                         dateString = dateFormat.format(date);
 
                         //Generate feedback string
-                        String feedback = ((PersonDetails) session.getAttribute("person")).getFirstName() + ", "
+                        String feedback = uppedName + ", "
                                 + "you have completed the course/lecturer evaluation for this evaluation session. "
                                 + "We are happy to inform you that your opinions, comments and reasonings have been received and we are grateful. "
                                 + "You completed your evaluation on " + dateString + ". Thank you very much!";

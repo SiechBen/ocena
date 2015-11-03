@@ -214,6 +214,10 @@ tfoot td {
     margin-left: 10px;
     margin-right: 10px;
 }
+
+#course-evaluated-info{
+    margin-top: 15px;
+}
 /* ---------- 3. links and navigation ---------- */
 
 a {
