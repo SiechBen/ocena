@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import ke.co.miles.ocena.defaults.EntityRequests;
 import ke.co.miles.ocena.entities.EvaluatedQuestion;
 import ke.co.miles.ocena.entities.EvaluationSession;
@@ -114,9 +115,13 @@ public class EvaluatedQuestionRequests extends EntityRequests implements Evaluat
         List<EvaluatedQuestion> evaluatedQuestions = new ArrayList<>();
         try {
             evaluatedQuestions = q.getResultList();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("18-002");
+        }
+
+        for (EvaluatedQuestion eq : evaluatedQuestions) {
+            logger.log(Level.INFO, "Evaluated question id: {0}", eq.getId());
         }
 
         //Returning the details list of evaluated question records

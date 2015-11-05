@@ -68,11 +68,12 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
 
         //Check against any active evaluation session
         logger.log(Level.INFO, "Checking against any active evaluation session");
-        q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAcademicYear");
+        q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAdmissionYear");
         evaluationSession = new EvaluationSession();
         q.setParameter("active", Boolean.TRUE);
         q.setParameter("degreeId", details.getDegree().getId());
         q.setParameter("admissionYear", details.getAdmissionYear());
+
         try {
             evaluationSession = (EvaluationSession) q.getSingleResult();
         } catch (NoResultException e) {
@@ -170,11 +171,12 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
 
         //Retrieving active evaluation session record from the database
         logger.log(Level.INFO, "Retrieving active evaluation session record from the database");
-        q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAcademicYear");
+        q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAdmissionYear");
         evaluationSession = new EvaluationSession();
         q.setParameter("admissionYear", admissionYear);
         q.setParameter("active", Boolean.TRUE);
         q.setParameter("degreeId", degreeId);
+
         try {
             evaluationSession = (EvaluationSession) q.getSingleResult();
         } catch (NoResultException e) {
@@ -261,11 +263,12 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
 
         //Check against any active evaluation session
         logger.log(Level.INFO, "Checking against any active evaluation session");
-        q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAcademicYear");
+        q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAdmissionYear");
         evaluationSession = new EvaluationSession();
         q.setParameter("active", Boolean.TRUE);
         q.setParameter("degreeId", details.getDegree().getId());
         q.setParameter("admissionYear", details.getAdmissionYear());
+
         try {
             evaluationSession = (EvaluationSession) q.getSingleResult();
         } catch (NoResultException e) {

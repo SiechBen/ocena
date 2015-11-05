@@ -85,7 +85,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         evaluatedQuestionAnswer.setEvaluationInstance(evaluationInstanceService.retrieveEvaluationInstance(evaluatedQuestionAnswerDetails.getEvaluationInstance()));
 
         //Adding a evaluated question answer record to the database
-        logger.log(Level.INFO, "Adding a evaluated question answer recoevaluationInstanceServicerd to the database");
+        logger.log(Level.INFO, "Adding an evaluated question answer record to the database");
         try {
             em.persist(evaluatedQuestionAnswer);
             em.flush();
@@ -153,6 +153,12 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         } else if (currentEvaluatedQuestion.getId() == null) {
             logger.log(Level.INFO, "The evaluated question's unique identifier is null");
             throw new InvalidArgumentException("7-004");
+        } else if (currentCourseOfInstance == null) {
+            logger.log(Level.INFO, "The current course of instance is null");
+            throw new InvalidArgumentException("7-004");
+        } else if (currentCourseOfInstance.getId() == null) {
+            logger.log(Level.INFO, "The current course of instance's unique identifier is null");
+            throw new InvalidArgumentException("7-004");
         }
 
         //Retrieving the evaluated question answer record from the database
@@ -166,7 +172,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         try {
             evaluatedQuestionAnswer = (EvaluatedQuestionAnswer) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.SEVERE, "The evaluated question answer was not recorded");
+            logger.log(Level.SEVERE, "The evaluated question answer was not recorded", e);
             return null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
@@ -246,7 +252,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         //Return the evaluated question answers
         logger.log(Level.INFO, "Returning the evaluated question answers");
         return convertFacultiesToEvaluatedQuestionAnswerDetailsList(evaluatedQuestionAnswers);
-    }    
+    }
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Update">
 

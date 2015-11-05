@@ -71,7 +71,15 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         logger.log(Level.INFO, "Creating a container to hold assessed evaluation record");
         assessedEvaluation = new AssessedEvaluation();
         assessedEvaluation.setActive(details.getActive());
-        assessedEvaluation.setRating(details.getRating());
+        if (details.getRating() != null) {
+            if (details.getRating().length() >= 8) {
+                assessedEvaluation.setRating(details.getRating().substring(0, 8));
+            } else {
+                assessedEvaluation.setRating(details.getRating());
+            }
+        } else {
+            assessedEvaluation.setRating(details.getRating());
+        }
         assessedEvaluation.setPercentageScore(details.getPercentageScore());
         assessedEvaluation.setQuestionDescription(details.getQuestionDescription());
         assessedEvaluation.setCourseOfSession(em.find(CourseOfSession.class, details.getCourseOfSession().getId()));
@@ -216,7 +224,15 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         assessedEvaluation = em.find(AssessedEvaluation.class, details.getId());
         assessedEvaluation.setId(details.getId());
         assessedEvaluation.setActive(details.getActive());
-        assessedEvaluation.setRating(details.getRating());
+        if (details.getRating() != null) {
+            if (details.getRating().length() >= 8) {
+                assessedEvaluation.setRating(details.getRating().substring(0, 8));
+            } else {
+                assessedEvaluation.setRating(details.getRating());
+            }
+        } else {
+            assessedEvaluation.setRating(details.getRating());
+        }
         assessedEvaluation.setPercentageScore(details.getPercentageScore());
         assessedEvaluation.setQuestionDescription(details.getQuestionDescription());
         assessedEvaluation.setCourseOfSession(em.find(CourseOfSession.class, details.getCourseOfSession().getId()));
@@ -262,7 +278,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
 
     }
     //</editor-fold>
-//<editor-fold defaultstate="collapsed" desc="Convert">
+    //<editor-fold defaultstate="collapsed" desc="Convert">
 
     private List<AssessedEvaluationDetails> convertAssessedEvaluationsToAssessedEvaluationDetailsList(List<AssessedEvaluation> assessedEvaluations) {
         //Entered method for converting assessedEvaluations list to assessed evaluation details list

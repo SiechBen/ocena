@@ -143,7 +143,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
         //Finding the evaluation instance
         logger.log(Level.INFO, "Finding the evaluation instance");
         q = em.createNamedQuery("EvaluationInstance.findById");
-        q.setParameter("id", evaluationInstance.getId());
+        q.setParameter("id", evaluationInstanceDetails.getId());
         evaluationInstance = new EvaluationInstance();
         try {
             evaluationInstance = (EvaluationInstance) q.getSingleResult();

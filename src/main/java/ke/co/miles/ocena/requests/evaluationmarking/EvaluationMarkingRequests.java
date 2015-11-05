@@ -68,7 +68,7 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
             logger.log(Level.INFO, "An error occurred during evaluation instance records retrieval");
         }
 
-              //Retrieve the list of evaluated questions for this session
+        //Retrieve the list of evaluated questions for this session
         logger.log(Level.INFO, "Retrieving the list of evaluated questions for this session");
         List<EvaluatedQuestionDetails> evaluatedQuestions = new ArrayList<>();
         try {
@@ -131,6 +131,9 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             CourseOfInstanceDetails currentCourseOfInstance = new CourseOfInstanceDetails();
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
+                                if (currentCourseOfInstance == null) {
+                                    break;
+                                }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
                             }
@@ -213,6 +216,9 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             CourseOfInstanceDetails currentCourseOfInstance = new CourseOfInstanceDetails();
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
+                                if (currentCourseOfInstance == null) {
+                                    break;
+                                }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
                             }
@@ -302,6 +308,9 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             CourseOfInstanceDetails currentCourseOfInstance = new CourseOfInstanceDetails();
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
+                                if (currentCourseOfInstance == null) {
+                                    break;
+                                }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
                             }
@@ -402,6 +411,9 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             CourseOfInstanceDetails currentCourseOfInstance = new CourseOfInstanceDetails();
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
+                                if (currentCourseOfInstance == null) {
+                                    break;
+                                }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
                             }
@@ -565,6 +577,9 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                         CourseOfInstanceDetails currentCourseOfInstance = new CourseOfInstanceDetails();
                         try {
                             currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
+                            if (currentCourseOfInstance == null) {
+                                break;
+                            }
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
                         }
@@ -793,6 +808,9 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                         CourseOfInstanceDetails currentCourseOfInstance = new CourseOfInstanceDetails();
                         try {
                             currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
+                            if (currentCourseOfInstance == null) {
+                                break;
+                            }
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
                         }

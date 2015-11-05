@@ -150,8 +150,11 @@ public class CourseOfInstanceRequests extends EntityRequests implements CourseOf
         courseOfInstance = new CourseOfInstance();
         try {
             courseOfInstance = (CourseOfInstance) q.getSingleResult();
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+        } catch (NoResultException e) {
+            logger.log(Level.SEVERE, "The course of session was not evaluated upon by this student");
+            return null;
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", ex);
             throw new EJBException("0-002");
         }
 
