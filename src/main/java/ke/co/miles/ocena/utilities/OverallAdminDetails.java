@@ -111,9 +111,9 @@ public class OverallAdminDetails implements Comparable<OverallAdminDetails>, Ser
     }
 
     private Integer id;
+    private Boolean active;
     private String username;
     private String password;
-    private Boolean active;
     private Integer version;
 
 }

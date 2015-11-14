@@ -35,12 +35,14 @@ import ke.co.miles.ocena.entities.QuestionCategory;
 import ke.co.miles.ocena.entities.Faculty;
 import ke.co.miles.ocena.entities.FacultyMember;
 import ke.co.miles.ocena.entities.FacultyMemberRole;
+import ke.co.miles.ocena.entities.OverallAdmin;
 import ke.co.miles.ocena.entities.Rating;
 import ke.co.miles.ocena.entities.RatingType;
 import ke.co.miles.ocena.entities.StudentFeedback;
 import ke.co.miles.ocena.entities.UserAccount;
 import ke.co.miles.ocena.entities.UserGroup;
 import ke.co.miles.ocena.requests.access.AccessRequestsLocal;
+import ke.co.miles.ocena.requests.access.overalladmin.OverallAdminRequestsLocal;
 import ke.co.miles.ocena.requests.admission.AdmissionRequestsLocal;
 import ke.co.miles.ocena.requests.assessedevaluation.AssessedEvaluationCommentRequestsLocal;
 import ke.co.miles.ocena.requests.assessedevaluation.AssessedEvaluationRequestsLocal;
@@ -96,6 +98,7 @@ import ke.co.miles.ocena.utilities.QuestionDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberRoleDetail;
 import ke.co.miles.ocena.utilities.FacultyDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberDetails;
+import ke.co.miles.ocena.utilities.OverallAdminDetails;
 import ke.co.miles.ocena.utilities.RatingDetails;
 import ke.co.miles.ocena.utilities.RatingTypeDetail;
 import ke.co.miles.ocena.utilities.StudentFeedbackDetails;
@@ -113,8 +116,11 @@ public class EntityRequests {
     protected Query q;
 
     @EJB
+    protected OverallAdminRequestsLocal overallAdminService;
+  
+    @EJB
     protected EvaluationMarkingRequestsLocal evaluationMarkingService;
-
+   
     @EJB
     protected StudentFeedbackRequestsLocal studentFeedbackService;
 
@@ -208,6 +214,9 @@ public class EntityRequests {
     protected FacultyMemberRole facultyMemberRole;
     protected FacultyMemberRoleDetail facultyMemberRoleDetail;
 
+    protected OverallAdmin overallAdmin;
+    protected OverallAdminDetails overallAdminDetails;
+    
     protected Course course;
     protected CourseDetails courseDetails;
 

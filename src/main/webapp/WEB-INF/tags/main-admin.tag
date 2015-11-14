@@ -49,7 +49,7 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-    
+
         <script>
             $(function () {
                 $("#accordion").accordion({header: "h1", collapsible: true, active: false});
@@ -128,7 +128,7 @@
             });
         </script>
 
-  
+
 
     </head>
 
@@ -165,17 +165,22 @@
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/adminUserView">Upgrade user</a></li>
                             </ul>
                         </li>
-<!--                        <li class="dropdown">
+                        <li class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="institution-dropdown" data-toggle="dropdown" aria-expanded="true">
                                 Reports
-                            </button>  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                            </button>  
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                                 <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/downloadReports">Download reports</a></li>
                             </ul>
-                        </li>-->
+                        </li>
                         <li class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/logout')">
-                                Logout
+                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true">
+                                Account
                             </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/logout"> Logout </a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/viewCredentials"> Credentials </a></li>
+                            </ul>
                         </li>
                     </ul>
 

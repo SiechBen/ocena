@@ -10,7 +10,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServlet;
+import ke.co.miles.ocena.entities.OverallAdmin;
 import ke.co.miles.ocena.requests.access.AccessRequestsLocal;
+import ke.co.miles.ocena.requests.access.overalladmin.OverallAdminRequestsLocal;
 import ke.co.miles.ocena.requests.admission.AdmissionRequestsLocal;
 import ke.co.miles.ocena.requests.assessedevaluation.AssessedEvaluationCommentRequestsLocal;
 import ke.co.miles.ocena.requests.assessedevaluation.AssessedEvaluationRequestsLocal;
@@ -64,6 +66,7 @@ import ke.co.miles.ocena.utilities.QuestionCategoryDetails;
 import ke.co.miles.ocena.utilities.QuestionDetails;
 import ke.co.miles.ocena.utilities.FacultyDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberDetails;
+import ke.co.miles.ocena.utilities.OverallAdminDetails;
 import ke.co.miles.ocena.utilities.RatingDetails;
 import ke.co.miles.ocena.utilities.RatingTypeDetail;
 import ke.co.miles.ocena.utilities.StudentFeedbackDetails;
@@ -81,16 +84,21 @@ public class Controller extends HttpServlet {
     protected Query q;
 
     @EJB
+    protected OverallAdminRequestsLocal overallAdminService;
+
+    protected OverallAdminDetails overallAdminDetails;
+
+    @EJB
     protected EvaluationInstanceRequestsLocal evaluationInstanceService;
-    
+
     @EJB
     protected AssessedEvaluationRequestsLocal assessedEvaluationService;
-    
+
     protected AssessedEvaluationDetails assessedEvaluation;
-    
+
     @EJB
     protected AssessedEvaluationCommentRequestsLocal assessedEvaluationCommentService;
-    
+
     protected AssessedEvaluationCommentDetails assessedEvaluationComment;
 
     protected EvaluationInstanceDetails evaluationInstance;

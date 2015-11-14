@@ -2894,3 +2894,34 @@ function matchAdminPassword() {
     }
 }
 //</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="Overall admin">
+function validateOverallAdminPassword() {
+    if ($("#overall-admin-old-password").val() === "unset") {
+        return;
+    }
+    $.ajax({
+        url: "/Ocena/validateOverallAdminPassword",
+        type: "POST",
+        data: "password=" + $("#old-overall-admin-password").val(),
+        success: function (data) {
+            $("#valid-overall-admin-password-information").html(data);
+        }
+    });
+}
+
+function matchOverallAdminPassword() {
+
+    var password = $("#new-overall-admin-password").val();
+    var confirmationPassword = $("#confirm-overall-admin-password").val();
+    if (password !== confirmationPassword) {
+        $("#matching-overall-admin-password-information").html("<span class=\"btn btn-warning\">Passwords do not match!</span>");
+    } else {
+        $("#matching-overall-admin-password-information").html("");
+    }
+}
+
+function editAdminCredentials() {
+    $("#edit-overall-admin-div").css("display","block");
+}
+//</editor-fold>

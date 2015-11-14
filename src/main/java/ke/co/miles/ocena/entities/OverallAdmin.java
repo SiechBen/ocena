@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "overall_admin", catalog = "ocena", schema = "")
 @XmlRootElement
 @NamedQueries({
+    @NamedQuery(name = "OverallAdmin.findByUsernameAndPassword", query = "SELECT o FROM OverallAdmin o WHERE o.username = :username AND o.password = :password"),
     @NamedQuery(name = "OverallAdmin.findAll", query = "SELECT o FROM OverallAdmin o"),
     @NamedQuery(name = "OverallAdmin.findById", query = "SELECT o FROM OverallAdmin o WHERE o.id = :id"),
     @NamedQuery(name = "OverallAdmin.findByUsername", query = "SELECT o FROM OverallAdmin o WHERE o.username = :username"),
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OverallAdmin.findByActive", query = "SELECT o FROM OverallAdmin o WHERE o.active = :active"),
     @NamedQuery(name = "OverallAdmin.findByVersion", query = "SELECT o FROM OverallAdmin o WHERE o.version = :version")})
 public class OverallAdmin implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -126,5 +128,5 @@ public class OverallAdmin implements Serializable {
     public String toString() {
         return "ke.co.miles.ocena.entities.OverallAdmin[ id=" + id + " ]";
     }
-    
+
 }

@@ -218,6 +218,10 @@ tfoot td {
 #course-evaluated-info{
     margin-top: 15px;
 }
+
+#edit-overall-admin-div{
+    display: none;
+}
 /* ---------- 3. links and navigation ---------- */
 
 a {

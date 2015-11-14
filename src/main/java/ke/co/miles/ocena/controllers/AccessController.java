@@ -91,13 +91,18 @@ public class AccessController extends Controller {
                     return;
 
                 } else {
-
-                    if (username.trim().equals("admin") && password.trim().equals("admin")) {
-
+                    boolean userExists;
+                    try {
+                        overallAdminDetails = overallAdminService.userExists(username, password);
+                        userExists = true;
+                    } catch (InvalidArgumentException | InvalidStateException | InvalidLoginException e) {
+                        logger.log(Level.INFO, "Invalid login attempt");
+                        userExists = false;
+                    }
+                    if (userExists) {
                         //Admin login
                         out.write("<input type=\"hidden\" id=\"useful-username\" value=\"valid\">");
                         out.write("<input type=\"hidden\" id=\"useful-password\" value=\"valid\">");
-
                         return;
 
                     } else {
@@ -139,13 +144,23 @@ public class AccessController extends Controller {
 
                 } else {
 
-                    if (username.trim().equals("admin") && password.trim().equals("admin")) {
+                    boolean userExists;
+                    try {
+                        overallAdminDetails = overallAdminService.userExists(username, password);
+                        userExists = true;
+                    } catch (InvalidArgumentException | InvalidStateException | InvalidLoginException e) {
+                        logger.log(Level.INFO, "Invalid login attempt");
+                        userExists = false;
+                    }
+                    if (userExists) {
 
                         session = request.getSession(true);
+                        session.setAttribute("adminCredentials", overallAdminDetails);
                         session.setAttribute("home", "/adminDashboard");
                         session.setAttribute("subAdminSession", false);
                         session.setAttribute("mainAdminSession", true);
                         session.setAttribute("user", "Admin");
+
                         //Retrieve the institution and avail it in the session
                         availApplicationAttributes();
 
@@ -352,7 +367,9 @@ public class AccessController extends Controller {
 
         //Use request dispatcher to foward request internally
         destination = "/WEB-INF/views" + path + ".jsp";
-        logger.log(Level.INFO, "Request dispatch to forward to: {0}", destination);
+
+        logger.log(Level.INFO,
+                "Request dispatch to forward to: {0}", destination);
         try {
             request.getRequestDispatcher(destination).forward(request, response);
         } catch (ServletException | IOException e) {
@@ -360,7 +377,7 @@ public class AccessController extends Controller {
         }
     }
 
-    //<editor-fold defaultstate="collapsed" desc="Avail application attributes">
+//<editor-fold defaultstate="collapsed" desc="Avail application attributes">
     private void availApplicationAttributes() {
         //Retrieve the list of countries
         logger.log(Level.INFO, "Retrieving the list of countries");
@@ -580,5 +597,6 @@ public class AccessController extends Controller {
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(AccessController.class.getSimpleName());
+    private static final Logger logger = Logger.getLogger(AccessController.class
+            .getSimpleName());
 }

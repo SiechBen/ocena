@@ -135,10 +135,10 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         try {
             userAccount = (UserAccount) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.SEVERE, "No such user account record found", e);
+            logger.log(Level.SEVERE, "No such user account record found");
             throw new InvalidLoginException("error_001_09");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Invalid login credentials", e);
+            logger.log(Level.SEVERE, "Invalid login credentials");
             throw new EJBException("error_000_01");
         }
 

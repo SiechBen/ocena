@@ -214,8 +214,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         try {
             userAccount = userAccountService.retrieveUserAccount(username, hashedPassword);
         } catch (InvalidArgumentException | InvalidLoginException e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidLoginException("16-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval");
+            throw new InvalidLoginException("error_001_09");
         }
 
         //Creating and valuating a map of person details to their user group
