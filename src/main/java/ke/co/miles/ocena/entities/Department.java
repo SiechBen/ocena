@@ -48,7 +48,7 @@ public class Department implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 60)
+    @Size(min = 1, max = 300)
     @Column(name = "name")
     private String name;
     @Basic(optional = false)

@@ -44,8 +44,8 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The college name is null");
             throw new InvalidArgumentException("7-002");
-        } else if (details.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The college name is longer than 60 characters");
+        } else if (details.getName().trim().length() > 300) {
+            logger.log(Level.INFO, "The college name is longer than 300 characters");
             throw new InvalidArgumentException("7-003");
         } else if (details.getAbbreviation() == null || details.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The abbreviation is null");
@@ -245,8 +245,8 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The college name is null");
             throw new InvalidArgumentException("7-002");
-        } else if (details.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The college name is longer than 60 characters");
+        } else if (details.getName().trim().length() > 300) {
+            logger.log(Level.INFO, "The college name is longer than 300 characters");
             throw new InvalidArgumentException("7-003");
         } else if (details.getAbbreviation() == null || details.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The abbreviation is null");

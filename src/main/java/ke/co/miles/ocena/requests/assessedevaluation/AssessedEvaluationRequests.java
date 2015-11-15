@@ -278,7 +278,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
 
     }
     //</editor-fold>
-    //<editor-fold defaultstate="collapsed" desc="Convert">
+//<editor-fold defaultstate="collapsed" desc="Convert">
 
     private List<AssessedEvaluationDetails> convertAssessedEvaluationsToAssessedEvaluationDetailsList(List<AssessedEvaluation> assessedEvaluations) {
         //Entered method for converting assessedEvaluations list to assessed evaluation details list

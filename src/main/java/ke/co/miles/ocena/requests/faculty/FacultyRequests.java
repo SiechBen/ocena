@@ -45,8 +45,8 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         } else if (facultyDetails.getName() == null || facultyDetails.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The rating is null");
             throw new InvalidArgumentException("19-002");
-        } else if (facultyDetails.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The rating is longer than 60 characters");
+        } else if (facultyDetails.getName().trim().length() > 300) {
+            logger.log(Level.INFO, "The rating is longer than 300 characters");
             throw new InvalidArgumentException("19-002");
         } else if (facultyDetails.getAbbreviation() == null || facultyDetails.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The rating is null");
@@ -223,8 +223,8 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         } else if (facultyDetails.getName() == null || facultyDetails.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The rating is null");
             throw new InvalidArgumentException("19-002");
-        } else if (facultyDetails.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The rating is longer than 60 characters");
+        } else if (facultyDetails.getName().trim().length() > 300) {
+            logger.log(Level.INFO, "The rating is longer than 300 characters");
             throw new InvalidArgumentException("19-002");
         } else if (facultyDetails.getAbbreviation() == null || facultyDetails.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The rating is null");

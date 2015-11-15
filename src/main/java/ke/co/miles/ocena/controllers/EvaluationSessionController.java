@@ -6,10 +6,13 @@
 package ke.co.miles.ocena.controllers;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +41,13 @@ import ke.co.miles.ocena.utilities.FacultyDetails;
 import ke.co.miles.ocena.utilities.MeansOfAnsweringDetail;
 import ke.co.miles.ocena.utilities.QuestionCategoryDetails;
 import ke.co.miles.ocena.utilities.QuestionDetails;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 //import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
 /**
@@ -497,6 +507,8 @@ public class EvaluationSessionController extends Controller {
                         logger.log(Level.INFO, "An error occurred while retrieving the courses of session");
                     }
 
+                    DecimalFormat decimalFormat = new DecimalFormat("##.00");
+
                     //<editor-fold defaultstate="collapsed" desc="Generate evaluation report">
                     for (CourseOfSessionDetails c : courses) {
                         List<AssessedEvaluationDetails> assessedEvaluations = new ArrayList<>();
@@ -506,39 +518,51 @@ public class EvaluationSessionController extends Controller {
                             logger.log(Level.INFO, "An error occurred while retrieving the assessed evaluation of this course of session");
                         }
 
-                        File evaluationReport;
-                        try {
-                            evaluationReport = new File("Evaluation reports"
-                                    + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
-                                    + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
-                                    + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
-                                    + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
-                                    + File.separator + "Evaluation report.txt");
-                        } catch (Exception e) {
-                            logger.log(Level.INFO, "Evaluation report file not created");
-                            return;
-                        }
-                        evaluationReport.getParentFile().mkdirs();
-                        evaluationReport.createNewFile();
+                        XWPFDocument evaluationReport = new XWPFDocument();
+                        FileOutputStream outStream;
+                        String filePath;
 
-                        FileWriter fileWriter = new FileWriter(evaluationReport);
-                        PrintWriter printWriter;
+                        filePath = "Evaluation reports"
+                                + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
+                                + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
+                                + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
+                                + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
+                                + File.separator + "Evaluation report.docx";
+
+                        new File(filePath).getParentFile().mkdirs();
+
                         try {
-                            printWriter = new PrintWriter(fileWriter);
+                            outStream = new FileOutputStream(filePath);
                         } catch (Exception e) {
-                            logger.log(Level.INFO, "Print writer could not be initialised");
-                            return;
+                            logger.log(Level.INFO, "Evaluation report could not created");
+                            continue;
                         }
-                        printWriter.printf("COURSE/LECTURER EVALUATION REPORT %n");
-                        printWriter.printf("COURSE: " + c.getCourse().getCode().toUpperCase() + "%n");
-                        printWriter.printf("LECTURER: " + c.getFacultyMember().getPerson().getFirstName().toUpperCase() + " " + c.getFacultyMember().getPerson().getLastName().toUpperCase() + "%n");
-                        printWriter.printf("REFERENCE NO: " + c.getFacultyMember().getPerson().getReferenceNumber().toUpperCase() + "%n");
-                        printWriter.printf("SEMESTER: " + evaluationSession.getSemester() + "%n");
-                        printWriter.printf("ACADEMIC YEAR: " + evaluationSession.getAcademicYear() + "%n%n");
+
+                        XWPFParagraph paragraph = evaluationReport.createParagraph();
+                        XWPFRun run = paragraph.createRun();
+
+                        run.setText("COURSE/LECTURER EVALUATION REPORT");
+                        run.addBreak();
+                        run.setText("COURSE: " + c.getCourse().getCode().toUpperCase());
+                        run.addBreak();
+                        run.setText("LECTURER: " + c.getFacultyMember().getPerson().getFirstName().toUpperCase() + " " + c.getFacultyMember().getPerson().getLastName().toUpperCase());
+                        run.addBreak();
+                        run.setText("REFERENCE NO: " + c.getFacultyMember().getPerson().getReferenceNumber().toUpperCase());
+                        run.addBreak();
+                        run.setText("SEMESTER: " + evaluationSession.getSemester());
+                        run.addBreak();
+                        run.setText("ACADEMIC YEAR: " + evaluationSession.getAcademicYear());
+                        run.addBreak();
+
+                        paragraph = evaluationReport.createParagraph();
+                        run = paragraph.createRun();
+
                         int e = 64, i;
                         for (QuestionCategoryDetails qc : questionCategories) {
 
-                            printWriter.printf("%n" + (char) ++e + ". " + qc.getCategory().toUpperCase() + "%n");
+                            run.addBreak();
+                            run.setText((char) ++e + ". " + qc.getCategory().toUpperCase());
+                            run.addBreak();
 
                             i = 0;
 
@@ -550,18 +574,29 @@ public class EvaluationSessionController extends Controller {
 
                                         try {
                                             if (ae.getRating() != null) {
-                                                printWriter.printf(++i + ". " + ae.getQuestionDescription() + ": " + ae.getRating() + "%n");
+                                                try {
+                                                    run.setText(++i + ". " + ae.getQuestionDescription() + ": " + decimalFormat.format(Double.parseDouble(ae.getRating())));
+                                                    run.addBreak();
+                                                } catch (Exception ex) {
+                                                    logger.log(Level.INFO, "The rating could not be rounded off");
+                                                }
                                             }
                                         } catch (Exception ex) {
                                             logger.log(Level.INFO, "The rating is null");
                                         }
                                         try {
                                             if (ae.getPercentageScore() != null) {
-                                                printWriter.printf(++i + ". " + ae.getQuestionDescription() + ": " + ae.getPercentageScore() + "%%n");
+                                                try {
+                                                    run.setText(++i + ". " + ae.getQuestionDescription() + ": " + decimalFormat.format(Double.parseDouble(ae.getPercentageScore())) + "%");
+                                                    run.addBreak();
+                                                } catch (Exception ex) {
+                                                    logger.log(Level.INFO, "The percentage score could not be rounded off");
+                                                }
                                             }
                                         } catch (Exception ex) {
                                             logger.log(Level.INFO, "The percentage score is null");
                                         }
+                                        
                                     }
 
                                 }
@@ -569,8 +604,166 @@ public class EvaluationSessionController extends Controller {
                             }
 
                         }
-                        printWriter.close();
-                        logger.log(Level.INFO, "\nReport generated successfully\n");
+
+                        try {
+                            evaluationReport.write(outStream);
+                            outStream.close();
+                        } catch (IOException ex) {
+                            logger.log(Level.INFO, "Evaluation report could not be written to");
+                            continue;
+                        }
+                        logger.log(Level.INFO, "\n\n\033[32;3mReport generated successfully\n");
+                    }
+                    //</editor-fold>
+
+                    //<editor-fold defaultstate="collapsed" desc="Evaluation summary report">
+                    for (CourseOfSessionDetails c : courses) {
+                        List<AssessedEvaluationDetails> assessedEvaluations = new ArrayList<>();
+                        try {
+                            assessedEvaluations = assessedEvaluationService.retrieveAssessedEvaluationsByCourse(c);
+                        } catch (InvalidArgumentException | InvalidStateException ex) {
+                            logger.log(Level.INFO, "An error occurred while retrieving the assessed evaluation of this course of session");
+                        }
+
+                        XWPFDocument evaluationSummaryReport = new XWPFDocument();
+
+                        String filePath = "Evaluation reports"
+                                + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
+                                + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
+                                + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
+                                + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
+                                + File.separator + "Evaluation summary report.docx";
+
+                        new File(filePath).getParentFile().mkdirs();
+
+                        FileOutputStream outStream;
+                        try {
+                            outStream = new FileOutputStream(filePath);
+                        } catch (IOException ex) {
+                            logger.log(Level.INFO, "Evaluation summary report could not be created");
+                            continue;
+                        }
+
+                        XWPFParagraph paragraph = evaluationSummaryReport.createParagraph();
+
+                        XWPFRun run = paragraph.createRun();
+
+                        run.setText("COURSE/LECTURER EVALUATION SUMMARY REPORT");
+                        run.addBreak();
+                        run.setText("ACADEMIC YEAR: " + evaluationSession.getAcademicYear());
+                        run.addBreak();
+                        run.setText("SEMESTER: " + evaluationSession.getSemester());
+                        run.addBreak();
+                        run.setText("COURSE: " + c.getCourse().getCode().toUpperCase());
+                        run.addBreak();
+                        run.setText("LECTURER: " + c.getFacultyMember().getPerson().getFirstName().toUpperCase() + " " + c.getFacultyMember().getPerson().getLastName().toUpperCase());
+                        run.addBreak();
+                        run.setText("REFERENCE NO: " + c.getFacultyMember().getPerson().getReferenceNumber().toUpperCase());
+                        run.addBreak();
+
+                        evaluationSummaryReport.createParagraph();
+
+                        XWPFTable evaluationResultsTable = evaluationSummaryReport.createTable(questionCategories.size(), 3);
+                        CTTblWidth width = evaluationResultsTable.getCTTbl().addNewTblPr().addNewTblW();
+                        width.setType(STTblWidth.DXA);
+                        width.setW(BigInteger.valueOf(9072));
+
+                        XWPFTableRow headerRow = evaluationResultsTable.getRow(0);
+                        headerRow.getCell(1).setText("Criteria");
+                        headerRow.getCell(2).setText("Score/5");
+
+                        XWPFTableRow tableRow;
+
+                        int i = 1, e = 64, totalCount;
+                        double totalCategoryScore, averageCategoryScore, totalEvaluationScore = 0,
+                                percentageEvaluationScore;
+
+                        for (QuestionCategoryDetails qc : questionCategories) {
+
+                            totalCount = 0;
+                            totalCategoryScore = 0;
+                            averageCategoryScore = 0;
+
+                            for (AssessedEvaluationDetails ae : assessedEvaluations) {
+
+                                if (ae.getQuestionCategory().equals(qc)) {
+
+                                    if (ae.getEvaluatedQuestion().getMeansOfAnswering().equals(MeansOfAnsweringDetail.BY_RATING)) {
+
+                                        try {
+                                            if (ae.getRating() != null) {
+                                                totalCategoryScore += Double.parseDouble(ae.getRating());
+                                                totalCount++;
+                                            }
+                                        } catch (Exception ex) {
+                                            logger.log(Level.INFO, "The rating is null");
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            if (totalCount != 0) {
+                                averageCategoryScore = totalCategoryScore / totalCount;
+                            }
+
+                            String category = qc.getCategory().toLowerCase();
+                            category = Character.toUpperCase(category.charAt(0)) + category.substring(1);
+
+                            try {
+                                averageCategoryScore = Double.parseDouble(decimalFormat.format(averageCategoryScore));
+                            } catch (Exception ex) {
+                                logger.log(Level.INFO, "Average category score could not be rounded off");
+                            }
+                            if (averageCategoryScore != 0.0) {
+                                tableRow = evaluationResultsTable.getRow(i++);
+                                tableRow.getCell(0).setText(String.valueOf((char) ++e));
+                                tableRow.getCell(1).setText(category);
+                                tableRow.getCell(2).setText(String.valueOf(averageCategoryScore));
+                            }
+                            totalEvaluationScore += averageCategoryScore;
+
+                        }
+
+                        percentageEvaluationScore = ((totalEvaluationScore / questionCategories.size()) / 5) * 100;
+                        try {
+                            percentageEvaluationScore = Double.parseDouble(decimalFormat.format(percentageEvaluationScore));
+                        } catch (Exception ex) {
+                            logger.log(Level.INFO, "Percentage evaluation score could not be rounded off");
+                        }
+
+                        XWPFTableRow summaryRow = evaluationResultsTable.getRow(i);
+                        summaryRow.getCell(1).setText("Percentage Rating(" + (char) 65 + " to " + (char) e + ")");
+                        summaryRow.getCell(2).setText(String.valueOf(percentageEvaluationScore) + "%");
+
+                        evaluationSummaryReport.createParagraph().createRun().addBreak();
+
+                        XWPFTable summaryTable = evaluationSummaryReport.createTable(2, 3);
+                        width = summaryTable.getCTTbl().getTblPr().addNewTblW();
+                        width.setType(STTblWidth.DXA);
+                        width.setW(BigInteger.valueOf(9072));
+
+                        headerRow = summaryTable.getRow(0);
+                        headerRow.getCell(0).setText("Course Code");
+                        headerRow.getCell(1).setText("Course Name");
+                        headerRow.getCell(2).setText("% Overall Score");
+
+                        tableRow = summaryTable.getRow(1);
+                        tableRow.getCell(0).setText(c.getCourse().getCode());
+                        tableRow.getCell(1).setText(c.getCourse().getTitle());
+                        tableRow.getCell(2).setText(String.valueOf(percentageEvaluationScore));
+
+                        try {
+                            evaluationSummaryReport.write(outStream);
+                            outStream.close();
+                        } catch (IOException ex) {
+                            logger.log(Level.INFO, "Evaluation summary report could not be written to");
+                            continue;
+                        }
+
+                        logger.log(Level.INFO, "\n\n\033[32;3mEvaluation summary report generated successfully\n");
                     }
                     //</editor-fold>
 
@@ -583,36 +776,47 @@ public class EvaluationSessionController extends Controller {
                             logger.log(Level.INFO, "An error occurred while retrieving the assessed evaluation of this course of session");
                         }
 
-                        File commentsReport;
+                        XWPFDocument commentsReport = new XWPFDocument();
+                        String filePath;
                         try {
-                            commentsReport = new File("Evaluation reports"
+                            filePath = "Evaluation reports"
                                     + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
                                     + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
                                     + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
                                     + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
-                                    + File.separator + "General comments.txt");
+                                    + File.separator + "General comments.docx";
                         } catch (Exception e) {
                             logger.log(Level.INFO, "Comments dump file not created");
                             return;
                         }
-                        commentsReport.getParentFile().mkdirs();
-                        commentsReport.createNewFile();
 
-                        FileWriter fileWriter = new FileWriter(commentsReport);
-                        PrintWriter printWriter;
+                        new File(filePath).getParentFile().mkdirs();
+
+                        FileOutputStream outStream;
                         try {
-                            printWriter = new PrintWriter(fileWriter);
-                        } catch (Exception e) {
-                            logger.log(Level.INFO, "Print writer could not be initialised");
-                            return;
+                            outStream = new FileOutputStream(filePath);
+                        } catch (IOException e) {
+                            logger.log(Level.INFO, "General comments document could not be created");
+                            continue;
                         }
 
-                        printWriter.printf("EVALUATION GENERAL COMMENTS %n");
-                        printWriter.printf("COURSE: " + c.getCourse().getCode().toUpperCase() + "%n");
-                        printWriter.printf("LECTURER: " + c.getFacultyMember().getPerson().getFirstName().toUpperCase() + " " + c.getFacultyMember().getPerson().getLastName().toUpperCase() + "%n");
-                        printWriter.printf("REFERENCE NO: " + c.getFacultyMember().getPerson().getReferenceNumber().toUpperCase() + "%n");
-                        printWriter.printf("SEMESTER: " + evaluationSession.getSemester() + "%n");
-                        printWriter.printf("ACADEMIC YEAR: " + evaluationSession.getAcademicYear() + "%n%n");
+                        XWPFParagraph paragraph = commentsReport.createParagraph();
+
+                        XWPFRun run = paragraph.createRun();
+
+                        run.setText("EVALUATION GENERAL COMMENTS ");
+                        run.addBreak();
+                        run.setText("COURSE: " + c.getCourse().getCode().toUpperCase());
+                        run.addBreak();
+                        run.setText("LECTURER: " + c.getFacultyMember().getPerson().getFirstName().toUpperCase() + " " + c.getFacultyMember().getPerson().getLastName().toUpperCase());
+                        run.addBreak();
+                        run.setText("REFERENCE NO: " + c.getFacultyMember().getPerson().getReferenceNumber().toUpperCase());
+                        run.addBreak();
+                        run.setText("SEMESTER: " + evaluationSession.getSemester());
+                        run.addBreak();
+                        run.setText("ACADEMIC YEAR: " + evaluationSession.getAcademicYear());
+                        run.addBreak();
+
                         int f = 64, j, d;
                         QuestionCategoryDetails questionCategoryHolder = new QuestionCategoryDetails();
                         for (QuestionCategoryDetails qc : questionCategories) {
@@ -625,11 +829,14 @@ public class EvaluationSessionController extends Controller {
 
                                     if (ae.getEvaluatedQuestion().getMeansOfAnswering().equals(MeansOfAnsweringDetail.BY_LISTING_COMMENTS)) {
                                         if (questionCategoryHolder.getCategory() == null || !qc.getCategory().equals(questionCategoryHolder.getCategory())) {
-                                            printWriter.printf("%n" + (char) ++f + ". " + qc.getCategory().toUpperCase() + "%n");
+                                            run.addBreak();
+                                            run.setText((char) ++f + ". " + qc.getCategory().toUpperCase());
+                                            run.addBreak();
                                             questionCategoryHolder.setCategory(qc.getCategory());
                                         }
 
-                                        printWriter.printf(++j + ". " + ae.getQuestionDescription() + ":%n");
+                                        run.setText(++j + ". " + ae.getQuestionDescription() + ":");
+                                        run.addBreak();
                                         List<EvaluatedQuestionAnswerDetails> evaluatedQuestionAnswers;
                                         try {
                                             evaluatedQuestionAnswers = evaluatedQuestionAnswerService.retrieveEvaluatedQuestionAnswers(ae.getEvaluatedQuestion(), evaluationSession, c);
@@ -642,30 +849,39 @@ public class EvaluationSessionController extends Controller {
                                         for (EvaluatedQuestionAnswerDetails eqa : evaluatedQuestionAnswers) {
                                             try {
                                                 if (eqa.getComment1() != null && eqa.getComment1().trim().length() > 0) {
-                                                    printWriter.printf("\t" + String.valueOf((char) (++d)) + ") " + eqa.getComment1() + "%n");
+                                                    run.addTab();
+                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getComment1());
+                                                    run.addBreak();
                                                 }
                                             } catch (Exception ex) {
                                             }
                                             try {
                                                 if (eqa.getComment2() != null && eqa.getComment2().trim().length() > 0) {
-                                                    printWriter.printf("\t" + String.valueOf((char) (++d)) + ") " + eqa.getComment2() + "%n");
+                                                    run.addTab();
+                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getComment2());
+                                                    run.addBreak();
                                                 }
                                             } catch (Exception ex) {
                                             }
                                             try {
                                                 if (eqa.getComment3() != null && eqa.getComment3().trim().length() > 0) {
-                                                    printWriter.printf("\t" + String.valueOf((char) (++d)) + ") " + eqa.getComment3() + "%n");
+                                                    run.addTab();
+                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getComment3());
+                                                    run.addBreak();
                                                 }
                                             } catch (Exception ex) {
                                             }
                                         }
                                     } else if (ae.getEvaluatedQuestion().getMeansOfAnswering().equals(MeansOfAnsweringDetail.BY_REASONING)) {
                                         if (questionCategoryHolder.getCategory() == null || !qc.getCategory().equals(questionCategoryHolder.getCategory())) {
-                                            printWriter.printf("%n" + (char) ++f + ". " + qc.getCategory().toUpperCase() + "%n");
+                                            run.addBreak();
+                                            run.setText((char) ++f + ". " + qc.getCategory().toUpperCase());
+                                            run.addBreak();
                                             questionCategoryHolder.setCategory(qc.getCategory());
                                         }
 
-                                        printWriter.printf(++j + ". " + ae.getQuestionDescription() + ":%n");
+                                        run.setText(++j + ". " + ae.getQuestionDescription() + ":");
+                                        run.addBreak();
                                         List<EvaluatedQuestionAnswerDetails> evaluatedQuestionAnswers;
                                         try {
                                             evaluatedQuestionAnswers = evaluatedQuestionAnswerService.retrieveEvaluatedQuestionAnswers(ae.getEvaluatedQuestion(), evaluationSession, c);
@@ -678,10 +894,14 @@ public class EvaluationSessionController extends Controller {
                                         for (EvaluatedQuestionAnswerDetails eqa : evaluatedQuestionAnswers) {
                                             try {
                                                 if (eqa.getReasoning() != null && eqa.getReasoning().trim().length() > 0) {
-                                                    printWriter.printf("\t" + String.valueOf((char) (++d)) + ") " + eqa.getReasoning() + "%n");
+                                                    run.addTab();
+                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getReasoning());
+                                                    run.addBreak();
                                                 }
                                             } catch (Exception ex) {
+                                                //We should do something, right?
                                             }
+
                                         }
 
                                     }
@@ -691,8 +911,15 @@ public class EvaluationSessionController extends Controller {
                             }
 
                         }
-                        printWriter.close();
-                        logger.log(Level.INFO, "\nEvaluation general comments for report dumped successfully\n");
+                        try {
+                            commentsReport.write(outStream);
+                            outStream.close();
+                        } catch (IOException e) {
+                            logger.log(Level.INFO, "The evaluation general comments report could not be writtent to");
+                            continue;
+                        }
+                        
+                        logger.log(Level.INFO, "\n\n\033[32;3mEvaluation general comments dumped in a comments report successfully\n");
                     }
                     //</editor-fold>
 

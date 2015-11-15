@@ -5,6 +5,7 @@
  */
 package ke.co.miles.ocena.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
@@ -546,6 +547,12 @@ public class EvaluationController extends Controller {
                     path = "/evaluationComplete";
                     logger.log(Level.INFO, "Evaluation completed. Path is : {0}", path);
                     break;
+
+                case "/downloadReports":
+                    String folder = "/webapps/Ocena/myFolder";
+                    new File(folder).mkdirs();
+                    File file = new File(folder + File.separator + "hotspot.txt");
+                    return;
 
             }
 

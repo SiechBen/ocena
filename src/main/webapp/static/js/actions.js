@@ -680,8 +680,8 @@ function editInstitution(name, abbreviation, country) {
                     showMessage("Error", "College name is required");
                     return;
                 } else {
-                    if (name.length > 60) {
-                        showMessage("Error", "College name is longer than 60 characters");
+                    if (name.length > 300) {
+                        showMessage("Error", "College name is longer than 300 characters");
                         return;
                     }
                 }
@@ -787,8 +787,8 @@ function addCollege() {
                     showMessage("Error", "College name is required");
                     return;
                 } else {
-                    if (name.length > 60) {
-                        showMessage("Error", "College name is longer than 60 characters");
+                    if (name.length > 300) {
+                        showMessage("Error", "College name is longer than 300 characters");
                         return;
                     }
                 }
@@ -848,8 +848,8 @@ function editCollege(id, name, abbreviation) {
                     showMessage("Error", "College name is required");
                     return;
                 } else {
-                    if (name.length > 60) {
-                        showMessage("Error", "College name is longer than 60 characters");
+                    if (name.length > 300) {
+                        showMessage("Error", "College name is longer than 300 characters");
                         return;
                     }
                 }
@@ -958,8 +958,8 @@ function addFaculty(collegeId, collegeName) {
                     showMessage("Error", "Faculty name is required");
                     return;
                 } else {
-                    if (name.length > 60) {
-                        showMessage("Error", "Faculty name is longer than 60 characters");
+                    if (name.length > 300) {
+                        showMessage("Error", "Faculty name is longer than 300 characters");
                         return;
                     }
                 }
@@ -1134,8 +1134,8 @@ function addDepartment(facultyId, facultyName, collegeId) {
                     showMessage("Error", "Department name is required");
                     return;
                 } else {
-                    if (name.length > 60) {
-                        showMessage("Error", "Department name is longer than 60 characters");
+                    if (name.length > 300) {
+                        showMessage("Error", "Department name is longer than 300 characters");
                         return;
                     }
                 }
@@ -2108,8 +2108,8 @@ function addDegree(institutionId, institutionName) {
                     showMessage("Error", "Degree is null");
                     return;
                 } else {
-                    if (degreeName.length > 60) {
-                        showMessage("Error", "The degree is longer than 60 characters");
+                    if (degreeName.length > 120) {
+                        showMessage("Error", "The degree is longer than 120 characters");
                     }
                 }
 
@@ -2176,8 +2176,8 @@ function editDegree(degreeName, degreeId, admission, facultyId, departmentId) {
                     showMessage("Error", "The degree is null");
                     return;
                 } else {
-                    if (degreeName.length > 60) {
-                        showMessage("Error", "The degree is longer than 60 characters");
+                    if (degreeName.length > 120) {
+                        showMessage("Error", "The degree is longer than 120 characters");
                     }
                 }
 

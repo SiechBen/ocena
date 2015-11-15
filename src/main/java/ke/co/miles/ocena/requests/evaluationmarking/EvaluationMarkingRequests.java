@@ -132,7 +132,7 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
                                 if (currentCourseOfInstance == null) {
-                                    break;
+                                    continue;
                                 }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
@@ -217,7 +217,7 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
                                 if (currentCourseOfInstance == null) {
-                                    break;
+                                    continue;
                                 }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
@@ -309,7 +309,7 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
                                 if (currentCourseOfInstance == null) {
-                                    break;
+                                    continue;
                                 }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
@@ -412,7 +412,7 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                             try {
                                 currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
                                 if (currentCourseOfInstance == null) {
-                                    break;
+                                    continue;
                                 }
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
@@ -578,7 +578,7 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                         try {
                             currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
                             if (currentCourseOfInstance == null) {
-                                break;
+                                continue;
                             }
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             logger.log(Level.INFO, "An error occurred while retrieving courses of instance");
@@ -809,7 +809,7 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                         try {
                             currentCourseOfInstance = courseOfInstanceService.retrieveCourseOfInstance(currentEvaluationInstance, currentCourseOfSession);
                             if (currentCourseOfInstance == null) {
-                                break;
+                                continue;
                             }
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             logger.log(Level.INFO, "An error occurred while retrieving courses of instance");

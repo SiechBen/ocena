@@ -45,8 +45,8 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         } else if (departmentDetails.getName() == null || departmentDetails.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The department name is null");
             throw new InvalidArgumentException("9-002");
-        } else if (departmentDetails.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The department name is longer than 60 characters");
+        } else if (departmentDetails.getName().trim().length() > 300) {
+            logger.log(Level.INFO, "The department name is longer than 300 characters");
             throw new InvalidArgumentException("9-003");
         } else if (departmentDetails.getAbbreviation() == null || departmentDetails.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The abbreviation is null");
@@ -192,8 +192,8 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         } else if (departmentDetails.getName() == null || departmentDetails.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The department name is null");
             throw new InvalidArgumentException("9-002");
-        } else if (departmentDetails.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The department name is longer than 60 characters");
+        } else if (departmentDetails.getName().trim().length() > 300) {
+            logger.log(Level.INFO, "The department name is longer than 300 characters");
             throw new InvalidArgumentException("9-003");
         } else if (departmentDetails.getAbbreviation() == null || departmentDetails.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The abbreviation is null");
