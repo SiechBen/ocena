@@ -281,9 +281,11 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
 
         //Creating a container to hold evaluation session record
         logger.log(Level.INFO, "Creating a container to hold evaluation session record");
-        if (!evaluationSession.getId().equals(details.getId())) {
-            logger.log(Level.SEVERE, "Another active evaluation session exists hence a new one cannot be created");
-            throw new DuplicateStateException("18-099");
+        if (evaluationSession != null) {
+            if (!evaluationSession.getId().equals(details.getId())) {
+                logger.log(Level.SEVERE, "Another active evaluation session exists hence a new one cannot be created");
+                throw new DuplicateStateException("18-099");
+            }
         }
         evaluationSession = em.find(EvaluationSession.class, details.getId());
         evaluationSession.setActive(details.getActive());

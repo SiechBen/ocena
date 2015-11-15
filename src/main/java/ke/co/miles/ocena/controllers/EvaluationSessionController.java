@@ -7,7 +7,6 @@ package ke.co.miles.ocena.controllers;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigInteger;
@@ -384,7 +383,7 @@ public class EvaluationSessionController extends Controller {
                     }
 
                     //Generate tabe body to display the evaluation session details
-                    displayEvaluationSession(response, request);
+                    displayEvaluationSession(response, request, session);
 
                     return;
 
@@ -465,7 +464,7 @@ public class EvaluationSessionController extends Controller {
                     }
 
                     //Generate table body to display the evaluation session
-                    displayEvaluationSession(response, request);
+                    displayEvaluationSession(response, request, session);
 
                     return;
 
@@ -596,7 +595,7 @@ public class EvaluationSessionController extends Controller {
                                         } catch (Exception ex) {
                                             logger.log(Level.INFO, "The percentage score is null");
                                         }
-                                        
+
                                     }
 
                                 }
@@ -918,7 +917,7 @@ public class EvaluationSessionController extends Controller {
                             logger.log(Level.INFO, "The evaluation general comments report could not be writtent to");
                             continue;
                         }
-                        
+
                         logger.log(Level.INFO, "\n\n\033[32;3mEvaluation general comments dumped in a comments report successfully\n");
                     }
                     //</editor-fold>
@@ -936,6 +935,8 @@ public class EvaluationSessionController extends Controller {
                         return;
                     }
 
+                    //Reload evaluation sessions displayed
+                    displayEvaluationSession(response, request, session);
                     return;
             }
 
@@ -989,7 +990,7 @@ public class EvaluationSessionController extends Controller {
     }// </editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Display evaluation session details">
-    private void displayEvaluationSession(HttpServletResponse response, HttpServletRequest request) throws IOException {
+    private void displayEvaluationSession(HttpServletResponse response, HttpServletRequest request, HttpSession session) throws IOException {
         //Declare the response writer
         PrintWriter out = response.getWriter();
         //Define the date format to be used
@@ -1122,9 +1123,15 @@ public class EvaluationSessionController extends Controller {
                 out.write("</tr>");
                 out.write("<tr>");
                 if (faculty != null) {
-                    out.write("<td><button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=&facultyId=" + faculty.getId() + "')\">Courses of this session</button></td>");
+                    out.write("<td>");
+                    out.write("<button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=&facultyId=" + faculty.getId() + "')\">Courses of this session</button>");
+                    out.write("<input type=\"hidden\" name=\"facultyId\" id=\"facultyId\" value=\"" + faculty.getId() + "\">\n");
+                    out.write("</td>");
                 } else if (department != null) {
-                    out.write("<td><button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=" + department.getId() + "&facultyId=')\">Courses of this session</button></td>");
+                    out.write("<td>");
+                    out.write("<button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=" + department.getId() + "&facultyId=')\">Courses of this session</button>");
+                    out.write("<input type=\"hidden\" name=\"departmentId\" id=\"departmentId\" value=\"" + department.getId() + "\">\n");
+                    out.write("</td>");
                 }
                 out.write("<td>");
                 out.write("<button id=\"edit-evaluation-session-button\" class=\"btn btn-default\" onclick=\"editEvaluationSession('" + es.getId() + "')\"> Edit this session </button>");

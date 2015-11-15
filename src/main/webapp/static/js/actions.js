@@ -2629,9 +2629,10 @@ function closeEvaluationSession(evaluationSessionId) {
                 $.ajax({
                     type: "POST",
                     url: "/Ocena/closeEvaluationSession",
-                    data: "evaluationSessionId=" + evaluationSessionId,
-                    success: function () {
-                        checkEvaluationSession();
+                    data: "evaluationSessionId=" + evaluationSessionId + "&facultyId=" + $("#facultyId").val()
+                            + "&departmentId=" + $("#departmentId").val(),
+                    success: function (data) {
+                        $("#evaluation-session-table").html(data);
                     },
                     dataType: "HTML"
                 });
@@ -2922,6 +2923,6 @@ function matchOverallAdminPassword() {
 }
 
 function editAdminCredentials() {
-    $("#edit-overall-admin-div").css("display","block");
+    $("#edit-overall-admin-div").css("display", "block");
 }
 //</editor-fold>
