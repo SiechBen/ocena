@@ -222,6 +222,10 @@ tfoot td {
 #edit-overall-admin-div{
     display: none;
 }
+
+#rating-type-hidden{
+    display: none;
+}
 /* ---------- 3. links and navigation ---------- */
 
 a {

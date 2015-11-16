@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import ke.co.miles.ocena.defaults.EntityRequests;
 import ke.co.miles.ocena.entities.Course;
@@ -54,6 +55,25 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
             throw new InvalidArgumentException("1-004");
         } else if (details.getFacultyMember() == null) {
             logger.log(Level.INFO, "The faculty member is null");
+            throw new InvalidArgumentException("1-004");
+        }
+
+        courseOfSession = new CourseOfSession();
+        q = em.createNamedQuery("CourseOfSession.findByCourseIdAndEvaluationSessionId");
+        q.setParameter("courseId", details.getCourse().getId());
+        q.setParameter("evaluationSessionId", details.getEvaluationSession().getId());
+        try {
+            courseOfSession = (CourseOfSession) q.getSingleResult();
+        } catch (NoResultException e) {
+            logger.log(Level.INFO, "The course of session is unique");
+            courseOfSession = null;
+        } catch (Exception e) {
+            logger.log(Level.INFO, "An error occurred while checking if the course of sesison provided is unique to the evaluation session");
+            throw new EJBException("error_000_01");
+        }
+
+        if (courseOfSession != null) {
+            logger.log(Level.INFO, "The course of session is a duplicate");
             throw new InvalidArgumentException("1-004");
         }
 

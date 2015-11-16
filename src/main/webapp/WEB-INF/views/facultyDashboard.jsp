@@ -254,14 +254,14 @@
                 <tr>
                     <td> Means of answering </td>
                     <td> 
-                        <select id="evaluation-question-means-of-answering">
+                        <select id="evaluation-question-means-of-answering" onchange="checkMeansOfAnswering()">
                             <c:forEach var="means" items="${sessionScope.meansOfAnsweringList}">
                                 <option value="${means.id}"> ${means.meansOfAnswering} </option>
                             </c:forEach>
                         </select>
                     </td>
                 </tr>
-                <tr id="rating-type-hidden">
+                    <tr id="rating-type-hidden">
                     <td> Rating type </td>
                     <td> 
                         <select id="evaluation-question-rating-type">

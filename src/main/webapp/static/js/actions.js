@@ -1432,6 +1432,14 @@ function removeMeansOfAnswering(meansOfAnsweringId) {
         }
     });
 }
+
+function checkMeansOfAnswering() {
+    if ($("#evaluation-question-means-of-answering option:selected").text().contains("rating")) {
+        $("#rating-type-hidden").css("display", "table-row");
+    } else {
+        $("#rating-type-hidden").css("display", "none");
+    }
+}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Rating value">
