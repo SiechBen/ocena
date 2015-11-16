@@ -42,14 +42,25 @@ public class AdmissionController extends Controller {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         
-        boolean adminSession;
+         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Admin session is null");
+            logger.log(Level.INFO, "Main admin session is null");
             logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
+        }
+
+        if (adminSession == false) {
+            try {
+                adminSession = (Boolean) session.getAttribute("subAdminSession");
+            } catch (Exception e) {
+                logger.log(Level.INFO, "Sub admin session is null");
+                logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+                return;
+            }
         }
 
         //Check session type
