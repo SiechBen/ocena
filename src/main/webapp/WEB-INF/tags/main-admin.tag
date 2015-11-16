@@ -52,7 +52,7 @@
 
         <script>
             $(function () {
-                $("#accordion").accordion({header: "h1", collapsible: true, active: false});
+                $("#accordion").accordion({header: "h1", collapsible: true, active: false, heightStyle: "content"});
                 $("#add-start-date").datepicker();
                 $("#add-end-date").datepicker();
                 $(".start-date").datepicker();

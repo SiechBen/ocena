@@ -51,7 +51,7 @@
 
         <script>
             $(function () {
-                $("#accordion").accordion({header: "h1", collapsible: true, active: false});
+                $("#accordion").accordion({header: "h1", collapsible: true, active: false, heightStyle: "content"});
             });
             $(function () {
                 $("#edit-admission-year").datepicker({
