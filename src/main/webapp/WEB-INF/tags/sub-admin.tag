@@ -24,7 +24,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="The tag file from which all jsps inherit from">
         <meta name="author" content="Ben Siech">
-        <link rel="icon" href="../../favicon.ico">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
         <title> ${title} </title>
 

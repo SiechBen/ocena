@@ -163,8 +163,11 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         department = new Department();
         try {
             department = (Department) q.getSingleResult();
+        } catch (NoResultException e) {
+            logger.log(Level.SEVERE, "No department record retrieved");
+            throw new InvalidStateException("9-004");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            logger.log(Level.SEVERE, "An error occurred during record retrieval");
             throw new InvalidStateException("error_000_01");
         }
 
@@ -334,7 +337,7 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         logger.log(Level.FINE, "Convert list of department to department details");
         contactDetails = new ContactDetails();
         facultyDetails = new FacultyDetails();
-        DepartmentDetails details = new DepartmentDetails();
+        departmentDetails = new DepartmentDetails();
 
         try {
             contactDetails.setId(department.getContact().getId());
@@ -347,17 +350,17 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             logger.log(Level.INFO, "An error occurred during conversion of department faculty to details", e);
         }
 
-        details.setId(department.getId());
-        details.setName(department.getName());
-        details.setFaculty(facultyDetails);
-        details.setContact(contactDetails);
-        details.setActive(department.getActive());
-        details.setVersion(department.getVersion());
-        details.setAbbreviation(department.getAbbreviation());
+        departmentDetails.setId(department.getId());
+        departmentDetails.setName(department.getName());
+        departmentDetails.setFaculty(facultyDetails);
+        departmentDetails.setContact(contactDetails);
+        departmentDetails.setActive(department.getActive());
+        departmentDetails.setVersion(department.getVersion());
+        departmentDetails.setAbbreviation(department.getAbbreviation());
 
         //Returning converted department details
         logger.log(Level.FINE, "Returning converted department details");
-        return details;
+        return departmentDetails;
     }
 //</editor-fold>
 

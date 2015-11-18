@@ -454,6 +454,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         return details;
     }
 
+    @Override
     public DegreeDetails convertDegreeToDegreeDetails(Degree degree) {
         //Entered method for converting degree to degree details
         logger.log(Level.FINE, "Entered method for converting degrees to degree details");
@@ -468,6 +469,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             departmentDetails.setId(degree.getDepartment().getId());
         } catch (Exception e) {
             logger.log(Level.FINE, "The degree is not offered in a department");
+            departmentDetails = null;
         }
 
         facultyDetails = new FacultyDetails();
@@ -475,6 +477,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             facultyDetails.setId(degree.getFaculty().getId());
         } catch (Exception e) {
             logger.log(Level.FINE, "The degree is not offered in a faculty");
+            facultyDetails = null;
         }
 
         DegreeDetails details = new DegreeDetails();

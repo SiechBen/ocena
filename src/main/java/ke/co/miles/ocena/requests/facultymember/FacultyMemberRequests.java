@@ -318,6 +318,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             facultyDetails.setId(facultyMember.getFaculty().getId());
         } catch (Exception e) {
             logger.log(Level.FINE, "The faculty member does not belong to a faculty");
+            facultyDetails = null;
         }
 
         departmentDetails = new DepartmentDetails();
@@ -325,6 +326,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             departmentDetails.setId(facultyMember.getDepartment().getId());
         } catch (Exception e) {
             logger.log(Level.FINE, "The faculty member does not belong to a department");
+            departmentDetails = null;
         }
 
         personDetails = new PersonDetails();

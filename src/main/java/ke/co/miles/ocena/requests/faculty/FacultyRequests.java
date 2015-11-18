@@ -195,7 +195,10 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         faculty = new Faculty();
         try {
             faculty = (Faculty) q.getSingleResult();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
+            logger.log(Level.SEVERE, "No faculty record retrieved");
+            throw new InvalidStateException("7-004");
+          } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new InvalidStateException("error_000_01");
         }

@@ -879,7 +879,12 @@ public class PersonController extends Controller {
         logger.log(Level.INFO, "Retrieving the faculty to which the faculty member belongs if any");
         faculty = new FacultyDetails();
         try {
-            faculty = facultyService.retrieveFaculty(facultyMember.getFaculty().getId());
+            if (facultyMember.getFaculty() != null) {
+                faculty = facultyService.retrieveFaculty(facultyMember.getFaculty().getId());
+            } else {
+                logger.log(Level.INFO, "The person does not belong to a faculty");
+                faculty = null;
+            }
         } catch (InvalidArgumentException | InvalidStateException e) {
             logger.log(Level.INFO, "The person does not belong to a faculty");
             faculty = null;
@@ -889,7 +894,13 @@ public class PersonController extends Controller {
         logger.log(Level.INFO, "Retrieving the department to which the faculty member belongs if any");
         department = new DepartmentDetails();
         try {
-            department = departmentService.retrieveDepartment(facultyMember.getDepartment().getId());
+            if (facultyMember.getDepartment() != null) {
+                department = departmentService.retrieveDepartment(facultyMember.getDepartment().getId());
+
+            } else {
+                logger.log(Level.INFO, "The person does not belong to a faculty");
+                department = null;
+            }
         } catch (InvalidArgumentException | InvalidStateException ex) {
             logger.log(Level.INFO, "The person does not belong to a department");
             department = null;

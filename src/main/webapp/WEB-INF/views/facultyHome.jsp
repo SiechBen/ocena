@@ -1,16 +1,17 @@
 <%-- 
-    Document   : facultyDashboard
-    Created on : Jun 20, 2015, 1:01:02 PM
-    Author     : Ben Siech
+    Document   : facultyHome
+    Created on : Nov 18, 2015, 12:28:07 PM
+    Author     : siech
 --%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="ocena" tagdir="/WEB-INF/tags/" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<ocena:main-admin>
-    <jsp:attribute name="title"> Ocena - faculty dashboard </jsp:attribute>
+<ocena:sub-admin>
+    <jsp:attribute name="title"> Ocena - faculty home </jsp:attribute>
     <jsp:attribute name="content">
         <h1>${sessionScope.faculty.name} dashboard</h1>
         <div>
@@ -205,10 +206,6 @@
                 </div>
             </div>
         </div>
-        <div class="pull-right">
-            <button type="button" class="btn btn-default" onclick="addDepartment('${sessionScope.faculty.id}', '${sessionScope.faculty.name}', '${sessionScope.college.id}');
-                    return false;"> Setup department </button>
-        </div>
         <div class="dialog" id="rating-value-dialog">
             <table>
                 <tr>
@@ -299,71 +296,6 @@
                 </tr> 
             </table>
         </div>
-        <div class="dialog" id="department-dialog">
-            <table>
-                <tr>
-                    <td colspan="2">
-                        <b> Department details </b>
-                    </td>
-                </tr>
-                <tr>
-                    <td> Name </td>
-                    <td> <input type="text" id="department-name"></td>
-                </tr>
-                <tr>
-                    <td> Abbreviation </td>
-                    <td> <input type="text" id="department-abbreviation"></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <b> Email contact </b>
-                    </td>
-                </tr>
-                <tr>
-                    <td> Email address </td>
-                    <td> <input type="text" id="department-email"></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <b>Phone contact</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td> Mobile number </td>
-                    <td> <input type="text" id="department-mobile-number"></td>
-                </tr>
-                <tr>
-                    <td> Fixed number </td>
-                    <td> <input type="text" id="department-fixed-number"></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <b> Postal contact</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td> Box number </td>
-                    <td> <input type="text" id="department-box-number"></td>
-                </tr>
-                <tr>
-                    <td> Postal code </td>
-                    <td> <input type="text" id="department-postal-code"></td>
-                </tr>
-                <tr>
-                    <td> Town </td>
-                    <td> <input type="text" id="town"></td>
-                </tr>
-                <tr>
-                    <td> Country </td>
-                    <td> 
-                        <select id="country" name="country" style="max-width: 180px;">
-                            <c:forEach var="country" items="${applicationScope.countries}">
-                                <option value="${country.id}">${country.name}</option>
-                            </c:forEach>
-                        </select> 
-                    </td>
-                </tr>
-            </table>
-        </div>
     </jsp:attribute>
-</ocena:main-admin>
+</ocena:sub-admin>
+

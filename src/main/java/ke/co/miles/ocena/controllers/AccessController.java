@@ -285,10 +285,10 @@ public class AccessController extends Controller {
 
                                 //Set the path
                                 if (path == null) {
-                                    path = "/facultyDashboard";
+                                    path = "/facultyHome";
 
                                     //Set the homepage
-                                    session.setAttribute("home", "/facultyDashboard");
+                                    session.setAttribute("home", "/facultyHome");
 
                                     //Retrieve records required at the faculty dashboard
                                     logger.log(Level.INFO, "Retrieving the records required at the faculty dashboard");
@@ -310,10 +310,10 @@ public class AccessController extends Controller {
 
                                 //Set the path
                                 if (path == null) {
-                                    path = "/departmentDashboard";
+                                    path = "/departmentHome";
 
                                     //Set the homepage
-                                    session.setAttribute("home", "/departmentDashboard");
+                                    session.setAttribute("home", "/departmentHome");
 
                                     //Retrieve records required at the department dashboard
                                     logger.log(Level.INFO, "Retrieving the records required at the department dashboard");

@@ -59,17 +59,6 @@ public class FacultyController extends Controller {
             return;
         }
 
-        if (adminSession == false) {
-            try {
-                adminSession = (Boolean) session.getAttribute("subAdminSession");
-            } catch (Exception e) {
-                logger.log(Level.INFO, "Sub admin session is null");
-                logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
-                request.getRequestDispatcher("index.jsp").forward(request, response);
-                return;
-            }
-        }
-
         //Check session type
         logger.log(Level.INFO, "Checking session type");
         if (adminSession == false) {

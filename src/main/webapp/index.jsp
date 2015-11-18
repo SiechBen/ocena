@@ -5,6 +5,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
         <title>Ocena - online course/lecturer evaluation platform</title>
         <style type="text/css" media="screen">
             /* <![CDATA[ */

@@ -130,6 +130,9 @@ public class EvaluationSessionController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
+                        if (faculty.getId() == null) {
+                            faculty = null;
+                        }
                     } catch (Exception e) {
                         faculty = null;
                     }
@@ -139,6 +142,9 @@ public class EvaluationSessionController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
+                        if (department.getId() == null) {
+                            department = null;
+                        }
                     } catch (Exception e) {
                         department = null;
                     }
@@ -151,7 +157,7 @@ public class EvaluationSessionController extends Controller {
                         }
                     } else if (department != null) {
                         try {
-                            degrees = degreeService.retrieveFacultyDegrees(department.getId());
+                            degrees = degreeService.retrieveDepartmentDegrees(department.getId());
                         } catch (InvalidArgumentException ex) {
                             logger.log(Level.INFO, "An error occurred while retrieving the degrees");
                         }
@@ -1021,6 +1027,10 @@ public class EvaluationSessionController extends Controller {
         faculty = new FacultyDetails();
         try {
             faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
+            if (faculty.getId() == null) {
+            logger.log(Level.INFO, "The faculty unique identifier is not available");
+                faculty = null;
+            }
         } catch (Exception e) {
             logger.log(Level.INFO, "The faculty unique identifier is not available");
             faculty = null;
@@ -1031,6 +1041,10 @@ public class EvaluationSessionController extends Controller {
         department = new DepartmentDetails();
         try {
             department.setId(Integer.parseInt(request.getParameter("departmentId")));
+            if (department.getId() == null) {
+               logger.log(Level.INFO, "The department unique identifier is not available");
+             department = null;
+            }
         } catch (Exception e) {
             logger.log(Level.INFO, "The department unique identifier is not available");
             department = null;
@@ -1044,7 +1058,7 @@ public class EvaluationSessionController extends Controller {
             }
         } else if (department != null) {
             try {
-                degrees = degreeService.retrieveFacultyDegrees(department.getId());
+                degrees = degreeService.retrieveDepartmentDegrees(department.getId());
             } catch (InvalidArgumentException ex) {
                 logger.log(Level.INFO, "An error occurred while retrieving the degrees");
             }

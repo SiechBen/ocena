@@ -268,7 +268,7 @@ public class QuestionRequests extends EntityRequests implements QuestionRequests
         if (department == null) {
             logger.log(Level.INFO, "The department for which the questions are to be retrieved are not provided");
             throw new InvalidArgumentException("error_005_12");
-        } else if (faculty.getId() == null) {
+        } else if (department.getId() == null) {
             logger.log(Level.INFO, "The unique identifier of the department is not provided");
             throw new InvalidArgumentException("error_005_09");
         }
