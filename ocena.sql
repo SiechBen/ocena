@@ -56,6 +56,7 @@ CREATE TABLE `assessed_evaluation` (
   `evaluated_question` int(10) unsigned NOT NULL,
   `question_category` smallint(3) unsigned NOT NULL,
   `rating` varchar(10) DEFAULT NULL,
+  `standard_deviation` DOUBLE(5,2) NULL,
   `percentage_score` varchar(20) DEFAULT NULL,
   `evaluation_session` int(10) unsigned NOT NULL,
   `course_of_session` int(10) unsigned NOT NULL,

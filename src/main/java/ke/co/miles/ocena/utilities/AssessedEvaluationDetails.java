@@ -27,10 +27,7 @@ public class AssessedEvaluationDetails implements Serializable, Comparable<Asses
             return false;
         }
         AssessedEvaluationDetails other = (AssessedEvaluationDetails) object;
-        if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
     }
 
     @Override
@@ -183,11 +180,26 @@ public class AssessedEvaluationDetails implements Serializable, Comparable<Asses
         this.courseOfSession = courseOfSession;
     }
 
+    /**
+     * @return the standardDeviation
+     */
+    public Double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    /**
+     * @param standardDeviation the standardDeviation to set
+     */
+    public void setStandardDeviation(Double standardDeviation) {
+        this.standardDeviation = standardDeviation;
+    }
+
     private Integer id;
     private String rating;
     private Boolean active;
     private Integer version;
     private String percentageScore;
+    private Double standardDeviation;
     private String questionDescription;
     private CourseOfSessionDetails courseOfSession;
     private QuestionCategoryDetails questionCategory;

@@ -2553,7 +2553,7 @@ function checkEvaluationSession() {
             url: "/Ocena/checkEvaluationSession",
             data: "facultyId=" + $("#facultyId").val() + "&departmentId=" + $("#departmentId").val(),
             success: function (data) {
-                $("table#evaluation-session-table").html(data);
+                $("#evaluation-session-table").html(data);
             },
             dataType: "HTML"
         });

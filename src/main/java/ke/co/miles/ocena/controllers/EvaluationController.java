@@ -661,12 +661,12 @@ public class EvaluationController extends Controller {
         int questionIndex = 0, categoryIndex = 0;
         out.write("<h1> Perform evaluation of " + courseOfSession.getCourse().getTitle() + " by " + facultyMember.getPerson().getFirstName() + "&nbsp;" + facultyMember.getPerson().getLastName() + " </h1>");
         out.write("<div id=\"rating-labels\">");
-        out.write("<button class=\"btn btn-default\"> N/A = Not Applicable </button>");
-        out.write("<button class=\"btn btn-default\"> 1 = Poor");
-        out.write("<button class=\"btn btn-default\"> 2 = Reasonable");
-        out.write("<button class=\"btn btn-default\"> 3 = Satisfactory");
-        out.write("<button class=\"btn btn-default\"> 4 = Good");
-        out.write("<button class=\"btn btn-default\"> 5 = Very good ");
+        out.write("<label class=\"info\"> N/A = Not Applicable </label>");
+        out.write("<label class=\"info\"> 1 = Poor </label>");
+        out.write("<label class=\"info\"> 2 = Reasonable </label>");
+        out.write("<label class=\"info\"> 3 = Satisfactory </label>");
+        out.write("<label class=\"info\"> 4 = Good </label>");
+        out.write("<label class=\"info\"> 5 = Very good </label>");
         out.write("</div>");
         out.write("<div>");
         out.write("<form action=\"/Ocena/performEvaluation\" method=\"POST\">");

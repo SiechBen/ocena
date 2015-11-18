@@ -43,6 +43,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AssessedEvaluation.findByVersion", query = "SELECT a FROM AssessedEvaluation a WHERE a.version = :version"),
     @NamedQuery(name = "AssessedEvaluation.findByActive", query = "SELECT a FROM AssessedEvaluation a WHERE a.active = :active")})
 public class AssessedEvaluation implements Serializable {
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "standard_deviation")
+    private Double standardDeviation;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -193,6 +196,14 @@ public class AssessedEvaluation implements Serializable {
     @Override
     public String toString() {
         return "ke.co.miles.ocena.entities.AssessedEvaluation[ id=" + id + " ]";
+    }
+
+    public Double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    public void setStandardDeviation(Double standardDeviation) {
+        this.standardDeviation = standardDeviation;
     }
     
 }

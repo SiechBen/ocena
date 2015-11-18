@@ -120,6 +120,8 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                         //Declare and initialise variables to be used for marking star rating
                         logger.log(Level.INFO, "Declaring and initialising variables to be used for marking star rating");
                         double currentStarRating, totalStarRating = 0.0, averageStarRating = 0.0;
+                        double sumOfSquaredDifferences = 0.0, meanOfSquaredDifferences, standardDeviation = 0.0;
+                        ArrayList<Double> allStarRatings = new ArrayList<>();
                         int evaluationInstanceCount = 0;
 
                         //Loop through all evaluation instances for the current evaluated question
@@ -165,6 +167,8 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
 
                                 totalStarRating += currentStarRating;
 
+                                allStarRatings.add(currentStarRating);
+
                                 logger.log(Level.INFO, "The total rating is      : {0}", totalStarRating);
 
                                 logger.log(Level.INFO, "Evluation instance count : {0}", ++evaluationInstanceCount);
@@ -180,21 +184,38 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
                         }
 
                         //Calculate the average star rating
-                        logger.log(Level.INFO, "Calculating the average star rating");
+                        logger.log(Level.INFO, "Calculating the average and standard deviation of star ratings");
                         try {
                             if (evaluationInstanceCount != 0) {
                                 averageStarRating = totalStarRating / evaluationInstanceCount;
+
+                                //Get the sum of differences of average and star rating
+                                for (double starRating : allStarRatings) {
+                                    sumOfSquaredDifferences += Math.pow((starRating - averageStarRating), 2);
+                                }
+
+                                //Get the average of the differences
+                                meanOfSquaredDifferences = sumOfSquaredDifferences / evaluationInstanceCount;
+
+                                //Get the square root of the average found in the line above
+                                //This is the standard deviation of the star ratings
+                                standardDeviation = Math.pow(meanOfSquaredDifferences, 0.5);
+
                             }
 
                             logger.log(Level.INFO, "The average rating is        : {0}", averageStarRating);
+                            logger.log(Level.INFO, "The standard deviation is        : {0}", standardDeviation);
 
                         } catch (Exception e) {
                             logger.log(Level.SEVERE, "An error occurred during star rating average calculation");
                         }
 
                         //Record the average star rating to serve as the rating submitted for this evaluated question
-                        logger.log(Level.INFO, "Recording the average star rating to serve as the rating submitted for this evaluated question");
+                        //Record also the standard deviation for this result
+                        logger.log(Level.INFO, "Recording the average star rating to serve as the rating submitted for this evaluated question \n"
+                                + "\t\tRecord also the standard deviation for this result");
                         assessedEvaluationDetails.setRating(String.valueOf(averageStarRating));
+                        assessedEvaluationDetails.setStandardDeviation(standardDeviation);
 
                     } else if (currentEvaluatedQuestion.getRatingType().equals(RatingTypeDetail.BOOLEAN)) {
 

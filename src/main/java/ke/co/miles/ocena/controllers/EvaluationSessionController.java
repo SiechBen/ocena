@@ -506,7 +506,7 @@ public class EvaluationSessionController extends Controller {
                         logger.log(Level.INFO, "An error occurred while retrieving the courses of session");
                     }
 
-                    DecimalFormat decimalFormat = new DecimalFormat("##.00");
+                    DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
                     //<editor-fold defaultstate="collapsed" desc="Generate evaluation report">
                     for (CourseOfSessionDetails c : courses) {
@@ -574,10 +574,17 @@ public class EvaluationSessionController extends Controller {
                                         try {
                                             if (ae.getRating() != null) {
                                                 try {
-                                                    run.setText(++i + ". " + ae.getQuestionDescription() + ": " + decimalFormat.format(Double.parseDouble(ae.getRating())));
+                                                    run.setText(++i + ". " + ae.getQuestionDescription());
+                                                    run.addBreak();
+                                                    run.addTab();
+                                                    run.setText("Rating: " + decimalFormat.format(Double.parseDouble(ae.getRating())));
+                                                    run.addTab();
+                                                    run.addTab();
+                                                    run.setText("Standard deviation: " + decimalFormat.format((ae.getStandardDeviation())));
+                                                    run.addBreak();
                                                     run.addBreak();
                                                 } catch (Exception ex) {
-                                                    logger.log(Level.INFO, "The rating could not be rounded off");
+                                                    logger.log(Level.INFO, "The rating standard deviation could not be rounded off");
                                                 }
                                             }
                                         } catch (Exception ex) {
@@ -586,7 +593,11 @@ public class EvaluationSessionController extends Controller {
                                         try {
                                             if (ae.getPercentageScore() != null) {
                                                 try {
-                                                    run.setText(++i + ". " + ae.getQuestionDescription() + ": " + decimalFormat.format(Double.parseDouble(ae.getPercentageScore())) + "%");
+                                                    run.setText(++i + ". " + ae.getQuestionDescription());
+                                                    run.addBreak();
+                                                    run.addTab();
+                                                    run.setText("Percentage: " + decimalFormat.format(Double.parseDouble(ae.getPercentageScore().replaceAll(" ", "").replaceAll("%", ""))) + "%");
+                                                    run.addBreak();
                                                     run.addBreak();
                                                 } catch (Exception ex) {
                                                     logger.log(Level.INFO, "The percentage score could not be rounded off");
@@ -673,7 +684,7 @@ public class EvaluationSessionController extends Controller {
 
                         XWPFTableRow tableRow;
 
-                        int i = 1, e = 64, totalCount;
+                        int i = 1, e = 64, totalCount, noOfCategoriesUsed = 0;
                         double totalCategoryScore, averageCategoryScore, totalEvaluationScore = 0,
                                 percentageEvaluationScore;
 
@@ -706,6 +717,7 @@ public class EvaluationSessionController extends Controller {
 
                             if (totalCount != 0) {
                                 averageCategoryScore = totalCategoryScore / totalCount;
+                                noOfCategoriesUsed++;
                             }
 
                             String category = qc.getCategory().toLowerCase();
@@ -721,12 +733,16 @@ public class EvaluationSessionController extends Controller {
                                 tableRow.getCell(0).setText(String.valueOf((char) ++e));
                                 tableRow.getCell(1).setText(category);
                                 tableRow.getCell(2).setText(String.valueOf(averageCategoryScore));
+                                totalEvaluationScore += averageCategoryScore;
                             }
-                            totalEvaluationScore += averageCategoryScore;
 
                         }
 
-                        percentageEvaluationScore = ((totalEvaluationScore / questionCategories.size()) / 5) * 100;
+                        if (noOfCategoriesUsed > 0) {
+                            percentageEvaluationScore = ((totalEvaluationScore / noOfCategoriesUsed) / 5) * 100;
+                        } else {
+                            return;
+                        }
                         try {
                             percentageEvaluationScore = Double.parseDouble(decimalFormat.format(percentageEvaluationScore));
                         } catch (Exception ex) {
@@ -766,7 +782,7 @@ public class EvaluationSessionController extends Controller {
                     }
                     //</editor-fold>
 
-                    //<editor-fold defaultstate="collapsed" desc="Geneerate comments and reasons dump file">
+                    //<editor-fold defaultstate="collapsed" desc="Generate comments and reasons dump file">
                     for (CourseOfSessionDetails c : courses) {
                         List<AssessedEvaluationDetails> assessedEvaluations = new ArrayList<>();
                         try {
@@ -844,12 +860,12 @@ public class EvaluationSessionController extends Controller {
                                             return;
                                         }
 
-                                        d = 96;
+                                        d = 0;
                                         for (EvaluatedQuestionAnswerDetails eqa : evaluatedQuestionAnswers) {
                                             try {
                                                 if (eqa.getComment1() != null && eqa.getComment1().trim().length() > 0) {
                                                     run.addTab();
-                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getComment1());
+                                                    run.setText(String.valueOf((++d)) + ") " + eqa.getComment1());
                                                     run.addBreak();
                                                 }
                                             } catch (Exception ex) {
@@ -857,7 +873,7 @@ public class EvaluationSessionController extends Controller {
                                             try {
                                                 if (eqa.getComment2() != null && eqa.getComment2().trim().length() > 0) {
                                                     run.addTab();
-                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getComment2());
+                                                    run.setText(String.valueOf((++d)) + ") " + eqa.getComment2());
                                                     run.addBreak();
                                                 }
                                             } catch (Exception ex) {
@@ -865,7 +881,7 @@ public class EvaluationSessionController extends Controller {
                                             try {
                                                 if (eqa.getComment3() != null && eqa.getComment3().trim().length() > 0) {
                                                     run.addTab();
-                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getComment3());
+                                                    run.setText(String.valueOf((++d)) + ") " + eqa.getComment3());
                                                     run.addBreak();
                                                 }
                                             } catch (Exception ex) {
@@ -889,12 +905,12 @@ public class EvaluationSessionController extends Controller {
                                             return;
                                         }
 
-                                        d = 96;
+                                        d = 0;
                                         for (EvaluatedQuestionAnswerDetails eqa : evaluatedQuestionAnswers) {
                                             try {
                                                 if (eqa.getReasoning() != null && eqa.getReasoning().trim().length() > 0) {
                                                     run.addTab();
-                                                    run.setText(String.valueOf((char) (++d)) + ") " + eqa.getReasoning());
+                                                    run.setText(String.valueOf((++d)) + ") " + eqa.getReasoning());
                                                     run.addBreak();
                                                 }
                                             } catch (Exception ex) {

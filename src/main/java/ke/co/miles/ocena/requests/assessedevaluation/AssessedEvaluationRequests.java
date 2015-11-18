@@ -5,6 +5,7 @@
  */
 package ke.co.miles.ocena.requests.assessedevaluation;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +80,11 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
             }
         } else {
             assessedEvaluation.setRating(details.getRating());
+        }
+        if (details.getStandardDeviation() != null) {
+            assessedEvaluation.setStandardDeviation(Double.parseDouble(formatter.format(details.getStandardDeviation())));
+        } else {
+            assessedEvaluation.setStandardDeviation(details.getStandardDeviation());
         }
         assessedEvaluation.setPercentageScore(details.getPercentageScore());
         assessedEvaluation.setQuestionDescription(details.getQuestionDescription());
@@ -233,6 +239,11 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         } else {
             assessedEvaluation.setRating(details.getRating());
         }
+        if (details.getStandardDeviation() != null) {
+            assessedEvaluation.setStandardDeviation(Double.parseDouble(formatter.format(details.getStandardDeviation())));
+        } else {
+            assessedEvaluation.setStandardDeviation(details.getStandardDeviation());
+        }
         assessedEvaluation.setPercentageScore(details.getPercentageScore());
         assessedEvaluation.setQuestionDescription(details.getQuestionDescription());
         assessedEvaluation.setCourseOfSession(em.find(CourseOfSession.class, details.getCourseOfSession().getId()));
@@ -322,6 +333,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         details.setEvaluatedQuestion(evaluatedQuestionDetails);
         details.setEvaluationSession(evaluationSessionDetails);
         details.setPercentageScore(assessedEvaluation.getPercentageScore());
+        details.setStandardDeviation(assessedEvaluation.getStandardDeviation());
         details.setQuestionDescription(assessedEvaluation.getQuestionDescription());
 
         //Returning converted assessed evaluation details
@@ -330,6 +342,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
     }
 //</editor-fold>
 
+    private final DecimalFormat formatter = new DecimalFormat("00.##");
     private static final Logger logger = Logger.getLogger(AssessedEvaluationRequests.class.getSimpleName());
 
 }
