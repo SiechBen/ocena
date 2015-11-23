@@ -12,6 +12,8 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -42,7 +44,7 @@ import ke.co.miles.ocena.utilities.UserGroupDetail;
  *
  * @author Ben Siech
  */
-@WebServlet(name = "PersonController", urlPatterns = {"/createAccount", "/addUser", "/adminUserView", "/viewUser", "/retrieveUsers", "/editUser", "/removeUser", "/updateFaculties", "/updateDepartments", "/upgradeUser", "/retrieveUser", "/viewAdminProfile", "/viewUserProfile", "/editUserProfile", "/updateEditFaculties", "/updateEditDepartments", "/updateAdminFaculties", "/updateAdminDepartments", "/validatePassword"})
+@WebServlet(name = "PersonController", urlPatterns = {"/createAccountAtMainAdmin", "/createAccountAtSubAdmin", "/addUser", "/adminUserView", "/viewUser", "/retrieveUsers", "/editUser", "/removeUser", "/updateFaculties", "/updateDepartments", "/upgradeUser", "/retrieveUser", "/viewAdminProfile", "/viewUserProfile", "/editUserProfile", "/updateEditFaculties", "/updateEditDepartments", "/updateAdminFaculties", "/updateAdminDepartments", "/validatePassword", "/checkFacultyMemberRole"})
 public class PersonController extends Controller {
 
     /**
@@ -92,7 +94,7 @@ public class PersonController extends Controller {
 
             switch (path) {
 
-                case "/createAccount":
+                case "/createAccountAtMainAdmin":
 
                     //Retrieve and avail the list countries in application scope
                     logger.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
@@ -112,7 +114,39 @@ public class PersonController extends Controller {
                         return;
                     }
 
-                    path = "/addUser";
+                    ArrayList<FacultyMemberRoleDetail> memberRoles = new ArrayList<>();
+                    memberRoles.addAll(Arrays.asList(FacultyMemberRoleDetail.values()));
+
+                    session.setAttribute("facultyMemberRoles", memberRoles);
+                    path = "/addUserAtMainAdmin";
+                    logger.log(Level.INFO, "Path is : {0}", path);
+                    break;
+
+                case "/createAccountAtSubAdmin":
+
+                    //Retrieve and avail the list countries in application scope
+                    logger.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
+                    try {
+                        getServletContext().setAttribute("countries", countryService.retrieveCountries());
+                    } catch (InvalidArgumentException | InvalidStateException ex) {
+                        logger.log(Level.SEVERE, "An error occurred during countries retrieval", ex);
+                        return;
+                    }
+
+                    //Retrieve and avail the list colleges in session scope
+                    logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
+                    try {
+                        session.setAttribute("colleges", collegeService.retrieveColleges());
+                    } catch (InvalidStateException ex) {
+                        logger.log(Level.SEVERE, "An error occurred during colleges retrieval", ex);
+                        return;
+                    }
+
+                    memberRoles = new ArrayList<>();
+                    memberRoles.addAll(Arrays.asList(FacultyMemberRoleDetail.values()));
+
+                    session.setAttribute("facultyMemberRoles", memberRoles);
+                    path = "/addUserAtSubAdmin";
                     logger.log(Level.INFO, "Path is : {0}", path);
                     break;
 
@@ -147,7 +181,6 @@ public class PersonController extends Controller {
                     person.setReferenceNumber(request.getParameter("reference-number"));
 
                     userAccount = new UserAccountDetails();
-                    userAccount.setUserGroup(UserGroupDetail.STUDENT);
 
                     faculty = new FacultyDetails();
                     try {
@@ -166,27 +199,54 @@ public class PersonController extends Controller {
 
                     Date admissionYear;
                     try {
-                        admissionYear = userDateFormat.parse(request.getParameter("admission-year"));
+                        String date = request.getParameter("admission-year");
+                        if (!date.equals("")) {
+                            admissionYear = userDateFormat.parse(date);
+                        } else {
+                            admissionYear = null;
+                        }
                     } catch (ParseException ex) {
                         logger.log(Level.INFO, "An error occurred while parsing the admission month and year", ex);
-                        return;
+                        admissionYear = null;
                     }
 
-                    Calendar holder = Calendar.getInstance();
-                    holder.setTime(admissionYear);
+                    Calendar holder;
+                    Calendar calendar;
+                    if (admissionYear != null) {
+                        holder = Calendar.getInstance();
+                        holder.setTime(admissionYear);
 
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.clear();
-                    calendar.set(Calendar.MONTH, holder.get(Calendar.MONTH));
-                    calendar.set(Calendar.YEAR, holder.get(Calendar.YEAR));
-                    admissionYear = calendar.getTime();
+                        calendar = Calendar.getInstance();
+                        calendar.clear();
+                        calendar.set(Calendar.MONTH, holder.get(Calendar.MONTH));
+                        calendar.set(Calendar.YEAR, holder.get(Calendar.YEAR));
+                        admissionYear = calendar.getTime();
+                    }
+
+                    FacultyMemberRoleDetail memberRole;
+                    try {
+                        memberRole = FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("memberRole")));
+
+                        if (memberRole.equals(FacultyMemberRoleDetail.LECTURER)) {
+                            userAccount.setUserGroup(UserGroupDetail.LECTURER);
+                        } else if (memberRole.equals(FacultyMemberRoleDetail.MANAGEMENT)) {
+                            userAccount.setUserGroup(UserGroupDetail.MANAGEMENT);
+                        } else if (memberRole.equals(FacultyMemberRoleDetail.OTHER_STAFF)) {
+                            userAccount.setUserGroup(UserGroupDetail.OTHER_STAFF);
+                        } else if (memberRole.equals(FacultyMemberRoleDetail.STUDENT)) {
+                            userAccount.setUserGroup(UserGroupDetail.STUDENT);
+                        }
+                    } catch (Exception e) {
+                        memberRole = FacultyMemberRoleDetail.STUDENT;
+                        userAccount.setUserGroup(UserGroupDetail.STUDENT);
+                    }
 
                     facultyMember = new FacultyMemberDetails();
                     facultyMember.setActive(true);
                     facultyMember.setFaculty(faculty);
                     facultyMember.setDepartment(department);
                     facultyMember.setAdmissionYear(admissionYear);
-                    facultyMember.setFacultyMemberRole(FacultyMemberRoleDetail.STUDENT);
+                    facultyMember.setFacultyMemberRole(memberRole);
 
                     try {
                         personService.addPerson(person, userAccount, facultyMember, emailContact, phoneContact, postalContact);
@@ -710,14 +770,17 @@ public class PersonController extends Controller {
                         logger.log(Level.INFO, "An error occurred while parsing the admission month and year", e);
                         return;
                     }
-                    holder = Calendar.getInstance();
-                    holder.setTime(admissionYear);
 
-                    calendar = Calendar.getInstance();
-                    calendar.clear();
-                    calendar.set(Calendar.MONTH, holder.get(Calendar.MONTH));
-                    calendar.set(Calendar.YEAR, holder.get(Calendar.YEAR));
-                    admissionYear = calendar.getTime();
+                    if (admissionYear != null) {
+                        holder = Calendar.getInstance();
+                        holder.setTime(admissionYear);
+
+                        calendar = Calendar.getInstance();
+                        calendar.clear();
+                        calendar.set(Calendar.MONTH, holder.get(Calendar.MONTH));
+                        calendar.set(Calendar.YEAR, holder.get(Calendar.YEAR));
+                        admissionYear = calendar.getTime();
+                    }
 
                     facultyMember.setFaculty(faculty);
                     facultyMember.setDepartment(department);
@@ -819,6 +882,27 @@ public class PersonController extends Controller {
                         out.write("<span class=\"btn btn-warning\">Wrong password entered!</span>");
                     }
 
+                    return;
+
+                case "/checkFacultyMemberRole":
+
+                    logger.log(Level.INFO, "Checking faculty member role");
+                    try {
+                        memberRole = FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("memberRole")));
+                    } catch (Exception e) {
+                        return;
+                    }
+
+                    logger.log(Level.INFO, "Checking if student");
+                    if (memberRole.equals(FacultyMemberRoleDetail.STUDENT)) {
+                        logger.log(Level.INFO, "Faculty member role is student");
+                        out.write("<label for=\"admission-year\">Admission month & year</label>");
+                        out.write("<input type=\"date\" name=\"admission-year\" id=\"admission-year\" required=\"true\"/>");
+                    } else {
+                        logger.log(Level.INFO, "Faculty member role is not student");
+                    }
+
+                    logger.log(Level.INFO, "Returning from the method");
                     return;
 
             }

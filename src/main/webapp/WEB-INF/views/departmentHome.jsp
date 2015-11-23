@@ -9,7 +9,7 @@
 <%@taglib prefix="ocena" tagdir="/WEB-INF/tags/"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<ocena:main-admin>
+<ocena:sub-admin>
     <jsp:attribute name="title"> Ocena - department home </jsp:attribute>
     <jsp:attribute name="content">
         <h1>${sessionScope.department.name} dashboard</h1>
@@ -295,4 +295,4 @@
             </table>
         </div>
     </jsp:attribute>
-</ocena:main-admin>
+</ocena:sub-admin>

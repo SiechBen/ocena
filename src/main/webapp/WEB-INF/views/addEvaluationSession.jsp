@@ -56,15 +56,16 @@
                     <td> Academic year </td>
                     <td> <input type="date" id="add-academic-year"/> </td>
                 </tr>
-             
+
                 <tr>
                     <td> Semester: </td>
                     <td> <input type="text" id="add-semester"> </td>
                 </tr>
-              <tr>
+                <tr>
                     <td> Admission month & year </td>
                     <td> <input type="date" id="add-admission-month-year"/> </td>
-                </tr> </tbody>
+                </tr> 
+            </tbody>
             <input type="hidden" name="facultyId" id="add-facultyId" value="${sessionScope.faculty.id}">
             <input type="hidden" name="departmentId" id="add-departmentId" value="${sessionScope.department.id}">
         </table>

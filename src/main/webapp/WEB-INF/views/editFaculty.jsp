@@ -9,23 +9,23 @@
 <%@taglib prefix="ocena" tagdir="/WEB-INF/tags/" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<ocena:slidingform>
+<ocena:main-admin-slidingform>
     <jsp:attribute name="title"> Ocena - edit faculty </jsp:attribute>
     <jsp:attribute name="content">
 
         <h1>Edit details for ${sessionScope.faculty.name}</h1>
 
         <div id="steps">
-            <form id="edit-faculty-form" name="edit-faculty-form" action="/Ocena/saveEditedFaculty" method="post">
+            <form id="edit-faculty-form" name="edit-faculty-form" class="sliding-form" action="/Ocena/saveEditedFaculty" method="post">
                 <fieldset class="step">
                     <legend>Faculty details </legend>
                     <p>
                         <label for="faculty-name"> Faculty name </label>
-                        <input id="faculty-name" type="text" name="faculty-name" value="${sessionScope.faculty.name}" />
+                        <input id="faculty-name" type="text" name="faculty-name" value="${sessionScope.faculty.name}" required="true" />
                     </p>
                     <p>
                         <label for="faculty-abbreviation"> Faculty abbreviation </label>
-                        <input id="faculty-abbreviation" name="faculty-abbreviation" value="${sessionScope.faculty.abbreviation}" type="text" />
+                        <input id="faculty-abbreviation" name="faculty-abbreviation" value="${sessionScope.faculty.abbreviation}" type="text" required="true" />
                     </p>
                     <input id="faculty-id" name="facultyId" type="hidden" value="${sessionScope.faculty.id}"  />
                     <input id="college-id" name="collegeId" type="hidden" value="${sessionScope.college.id}" />
@@ -35,11 +35,11 @@
                     <legend>Phone Contact </legend>
                     <p>
                         <label for="mobile-number">Mobile number </label>
-                        <input id="mobile-number" name="mobile-number" value="${sessionScope.phoneContact.mobileNumber}" type="text"  />
+                        <input id="mobile-number" name="mobile-number" value="${sessionScope.phoneContact.mobileNumber}" type="text" required="true" />
                     </p>
                     <p>
                         <label for="fixed-number">Fixed number </label>
-                        <input id="fixed-number" name="fixed-number" value="${sessionScope.phoneContact.fixedNumber}" type="text"  />
+                        <input id="fixed-number" name="fixed-number" value="${sessionScope.phoneContact.fixedNumber}" type="text" />
                     </p>
                     <input type="hidden" name="phone-contact-id" value="${sessionScope.phoneContact.id}">
                 </fieldset>
@@ -47,7 +47,7 @@
                     <legend>Email Contact </legend>
                     <p>
                         <label for="email-address">Email address </label>
-                        <input id="email-address" name="email-address" placeholder="sci@uni.ac.ke" value="${sessionScope.emailContact.emailAddress}" type="text" required="true" />
+                        <input id="email-address" name="email-address" placeholder="sci@uni.ac.ke" value="${sessionScope.emailContact.emailAddress}" type="email" required="true" />
                     </p>
                     <input type="hidden" name="email-contact-id" value="${sessionScope.emailContact.id}">
                 </fieldset>
@@ -78,16 +78,23 @@
                 <fieldset class="step">
                     <legend>Confirm</legend>
                     <p>
-                        Kindly confirm the submission of the faculty contact details.
+                        Kindly confirm the submission of the faculty details.
                     </p>
-                    <p class="submit">
-                        <button id="register-button" type="submit" class="btn btn-default">Register</button>
+                    <p class="central">
+                        <button id="register-button" type="submit" class="btn btn-default slider-submit-button">Register</button>
+                    </p> 
+                    <legend>Abort</legend>
+                    <p>
+                        Click the button below to abort this mission
+                    </p>
+                    <p class="central">
+                        <button id="abort-button" type="button"  class="btn btn-default" onclick="loadWindow('/Ocena/home')">Abort</button>
                     </p>
                 </fieldset>
             </form>
         </div>
 
-        <div id="navigation" style="display:none;">
+        <div id="slider-navigation" style="display:none;">
             <ul>
                 <li class="selected">
                     <a href="#">Person</a>
@@ -107,4 +114,4 @@
             </ul>
         </div>
     </jsp:attribute>
-</ocena:slidingform>
+</ocena:main-admin-slidingform>>

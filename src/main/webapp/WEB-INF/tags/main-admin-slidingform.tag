@@ -1,10 +1,10 @@
 <%-- 
-    Document   : main-admin
-    Created on : Aug 7, 2015, 7:30:32 PM
+    Document   : main-admin-slidingform
+    Created on : Jun 8, 2015, 8:32:26 PM
     Author     : Ben Siech
 --%>
 
-<%@tag description="This is the parent tag for java server pages in the views folder" pageEncoding="UTF-8"%>
+<%@tag description="This is the parent tag for java server pages that have a sliding form" pageEncoding="UTF-8"%>
 
 <%-- The list of normal attributes:--%>
 <%@attribute name="title" required="true" %>
@@ -15,8 +15,7 @@
 <%-- Recursive html content is specified below: --%>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
     <head>
 
         <meta charset="utf-8">
@@ -49,39 +48,9 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-
         <script>
             $(function () {
-                $("#accordion").accordion({header: "h1", collapsible: true, active: false, heightStyle: "content"});
-                $("#add-start-date").datepicker();
-                $("#add-end-date").datepicker();
-                $(".start-date").datepicker();
-                $(".end-date").datepicker();
-            });
-            $(function () {
-                $(".admission-month-year").datepicker({
-                    dateFormat: 'M yy',
-                    changeMonth: true,
-                    changeYear: true,
-                    showButtonPanel: true,
-                    onClose: function (dateText, inst) {
-                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                        $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
-                    }
-                });
-                $(".admission-month-year").focus(function () {
-                    $(".ui-datepicker-calendar").hide();
-                    $(".ui-datepicker-current").hide();
-                    $("#ui-datepicker-div").position({
-                        my: "center top",
-                        at: "center bottom",
-                        of: $(this)
-                    });
-                });
-            });
-            $(function () {
-                $("#add-admission-month-year").datepicker({
+                $("#admission-year").datepicker({
                     dateFormat: 'M yy',
                     changeMonth: true,
                     changeYear: true,
@@ -93,30 +62,7 @@
                     }
                 });
 
-                $("#add-admission-month-year").focus(function () {
-                    $(".ui-datepicker-calendar").hide();
-                    $(".ui-datepicker-current").hide();
-                    $("#ui-datepicker-div").position({
-                        my: "center top",
-                        at: "center bottom",
-                        of: $(this)
-                    });
-                });
-            });
-            $(function () {
-                $("#edit-admission-month-year").datepicker({
-                    dateFormat: 'M yy',
-                    changeMonth: true,
-                    changeYear: true,
-                    showButtonPanel: true,
-                    onClose: function (dateText, inst) {
-                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                        $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
-                    }
-                });
-
-                $("#edit-admission-month-year").focus(function () {
+                $("#admission-year").focus(function () {
                     $(".ui-datepicker-calendar").hide();
                     $(".ui-datepicker-current").hide();
                     $("#ui-datepicker-div").position({
@@ -128,13 +74,9 @@
             });
         </script>
 
-
-
     </head>
 
-    <!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
-
-    <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" onload="checkEvaluationSession()">
+    <body>
 
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -192,15 +134,15 @@
 
         </nav>
 
-        <div class="container">
-            <div id="content">
-                <jsp:invoke fragment="content"/>
-            </div>
-            <div class="dialog" id="message-dialog">
-                <p id="message"></p>
+        <div>
+            <div id="slider-content">
+                <div id="slider-wrapper">
+                    <jsp:invoke fragment="content"/>
+                </div>
             </div>
         </div>
 
+    
         <!-- Bootstrap core JavaScript
       ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
@@ -213,5 +155,4 @@
         <script src="static/js/actions.js"></script>
 
     </body>
-
 </html>

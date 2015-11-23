@@ -9,14 +9,14 @@
 <%@taglib prefix="ocena" tagdir="/WEB-INF/tags/" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<ocena:slidingform>
+<ocena:sub-admin-slidingform>
     <jsp:attribute name="title"> Ocena - add a user </jsp:attribute>
     <jsp:attribute name="content">
 
         <h1> Add a user </h1>
 
         <div id="steps">
-            <form id="create-account-form" name="create-account-form" action="/Ocena/addUser" method="post">
+            <form id="create-account-form" name="create-account-form" class="sliding-form" action="/Ocena/addUser" method="post">
                 <fieldset class="step">
                     <legend>Person details </legend>
                     <p>
@@ -95,8 +95,17 @@
 
                     </p>
                     <p>
+                        <label for="faculty-member-role">Faculty member role </label>
+                        <select name="faculty-member-role" id="faculty-member-role" onchange="displayAdmissionYearHolder();
+                                return false;" required="true">
+                            <c:forEach var="facultyMemberRole" items="${sessionScope.facultyMemberRoles}">
+                                <option value="${facultyMemberRole.id}" selected> ${facultyMemberRole.facultyMemberRole} </option>
+                            </c:forEach>
+                        </select>
+                    </p>
+                    <p id="admission-year-holder">
                         <label for="admission-year">Admission month & year</label>
-                        <input type="date" name="admission-year" id="admission-year"/>
+                        <input type="date" name="admission-year" id="admission-year" />
                     </p>
                 </fieldset>
                 <fieldset class="step">
@@ -105,20 +114,20 @@
                         Kindly confirm the submission of your registration details.
                     </p>
                     <p class="central">
-                        <button id="register-button" type="submit" class="btn btn-default">Register</button>
+                        <button id="register-button" type="submit" class="btn btn-default slider-submit-button">Register</button>
                     </p>
                     <legend>Abort</legend>
                     <p>
                         Click the button below to abort this mission
                     </p>
                     <p class="central">
-                        <button id="abort-button" class="btn btn-default" onclick="loadWindow('/Ocena/home')">Abort</button>
+                        <button id="abort-button" type="button" class="btn btn-default" onclick="loadWindow('/Ocena/home')">Abort</button>
                     </p>
                 </fieldset>
             </form>
         </div>
 
-        <div id="navigation" style="display:none;">
+        <div id="slider-navigation" style="display:none;">
             <ul>
                 <li class="selected">
                     <a href="#">Person</a>
@@ -138,4 +147,4 @@
             </ul>
         </div>
     </jsp:attribute>
-</ocena:slidingform>
+</ocena:sub-admin-slidingform>>
