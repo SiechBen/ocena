@@ -55,11 +55,12 @@ body{
 }
 
 .container{
-    width: 1270px;
+    width: 1270px; 
+    margin: 20px auto;
 }
 
 #slider-content{
-    margin:57px auto;
+    margin:97px auto;
     text-align:center;
     width:600px;
     position:relative;
@@ -116,8 +117,16 @@ body{
     margin: auto;
 }
 
-#slider-navigation ul li, button{
-    float:left;
+#slider-navigation ul button{
+   float:left;
+    border-right:1px solid #ccc;
+    border-left:1px solid #ccc;
+    position:relative;
+    margin:auto;
+}
+
+#slider-navigation ul li{
+   float:left;
     border-right:1px solid #ccc;
     border-left:1px solid #ccc;
     position:relative;
@@ -305,7 +314,7 @@ span.error{
 }
 
 #content {
-    padding: 54px 5px 18px 5px;
+    padding: 72px 5px 18px 5px;
 }
 
 #footer {
@@ -480,6 +489,17 @@ a:hover {
 }
 
 #navigation li {
+}
+
+#uonbi-logo{
+
+    font-size: 1.3em;
+    color: #333;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    font-family: arial,helvetica,sans-serif;
+    font-weight: 800;
+    margin: -33px 0px -20px 0px;
 }
 
 /* ---------- 4. fonts ---------- */

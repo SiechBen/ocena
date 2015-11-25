@@ -19,6 +19,7 @@ import ke.co.miles.ocena.entities.EvaluationSession;
 import ke.co.miles.ocena.exceptions.DuplicateStateException;
 import ke.co.miles.ocena.exceptions.InvalidArgumentException;
 import ke.co.miles.ocena.exceptions.InvalidStateException;
+import ke.co.miles.ocena.utilities.AdmissionDetails;
 import ke.co.miles.ocena.utilities.DegreeDetails;
 import ke.co.miles.ocena.utilities.EvaluationSessionDetails;
 
@@ -359,9 +360,15 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
         //Convert list of evaluation session to evaluation session details
         logger.log(Level.FINE, "Convert list of evaluation session to evaluation session details");
 
+        admissionDetails = new AdmissionDetails();
+        admissionDetails.setId(evaluationSession.getDegree().getAdmission().getId());
+        admissionDetails.setAdmission(evaluationSession.getDegree().getAdmission().getAdmission());
+
         degreeDetails = new DegreeDetails();
         try {
             degreeDetails.setId(evaluationSession.getDegree().getId());
+            degreeDetails.setName(evaluationSession.getDegree().getName());
+            degreeDetails.setAdmission(admissionDetails);
         } catch (Exception e) {
             logger.log(Level.FINE, "This evaluation session does not belong to a degree");
         }

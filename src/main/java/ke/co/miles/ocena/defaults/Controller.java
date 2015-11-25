@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServlet;
-import ke.co.miles.ocena.entities.OverallAdmin;
 import ke.co.miles.ocena.requests.access.AccessRequestsLocal;
 import ke.co.miles.ocena.requests.access.overalladmin.OverallAdminRequestsLocal;
 import ke.co.miles.ocena.requests.admission.AdmissionRequestsLocal;
@@ -41,6 +40,7 @@ import ke.co.miles.ocena.requests.facultymember.FacultyMemberRequestsLocal;
 import ke.co.miles.ocena.requests.rating.RatingRequestsLocal;
 import ke.co.miles.ocena.requests.studentfeedback.StudentFeedbackRequestsLocal;
 import ke.co.miles.ocena.requests.useraccount.UserAccountRequestsLocal;
+import ke.co.miles.ocena.requests.zip.ZipRequestsLocal;
 import ke.co.miles.ocena.utilities.AdmissionDetails;
 import ke.co.miles.ocena.utilities.AssessedEvaluationCommentDetails;
 import ke.co.miles.ocena.utilities.AssessedEvaluationDetails;
@@ -82,6 +82,9 @@ public class Controller extends HttpServlet {
     @PersistenceContext(name = "OcenaPU")
     protected EntityManager em;
     protected Query q;
+
+    @EJB
+    protected  ZipRequestsLocal zipService;
 
     @EJB
     protected OverallAdminRequestsLocal overallAdminService;

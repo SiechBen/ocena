@@ -200,6 +200,7 @@ public class AccessController extends Controller {
                                     //Set the session type
                                     session.setAttribute("subAdminSession", true);
                                     session.setAttribute("mainAdminSession", false);
+                                    session.setAttribute("evaluatorSession", false);
 
                                     path = null;
 
@@ -211,6 +212,7 @@ public class AccessController extends Controller {
                                     //Set the session type
                                     session.setAttribute("subAdminSession", true);
                                     session.setAttribute("mainAdminSession", false);
+                                    session.setAttribute("evaluatorSession", false);
                                     //Set the path
                                     path = "/managementDashboard";
                                     break;
@@ -221,6 +223,7 @@ public class AccessController extends Controller {
                                     //Set the session type
                                     session.setAttribute("subAdminSession", false);
                                     session.setAttribute("mainAdminSession", false);
+                                    session.setAttribute("evaluatorSession", false);
                                     //Set the path
                                     path = "/lecturerDashboard";
                                     break;
@@ -231,6 +234,7 @@ public class AccessController extends Controller {
                                     //Set the session type
                                     session.setAttribute("subAdminSession", false);
                                     session.setAttribute("mainAdminSession", false);
+                                    session.setAttribute("evaluatorSession", true);
 
                                     //Set the path
                                     path = "/studentDashboard";
@@ -242,6 +246,7 @@ public class AccessController extends Controller {
                                     //Set the session type
                                     session.setAttribute("subAdminSession", false);
                                     session.setAttribute("mainAdminSession", false);
+                                    session.setAttribute("evaluatorSession", false);
                                     //Set the path
                                     path = "/otherStaffDashboard";
                                     break;
@@ -252,6 +257,7 @@ public class AccessController extends Controller {
                                     //Set the session type
                                     session.setAttribute("subAdminSession", false);
                                     session.setAttribute("mainAdminSession", false);
+                                    session.setAttribute("evaluatorSession", false);
                                     //Set the path
                                     path = "/visitorDashboard";
 
@@ -355,6 +361,7 @@ public class AccessController extends Controller {
                 //Logout user by invalidating session
                 session.setAttribute("subAdminSession", false);
                 session.setAttribute("mainAdminSession", false);
+                session.setAttribute("evaluatorSession", false);
                 session.invalidate();
 
                 //Change path to index page
@@ -377,7 +384,7 @@ public class AccessController extends Controller {
         }
     }
 
-//<editor-fold defaultstate="collapsed" desc="Avail application attributes">
+    //<editor-fold defaultstate="collapsed" desc="Avail application attributes">
     private void availApplicationAttributes() {
         //Retrieve the list of countries
         logger.log(Level.INFO, "Retrieving the list of countries");
@@ -454,7 +461,7 @@ public class AccessController extends Controller {
         return "Short description";
     }// </editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Retrieve other required records">
+    //<editor-fold defaultstate="collapsed" desc="Avail other required records">
     private void availOtherRequiredRecords(HttpSession session, Object object) {
         List<QuestionDetails> questions = new ArrayList<>();
         List<AdmissionDetails> admissions = new ArrayList<>();

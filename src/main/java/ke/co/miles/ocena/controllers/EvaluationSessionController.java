@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -249,7 +250,17 @@ public class EvaluationSessionController extends Controller {
                             out.write("</tr>");
                             out.write("<tr>");
                             out.write("<td> Admission month & year </td>");
-                            out.write("<td> <input type=\"date\" class=\"admission-month-year\" value=\"" + es.getAdmissionYear() + "\"/> </td>");
+                            try {
+                                //Get the date
+                                date = databaseDateFormat.parse(databaseDateFormat.format(es.getAdmissionYear()));
+
+                                //Parse the string to MMM yy
+                                dateString = yearMonthFormat.format(date);
+
+                                out.write("<td> <input type=\"date\" class=\"admission-month-year\" value=\"" + dateString + "\"/> </td>");
+                            } catch (ParseException e) {
+                                logger.log(Level.INFO, "String is unparseable to date format");
+                            }
                             out.write("</tr>");
                             out.write("<tr>");
                             out.write("<td colspan=\"2\"></td>");
@@ -513,6 +524,8 @@ public class EvaluationSessionController extends Controller {
                     }
 
                     DecimalFormat decimalFormat = new DecimalFormat("0.00");
+                    ServletContext context = getServletContext();
+                    String realPath = context.getRealPath("/");
 
                     //<editor-fold defaultstate="collapsed" desc="Generate evaluation report">
                     for (CourseOfSessionDetails c : courses) {
@@ -527,13 +540,21 @@ public class EvaluationSessionController extends Controller {
                         FileOutputStream outStream;
                         String filePath;
 
-                        filePath = "Evaluation reports"
-                                + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
-                                + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
-                                + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
-                                + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
-                                + File.separator + "Evaluation report.docx";
+                        try {
 
+                            filePath = realPath + File.separator + "Evaluation reports"
+                                    + File.separator + evaluationSession.getDegree().getAdmission().getAdmission().replaceAll("[\\\\/*<>|\"?]", "-")
+                                    + File.separator + evaluationSession.getDegree().getName().replaceAll("[\\\\/*<>|\"?]", "-")
+                                    + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
+                                    + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
+                                    + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
+                                    + File.separator + "Class of " + yearMonthFormat.format(databaseDateFormat.parse(databaseDateFormat.format(c.getEvaluationSession().getAdmissionYear()))).replaceAll("[\\\\/*<>|\"?]", "-")
+                                    + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
+                                    + File.separator + "Evaluation report.docx";
+                        } catch (ParseException e) {
+                            logger.log(Level.INFO, "Admission year and month could not be parsed hence evaluation report document not created");
+                            return;
+                        }
                         new File(filePath).getParentFile().mkdirs();
 
                         try {
@@ -642,13 +663,22 @@ public class EvaluationSessionController extends Controller {
                         }
 
                         XWPFDocument evaluationSummaryReport = new XWPFDocument();
+                        String filePath;
 
-                        String filePath = "Evaluation reports"
-                                + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
-                                + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
-                                + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
-                                + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
-                                + File.separator + "Evaluation summary report.docx";
+                        try {
+                            filePath = realPath + File.separator + "Evaluation reports"
+                                    + File.separator + evaluationSession.getDegree().getAdmission().getAdmission().replaceAll("[\\\\/*<>|\"?]", "-")
+                                    + File.separator + evaluationSession.getDegree().getName().replaceAll("[\\\\/*<>|\"?]", "-")
+                                    + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
+                                    + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
+                                    + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
+                                    + File.separator + "Class of " + yearMonthFormat.format(databaseDateFormat.parse(databaseDateFormat.format(c.getEvaluationSession().getAdmissionYear()))).replaceAll("[\\\\/*<>|\"?]", "-")
+                                    + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
+                                    + File.separator + "Evaluation summary report.docx";
+                        } catch (ParseException e) {
+                            logger.log(Level.INFO, "Admission year and month could not be parsed hence evaluation summary report document not created");
+                            return;
+                        }
 
                         new File(filePath).getParentFile().mkdirs();
 
@@ -690,8 +720,13 @@ public class EvaluationSessionController extends Controller {
 
                         XWPFTableRow tableRow;
 
-                        int i = 1, e = 64, totalCount, noOfCategoriesUsed = 0;
-                        double totalCategoryScore, averageCategoryScore, totalEvaluationScore = 0,
+                        int i = 1,
+                                e = 64,
+                                totalCount,
+                                noOfCategoriesUsed = 0;
+                        double totalCategoryScore,
+                                averageCategoryScore,
+                                totalEvaluationScore = 0,
                                 percentageEvaluationScore;
 
                         for (QuestionCategoryDetails qc : questionCategories) {
@@ -799,15 +834,19 @@ public class EvaluationSessionController extends Controller {
 
                         XWPFDocument commentsReport = new XWPFDocument();
                         String filePath;
+
                         try {
-                            filePath = "Evaluation reports"
+                            filePath = realPath + File.separator + "Evaluation reports"
+                                    + File.separator + evaluationSession.getDegree().getAdmission().getAdmission().replaceAll("[\\\\/*<>|\"?]", "-")
+                                    + File.separator + evaluationSession.getDegree().getName().replaceAll("[\\\\/*<>|\"?]", "-")
                                     + File.separator + evaluationSession.getAcademicYear().replaceAll("[\\\\/*<>|\"?]", "-") + " [academic year]"
                                     + File.separator + c.getCourse().getCode().replaceAll("[\\\\/*<>|\"?]", "-") + " [course code]"
                                     + File.separator + c.getFacultyMember().getPerson().getReferenceNumber().replaceAll("[\\\\/*<>|\"?]", "-") + " [staff number]"
+                                    + File.separator + "Class of " + yearMonthFormat.format(databaseDateFormat.parse(databaseDateFormat.format(c.getEvaluationSession().getAdmissionYear()))).replaceAll("[\\\\/*<>|\"?]", "-")
                                     + File.separator + evaluationSession.getSemester().replaceAll("[\\\\/*<>|\"?]", "-") + " [semester]"
                                     + File.separator + "General comments.docx";
-                        } catch (Exception e) {
-                            logger.log(Level.INFO, "Comments dump file not created");
+                        } catch (ParseException e) {
+                            logger.log(Level.INFO, "Admission year and month could not be parsed hence general comments document not created");
                             return;
                         }
 
@@ -1016,6 +1055,7 @@ public class EvaluationSessionController extends Controller {
         //Declare the response writer
         PrintWriter out = response.getWriter();
         //Define the date format to be used
+        DateFormat yearMonthFormat = new SimpleDateFormat("MMM yyyy");
         DateFormat userDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         DateFormat databaseDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
         Date date;
@@ -1028,7 +1068,7 @@ public class EvaluationSessionController extends Controller {
         try {
             faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
             if (faculty.getId() == null) {
-            logger.log(Level.INFO, "The faculty unique identifier is not available");
+                logger.log(Level.INFO, "The faculty unique identifier is not available");
                 faculty = null;
             }
         } catch (Exception e) {
@@ -1042,8 +1082,8 @@ public class EvaluationSessionController extends Controller {
         try {
             department.setId(Integer.parseInt(request.getParameter("departmentId")));
             if (department.getId() == null) {
-               logger.log(Level.INFO, "The department unique identifier is not available");
-             department = null;
+                logger.log(Level.INFO, "The department unique identifier is not available");
+                department = null;
             }
         } catch (Exception e) {
             logger.log(Level.INFO, "The department unique identifier is not available");
@@ -1142,7 +1182,19 @@ public class EvaluationSessionController extends Controller {
                 out.write("</tr>");
                 out.write("<tr>");
                 out.write("<td> Admission month & year </td>");
-                out.write("<td> <input type=\"date\" class=\"admission-month-year\" value=\"" + es.getAdmissionYear() + "\"/> </td>");
+                try {
+                    //Retrieve the date
+                    date = databaseDateFormat.parse(databaseDateFormat.format(es.getAdmissionYear()));
+
+                    //Format the date string to MM/dd/yyyy
+                    dateString = yearMonthFormat.format(date);
+
+                    //Display the date
+                    out.write("<td> <input type=\"date\" class=\"admission-month-year\" value=\"" + dateString + "\"/> </td>");
+
+                } catch (Exception e) {
+                    logger.log(Level.INFO, "String is unparseable to date format");
+                }
                 out.write("</tr>");
                 out.write("<tr>");
                 out.write("<td> Semester: </td>");

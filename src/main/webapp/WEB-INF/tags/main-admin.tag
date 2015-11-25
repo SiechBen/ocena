@@ -142,6 +142,12 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav">
+                        <li>
+                            <a href="http://www.uonbi.ac.ke/" id="uonbi-logo">
+                                <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
+                                THE UNIVERSITY OF NAIROBI
+                            </a>
+                        </li>
                         <li class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="institution-dropdown" data-toggle="dropdown" aria-expanded="true">
                                 Settings
@@ -170,7 +176,7 @@
                                 Reports
                             </button>  
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/downloadReports">Download reports</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/downloadAllReports">Download reports</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">

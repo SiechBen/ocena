@@ -139,6 +139,12 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav">
+                        <li>
+                            <a href="http://www.uonbi.ac.ke/" id="uonbi-logo">
+                                <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
+                                THE UNIVERSITY OF NAIROBI
+                            </a>
+                        </li>
                         <li class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/home')">
                                 Home
@@ -161,13 +167,13 @@
                                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/viewEvaluationSessions?facultyId=${sessionScope.faculty.id}&departmentId=${sessionScope.department.id}">View evaluation sessions</a></li>
                             </ul>
                         </li>   
-                        <!--                        <li class="dropdown">
-                                                    <button class="btn btn-default dropdown-toggle" type="button" id="institution-dropdown" data-toggle="dropdown" aria-expanded="true">
-                                                        Reports
-                                                    </button>  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                                        <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/downloadReports">Download reports</a></li>
-                                                    </ul>
-                                                </li>-->
+                        <li class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="institution-dropdown" data-toggle="dropdown" aria-expanded="true">
+                                Reports
+                            </button>  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/downloadFacultyReports">Download reports</a></li>
+                            </ul>
+                        </li>
                         <li class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/logout')">
                                 Logout
@@ -185,18 +191,19 @@
 
         <div class="container">
             <div id="content">
-                    <jsp:invoke fragment="content"/>
-                </div>
+                <jsp:invoke fragment="content"/>
+            </div>
+            <div class="dialog" id="message-dialog">
+                <p id="message"></p>
             </div>
         </div>
-
 
         <!-- Bootstrap core JavaScript
       ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="static/plugins/jquery/jquery.min.js"></script>
         <script src="static/plugins/bootstrap/bootstrap.min.js"></script>
-        <script src="../../static/plugins/i18n/jquery.i18n.properties.min.js"></script>
+        <script src="static/plugins/i18n/jquery.i18n.properties.min.js"></script>
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src="static/plugins/ie/ie10-viewport-bug-workaround.js"></script>
         <script src="static/plugins/jquery-ui/jquery-ui.js"></script>

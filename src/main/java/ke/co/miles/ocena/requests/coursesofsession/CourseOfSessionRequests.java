@@ -338,6 +338,7 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
 
         evaluationSessionDetails = new EvaluationSessionDetails();
         evaluationSessionDetails.setId(courseOfSession.getEvaluationSession().getId());
+        evaluationSessionDetails.setAdmissionYear(courseOfSession.getEvaluationSession().getAdmissionYear());
 
         courseDetails = new CourseDetails();
         courseDetails.setId(courseOfSession.getCourse().getId());
