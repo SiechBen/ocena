@@ -1,13 +1,16 @@
 <%-- 
-    Document   : main-admin
-    Created on : Aug 7, 2015, 7:30:32 PM
-    Author     : Ben Siech
+    Document   : genericpage
+    Created on : Nov 25, 2015, 8:48:34 PM
+    Author     : siech
 --%>
 
-<%@tag description="This is the parent tag for java server pages in the views folder" pageEncoding="UTF-8"%>
+<%@tag description="This is the parent tag for java server pages used in Ocena" pageEncoding="UTF-8"%>
 
 <%-- The list of normal attributes:--%>
 <%@attribute name="title" required="true" %>
+
+<%-- Navigation menu items go here --%>
+<%@attribute name="menuitems" required="true" %>
 
 <%-- The list of fragments:--%>
 <%@attribute name="content" fragment="true"%>
@@ -15,8 +18,7 @@
 <%-- Recursive html content is specified below: --%>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
     <head>
 
         <meta charset="utf-8">
@@ -49,22 +51,67 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 
-
         <script>
+
             $(function () {
+
                 $("#accordion").accordion({header: "h1", collapsible: true, active: false, heightStyle: "content"});
+
                 $("#add-start-date").datepicker();
                 $("#add-end-date").datepicker();
                 $(".start-date").datepicker();
                 $(".end-date").datepicker();
-            });
-            $(function () {
+
+                $("#admission-year").datepicker({
+                    dateFormat: 'M yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showButtonPanel: true,
+                    onClose: function () {
+                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                        $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
+                    }
+                });
+
+                $("#admission-year").focus(function () {
+                    $(".ui-datepicker-calendar").hide();
+                    $(".ui-datepicker-current").hide();
+                    $("#ui-datepicker-div").position({
+                        my: "center top",
+                        at: "center bottom",
+                        of: $(this)
+                    });
+                });
+
+                $("#edit-admission-year").datepicker({
+                    dateFormat: 'M yy',
+                    changeMonth: true,
+                    changeYear: true,
+                    showButtonPanel: true,
+                    onClose: function () {
+                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                        $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
+                    }
+                });
+
+                $("#edit-admission-year").focus(function () {
+                    $(".ui-datepicker-calendar").hide();
+                    $(".ui-datepicker-current").hide();
+                    $("#ui-datepicker-div").position({
+                        my: "center top",
+                        at: "center bottom",
+                        of: $(this)
+                    });
+                });
+
                 $(".admission-month-year").datepicker({
                     dateFormat: 'M yy',
                     changeMonth: true,
                     changeYear: true,
                     showButtonPanel: true,
-                    onClose: function (dateText, inst) {
+                    onClose: function () {
                         var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                         var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                         $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
@@ -79,14 +126,13 @@
                         of: $(this)
                     });
                 });
-            });
-            $(function () {
+
                 $("#add-admission-month-year").datepicker({
                     dateFormat: 'M yy',
                     changeMonth: true,
                     changeYear: true,
                     showButtonPanel: true,
-                    onClose: function (dateText, inst) {
+                    onClose: function () {
                         var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                         var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                         $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
@@ -102,14 +148,13 @@
                         of: $(this)
                     });
                 });
-            });
-            $(function () {
+
                 $("#edit-admission-month-year").datepicker({
                     dateFormat: 'M yy',
                     changeMonth: true,
                     changeYear: true,
                     showButtonPanel: true,
-                    onClose: function (dateText, inst) {
+                    onClose: function () {
                         var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                         var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                         $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
@@ -126,89 +171,48 @@
                     });
                 });
             });
+
         </script>
 
-
-
     </head>
-
-    <!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
 
     <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" onload="checkEvaluationSession()">
 
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
             <div class="container">
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
-                    <ul class="nav navbar-nav">
+
+                    <ul class="nav navbar-nav"> 
                         <li>
                             <a href="http://www.uonbi.ac.ke/" id="uonbi-logo">
                                 <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
                                 THE UNIVERSITY OF NAIROBI
                             </a>
                         </li>
-                        <li class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="institution-dropdown" data-toggle="dropdown" aria-expanded="true">
-                                Settings
-                            </button>  
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/institution">Institution</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/retrieveColleges">Colleges</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/home')">
-                                Home
-                            </button>
-                        </li>
-                        <li class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true">
-                                Users
-                            </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/createAccountAtMainAdmin">Add user</a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/adminUserView">Upgrade user</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="institution-dropdown" data-toggle="dropdown" aria-expanded="true">
-                                Reports
-                            </button>  
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/downloadAllReports">Download reports</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true">
-                                Account
-                            </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/logout"> Logout </a></li>
-                                <li role="presentation"><a role="menuitem" tabindex="-2" href="/Ocena/viewCredentials"> Credentials </a></li>
-                            </ul>
-                        </li>
+
+                        ${menuitems} 
+
                     </ul>
 
                 </div>
-
                 <!-- /.navbar-collapse -->
+
             </div>
             <!-- /.container -->
 
         </nav>
 
-        <div class="container">
-            <div id="content">
-                <jsp:invoke fragment="content"/>
-            </div>
-            <div class="dialog" id="message-dialog">
-                <p id="message"></p>
-            </div>
+        <div>
+
+            <jsp:invoke fragment="content" />
+
         </div>
 
         <!-- Bootstrap core JavaScript
-      ================================================== -->
+        ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="static/plugins/jquery/jquery.min.js"></script>
         <script src="static/plugins/bootstrap/bootstrap.min.js"></script>

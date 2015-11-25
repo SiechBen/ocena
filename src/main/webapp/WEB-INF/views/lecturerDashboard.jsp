@@ -9,13 +9,17 @@
 <%@taglib prefix="ocena" tagdir="/WEB-INF/tags/" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<ocena:lecturerpage>
-
-    <jsp:attribute name="title">
-        Ocena - lecturer dashboard
-    </jsp:attribute>
-
+<ocena:lecturer>
+    <jsp:attribute name="title"> Ocena - lecturer dashboard </jsp:attribute>
     <jsp:attribute name="content">
- 
+
+        <div class="container">
+            <div id="content">
+                <div class="dialog" id="message-dialog">
+                    <p id="message"></p>
+                </div>
+            </div>
+        </div>
+
     </jsp:attribute> 
-</ocena:lecturerpage>
+</ocena:lecturer>

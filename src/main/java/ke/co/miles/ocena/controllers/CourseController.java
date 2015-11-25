@@ -26,7 +26,7 @@ import ke.co.miles.ocena.utilities.CourseDetails;
  *
  * @author Ben Siech
  */
-@WebServlet(name = "CourseController", urlPatterns = {"/addCourse", "/retrieveCourses", "/editCourse", "/removeCourse"})
+@WebServlet(name = "CourseController", urlPatterns = {"/addCourse", "/retrieveCoursesAtDashboard", "/retrieveCoursesAtHome", "/editCourse", "/removeCourse"})
 public class CourseController extends Controller {
 
     /**
@@ -42,7 +42,7 @@ public class CourseController extends Controller {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -110,7 +110,8 @@ public class CourseController extends Controller {
 
                     return;
 
-                case "/retrieveCourses":
+                case "/retrieveCoursesAtHome":
+                case "/retrieveCoursesAtDashboard":
 
                     //Retrieve the specific degree record
                     logger.log(Level.INFO, "Reading the specific degree record");
@@ -139,9 +140,16 @@ public class CourseController extends Controller {
                     session.setAttribute("degree", degree);
 
                     //Set path to view courses
-                    path = "/viewCourses";
-                    logger.log(Level.INFO, "Path is: {0}", path);
+                    switch (path) {
+                        case "/retrieveCoursesAtHome":
+                            path = "/viewCoursesAtHome";
+                            break;
+                        case "/retrieveCoursesAtDashboard":
+                            path = "/viewCoursesAtDashboard";
+                            break;
+                    }
 
+                    logger.log(Level.INFO, "Path is: {0}", path);
                     break;
 
                 case "/editCourse":

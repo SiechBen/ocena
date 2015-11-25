@@ -87,6 +87,13 @@ body{
     padding:10px;  
 }
 
+#slider-wrapper{
+    margin:97px auto;
+    text-align:center;
+    width:600px;
+    position:relative;
+}
+
 #steps{
     width:600px;
     /*height:320px;*/
@@ -269,7 +276,8 @@ span.error{
 }
 
 #steps form button {
-    float: none; border:none;
+    float: none; 
+    border:none;
     outline:none;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;

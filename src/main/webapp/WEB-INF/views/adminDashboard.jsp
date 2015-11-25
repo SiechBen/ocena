@@ -9,9 +9,17 @@
 <%@taglib prefix="ocena" tagdir="/WEB-INF/tags/" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<ocena:main-admin>
+<ocena:system-admin>
     <jsp:attribute name="title"> Ocena - admin dashboard </jsp:attribute>
-     <jsp:attribute name="content">
+    <jsp:attribute name="content">
+
+        <div class="container">
+            <div id="content">
+                <div class="dialog" id="message-dialog">
+                    <p id="message"></p>
+                </div>
+            </div>
+        </div>
 
     </jsp:attribute>
-</ocena:main-admin>
+</ocena:system-admin>>
