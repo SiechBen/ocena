@@ -181,7 +181,7 @@ $(document).ready(function () {
             $("div#results").fadeOut();
         } else {
             $("div#results").fadeIn();
-            $(this).data("timer", setTimeout(search, 100));
+            $(this).data("timer", setTimeout("search", 100));
         }
     });
     $("input#participantsSearch").keyup(function (e) {
@@ -637,7 +637,7 @@ $(function () {
                                 if (data !== "") {
                                     if ($("#admission-year").val().trim().length === 0) {
                                         hasError = true;
-                                        
+
                                         $("#admission-year").css('background-color', '#FFEDEF');
                                         var $link = $('#slider-navigation li:nth-child(' + parseInt(step) + ') a');
                                         $link.parent().find('.error,.checked').remove();
@@ -2726,23 +2726,6 @@ function updateAdminDepartments() {
 
 //<editor-fold defaultstate="collapsed" desc="Evaluation session">
 
-function checkEvaluationSession() {
-    var href = document.location.href;
-    var lastPathSegment = href.substr(href.lastIndexOf('/') + 1);
-    if (lastPathSegment.match("^viewEvaluationSessions")) {
-
-        $.ajax({
-            type: "POST",
-            url: "/Ocena/checkEvaluationSession",
-            data: "facultyId=" + $("#facultyId").val() + "&departmentId=" + $("#departmentId").val(),
-            success: function (data) {
-                $("#evaluation-session-table").html(data);
-            },
-            dataType: "HTML"
-        });
-    }
-}
-
 function addEvaluationSession() {
     $.ajax({
         type: "POST",
@@ -2750,8 +2733,8 @@ function addEvaluationSession() {
         data: "facultyId=" + $("#add-facultyId").val() + "&departmentId=" + $("#add-departmentId").val() + "&semester=" + $("#add-semester").val() + "&academicYear="
                 + $("#add-academic-year").val() + "&startDate=" + $("#add-start-date").val() + "&endDate=" + $("#add-end-date").val() + "&degreeId="
                 + $("#add-course-of-session-degree").val() + "&admissionYear=" + $("#add-admission-month-year").val(),
-        success: function (data) {
-            $("#add-evaluation-session-table").html(data);
+        success: function () {
+            loadWindow("/Ocena/viewEvaluationSessions?facultyId=" + $("#facultyId").val() + "&departmentId=" + $("#departmentId").val());
         },
         dataType: "HTML"
     });
@@ -2759,9 +2742,10 @@ function addEvaluationSession() {
 
 function checkDate() {
 
-//Read in the start date and end date
-    var startDate = $("#start-date").val();
-    var endDate = $("#end-date").val();
+    //Read in the start date and end date
+    var startDate = $("#evaluation-session-start-date").val();
+    var endDate = $("#evaluation-session-end-date").val();
+    
     //Warn the user if end date comes before start date
     if (startDate > endDate) {
         $("#information-box").attr("hidden", false);
@@ -2789,25 +2773,123 @@ function checkAddDate() {
     return;
 }
 
-function editEvaluationSession(evaluationSessionId) {
-    $.ajax({
-        type: "POST",
-        url: "/Ocena/editEvaluationSession",
-        data: "evaluationSessionId=" + evaluationSessionId + "&facultyId=" + $("#facultyId").val()
-                + "&departmentId=" + $("#departmentId").val() + "&semester=" + $("#semester").val()
-                + "&academicYear=" + $("#academic-year").val() + "&startDate=" + $("#start-date").val()
-                + "&endDate=" + $("#end-date").val() + "&degreeId=" + $("#course-of-session-degree").val()
-                + "&admissionYear=" + $("#edit-admission-month-year").val(),
-        success: function (data) {
-            $("#evaluation-session-table").html(data);
+function editEvaluationSession(degreeId, startDate, endDate, academicYear, semester, admissionYear, evaluationSessionId) {
+
+//Display the course details to be edited
+    $("#evaluation-session-degree").val(degreeId);
+    $("#evaluation-session-end-date").val(endDate);
+    $("#evaluation-session-semester").val(semester);
+    $("#evaluation-session-start-date").val(startDate);
+    $("#evaluation-session-academic-year").val(academicYear);
+    $("#evaluation-session-admission-year").val(admissionYear);
+
+    $("#evaluation-session-dialog").dialog({
+        width: 495,
+        height: "auto",
+        title: "Edit this evaluation session",
+        modal: true,
+        resizable: false,
+        buttons: {
+            "Save": function () {
+
+                //Read in values from the dialog box
+                degreeId = $("#evaluation-session-degree").val();
+                endDate = $("#evaluation-session-end-date").val();
+                semester = $("#evaluation-session-semester").val();
+                startDate = $("#evaluation-session-start-date").val();
+                academicYear = $("#evaluation-session-academic-year").val();
+                admissionYear = $("#evaluation-session-admission-year").val();
+
+                //Ascertain validity of the degree unique identifier
+                if (degreeId === null) {
+                    showMessage("Error", "Kindly select the degree");
+                    return;
+                }
+
+                //Ascertain validity of the end date
+                if (startDate === null || startDate.trim() === "") {
+                    showMessage("Error", "The start date is required");
+                    return;
+                }
+
+                //Ascertain validity of the end date
+                if (endDate === null || endDate.trim() === "") {
+                    showMessage("Error", "The end date is required");
+                    return;
+                }
+
+                //Ascertain validity of the academic
+                if (academicYear === null || academicYear.trim() === "") {
+                    showMessage("Error", "The academic year is required");
+                    return;
+                } else {
+                    if (academicYear.length > 20) {
+                        showMessage("Error", "The academic year is longer than permissible 45 characters");
+                    }
+                }
+
+                //Ascertain validity of the semester
+                if (semester === null || semester.trim() === "") {
+                    showMessage("Error", "The end date is required");
+                    return;
+                } else {
+                    if (semester.length > 20) {
+                        showMessage("Error", "The semester is longer than permissible 45 characters");
+                    }
+                }
+
+                //Ascertain validity of the semester
+                if (semester === null || semester.trim() === "") {
+                    showMessage("Error", "The admission year and month are required");
+                    return;
+                }
+
+                //Send the details to the application server for updating
+                $.ajax({
+                    type: "POST",
+                    url: "/Ocena/editEvaluationSession",
+                    data: "degreeId=" + degreeId +
+                            "&endDate=" + endDate +
+                            "&semester=" + semester +
+                            "&startDate=" + startDate +
+                            "&academicYear=" + academicYear +
+                            "&admissionYear=" + admissionYear +
+                            "&evaluationSessionId=" + evaluationSessionId,
+                    success: function () {
+
+                        //Clear the textbox and selects
+                        $("#evaluation-session-degree").val("");
+                        $("#evaluation-session-end-date").val("");
+                        $("#evaluation-session-semester").val("");
+                        $("#evaluation-session-start-date").val("");
+                        $("#evaluation-session-academic-year").val("");
+                        $("#evaluation-session-admission-year").val("");
+
+                        //Load view evaluation sessions window
+                        loadWindow("/Ocena/viewEvaluationSessions?facultyId=" + $("#facultyId").val() + "&departmentId=" + $("#departmentId").val());
+                    },
+                    dataType: "HTML"
+                });
+                //Close the dialoge
+                $(this).dialog("close");
+            }
         },
-        dataType: "HTML"
+        close: function (ui, event) {
+
+            //Clear the textbox and selects
+            $("#evaluation-session-degree").val("");
+            $("#evaluation-session-end-date").val("");
+            $("#evaluation-session-semester").val("");
+            $("#evaluation-session-start-date").val("");
+            $("#evaluation-session-academic-year").val("");
+            $("#evaluation-session-admission-year").val("");
+        }
     });
 }
 
 function closeEvaluationSession(evaluationSessionId) {
 
-//Ask user to confirm course record removal
+    //Ask user to confirm course record removal
     $("#message").text("Are you sure you want to close this evaluation session?");
     $("#message-dialog").dialog({
         width: 495,
@@ -2823,7 +2905,7 @@ function closeEvaluationSession(evaluationSessionId) {
                     data: "evaluationSessionId=" + evaluationSessionId + "&facultyId=" + $("#facultyId").val()
                             + "&departmentId=" + $("#departmentId").val(),
                     success: function (data) {
-                        $("#evaluation-session-table").html(data);
+                        loadWindow("/Ocena/viewEvaluationSessions?facultyId=" + $("#facultyId").val() + "&departmentId=" + $("#departmentId").val());
                     },
                     dataType: "HTML"
                 });
@@ -2841,7 +2923,6 @@ function closeEvaluationSession(evaluationSessionId) {
         }
     });
 }
-
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Perform evaluation">

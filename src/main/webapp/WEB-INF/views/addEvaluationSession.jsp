@@ -46,12 +46,15 @@
                         </tr>
                         <tr>
                             <td> Start date: </td>
-                            <td> <input type="text" id="add-start-date"> </td>
+                            <td> 
+                                <input type="date" id="add-start-date" onchange="checkAddDate();
+                                        return false;">
+                            </td>
                         </tr>
                         <tr>
                             <td> End date: </td>
                             <td> 
-                                <input type="text" id="add-end-date" onchange="checkAddDate();
+                                <input type="date" id="add-end-date" onchange="checkAddDate();
                                         return false;"> 
                                 <span id="add-information-box" class="alert alert-warning" hidden></span> 
                             </td>
@@ -70,14 +73,14 @@
                             <td> <input type="date" id="add-admission-month-year"/> </td>
                         </tr> 
                     </tbody>
-                    <input type="hidden" name="facultyId" id="add-facultyId" value="${sessionScope.faculty.id}">
-                    <input type="hidden" name="departmentId" id="add-departmentId" value="${sessionScope.department.id}">
+                    <input type="hidden" name="facultyId" id="facultyId" value="${sessionScope.faculty.id}">
+                    <input type="hidden" name="departmentId" id="departmentId" value="${sessionScope.department.id}">
                 </table>
                 <div class="dialog" id="message-dialog">
                     <p id="message"></p>
                 </div>
             </div>
         </div>
-                
+
     </jsp:attribute>
 </ocena:faculty-admin>

@@ -1,16 +1,13 @@
 <%-- 
-    Document   : genericpage
-    Created on : Nov 25, 2015, 8:48:34 PM
-    Author     : siech
+    Document   : evaluatorpage
+    Created on : Jun 4, 2015, 5:16:01 AM
+    Author     : Ben Siech
 --%>
 
-<%@tag description="This is the parent tag for java server pages used in Ocena" pageEncoding="UTF-8"%>
+<%@tag description="This is the parent tag for java server pages in the views folder" pageEncoding="UTF-8"%>
 
 <%-- The list of normal attributes:--%>
 <%@attribute name="title" required="true" %>
-
-<%-- Navigation menu items go here --%>
-<%@attribute name="menuitems" required="true" %>
 
 <%-- The list of fragments:--%>
 <%@attribute name="content" fragment="true"%>
@@ -18,7 +15,8 @@
 <%-- Recursive html content is specified below: --%>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
     <head>
 
         <meta charset="utf-8">
@@ -52,44 +50,16 @@
         <![endif]-->
 
         <script>
-
             $(function () {
-
                 $("#accordion").accordion({header: "h1", collapsible: true, active: false, heightStyle: "content"});
-
-                $("#add-start-date").datepicker();
-                $("#add-end-date").datepicker();
-                $(".start-date").datepicker();
-                $(".end-date").datepicker();
-
-                $("#admission-year").datepicker({
-                    dateFormat: 'M yy',
-                    changeMonth: true,
-                    changeYear: true,
-                    showButtonPanel: true,
-                    onClose: function () {
-                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                        $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
-                    }
-                });
-
-                $("#admission-year").focus(function () {
-                    $(".ui-datepicker-calendar").hide();
-                    $(".ui-datepicker-current").hide();
-                    $("#ui-datepicker-div").position({
-                        my: "center top",
-                        at: "center bottom",
-                        of: $(this)
-                    });
-                });
-
+            });
+            $(function () {
                 $("#edit-admission-year").datepicker({
                     dateFormat: 'M yy',
                     changeMonth: true,
                     changeYear: true,
                     showButtonPanel: true,
-                    onClose: function () {
+                    onClose: function (dateText, inst) {
                         var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                         var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                         $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
@@ -105,95 +75,76 @@
                         of: $(this)
                     });
                 });
-
-                $(".admission-month-year").datepicker({
-                    dateFormat: 'M yy',
-                    changeMonth: true,
-                    changeYear: true,
-                    showButtonPanel: true,
-                    onClose: function () {
-                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                        $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
-                    }
-                });
-                $(".admission-month-year").focus(function () {
-                    $(".ui-datepicker-calendar").hide();
-                    $(".ui-datepicker-current").hide();
-                    $("#ui-datepicker-div").position({
-                        my: "center top",
-                        at: "center bottom",
-                        of: $(this)
-                    });
-                });
-
-                $("#add-admission-month-year").datepicker({
-                    dateFormat: 'M yy',
-                    changeMonth: true,
-                    changeYear: true,
-                    showButtonPanel: true,
-                    onClose: function () {
-                        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-                        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-                        $(this).val($.datepicker.formatDate('M yy', new Date(year, month, 1)));
-                    }
-                });
-
-                $("#add-admission-month-year").focus(function () {
-                    $(".ui-datepicker-calendar").hide();
-                    $(".ui-datepicker-current").hide();
-                    $("#ui-datepicker-div").position({
-                        my: "center top",
-                        at: "center bottom",
-                        of: $(this)
-                    });
-                });
-
             });
-
         </script>
-
     </head>
 
-    <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" onload="checkEvaluationSession()">
+    <!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
+
+    <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
 
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-
             <div class="container">
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
-
-                    <ul class="nav navbar-nav"> 
+                    <ul class="nav navbar-nav">
                         <li>
                             <a href="http://www.uonbi.ac.ke/" id="uonbi-logo">
                                 <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
                                 THE UNIVERSITY OF NAIROBI
                             </a>
                         </li>
-
-                        ${menuitems} 
-
+                        <li class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/home')">
+                                Home
+                            </button>
+                        </li>
+                        <li class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/viewUserProfile?personId=${sessionScope.person.id}')">
+                                Profile
+                            </button>
+                        </li>
+                        <li class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="institution-dropdown" data-toggle="dropdown" aria-expanded="true">
+                                Evaluation
+                            </button>  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/evaluationArena">Perform evaluation</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/evaluationComplete')">
+                                Feedback
+                            </button>
+                        </li>
+                        <li class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/logout')">
+                                Logout
+                            </button>
+                        </li>
                     </ul>
 
                 </div>
-                <!-- /.navbar-collapse -->
 
+                <!-- /.navbar-collapse -->
             </div>
             <!-- /.container -->
 
         </nav>
 
-        <div>
-
-            <jsp:invoke fragment="content" />
-
+        <div class="container">
+            <div id="content">
+                <jsp:invoke fragment="content"/>
+            </div>
+            <div class="dialog" id="message-dialog">
+                <p id="message"></p>
+            </div>
         </div>
 
         <!-- Bootstrap core JavaScript
-        ================================================== -->
+      ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
-        <script src="static/plugins/jquery/jquery.min.js"></script>
+        <script src="static/plugins/jquery/jquery.js"></script>
         <script src="static/plugins/bootstrap/bootstrap.min.js"></script>
         <script src="static/plugins/i18n/jquery.i18n.properties.min.js"></script>
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->

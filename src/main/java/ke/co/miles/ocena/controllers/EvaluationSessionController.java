@@ -54,7 +54,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
  *
  * @author Ben Siech
  */
-@WebServlet(name = "EvaluationSessionController", urlPatterns = {"/viewEvaluationSessions", "/addEvaluationSession", "/checkEvaluationSession", "/setupEvaluationSession", "/editEvaluationSession", "/closeEvaluationSession"})
+@WebServlet(name = "EvaluationSessionController", urlPatterns = {"/viewEvaluationSessions", "/addEvaluationSession", "/setupEvaluationSession", "/editEvaluationSession", "/closeEvaluationSession"})
 public class EvaluationSessionController extends Controller {
 
     /**
@@ -79,7 +79,6 @@ public class EvaluationSessionController extends Controller {
         DateFormat userDateFormat = new SimpleDateFormat("MM/dd/yyyy");
         DateFormat databaseDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
         Date date;
-        String dateString;
         List<DegreeDetails> degrees = null;
 
         boolean adminSession;
@@ -121,11 +120,6 @@ public class EvaluationSessionController extends Controller {
 
                 case "/viewEvaluationSessions":
 
-                    //Proceed to page
-                    break;
-
-                case "/checkEvaluationSession":
-
                     //Retrieve the faculty unique identifier if any
                     logger.log(Level.INFO, "Retrieving the faculty unique identifier if any");
                     faculty = new FacultyDetails();
@@ -162,6 +156,9 @@ public class EvaluationSessionController extends Controller {
                         } catch (InvalidArgumentException ex) {
                             logger.log(Level.INFO, "An error occurred while retrieving the degrees");
                         }
+                    } else {
+                        logger.log(Level.INFO, "Both the faculty and department are null.Aborting");
+                        return;
                     }
 
                     //Avail the degrees on session
@@ -178,112 +175,53 @@ public class EvaluationSessionController extends Controller {
                     }
 
                     if (!evaluationSessions.isEmpty()) {
-                        //Generate evaluation session table
-                        logger.log(Level.INFO, "Generating evaluation session table");
+                        //Format the dates
+                        logger.log(Level.INFO, "Format the dates");
 
-                        out.write("<thead>");
-                        out.write("<tr>");
-                        out.write("<th colspan=\"2\"> ACTIVE EVALUATION SESSIONS </th>");
-                        out.write("</tr>");
-                        out.write("</thead>");
-                        out.write("<tfoot>");
-                        out.write("<tr>");
-                        out.write("<td colspan=\"2\">Evaluation sessions</tr>");
-                        out.write("</tr>");
-                        out.write("</tfoot>");
-
-                        int count = 0;
                         for (EvaluationSessionDetails es : evaluationSessions) {
-                            out.write("<tbody>");
-                            if (count++ > 0) {
-                                out.write("<tr> <th colspan=\"2\"> </th> </tr>");
-                            }
-                            out.write("<tr>");
-                            out.write("<td> Degree: </td>");
-                            out.write("<td>");
-                            out.write("<select id=\"course-of-session-degree\">");
-                            for (DegreeDetails d : degrees) {
-                                out.write("<option value=\"" + d.getId() + "\">" + d.getName() + "</option>");
-                            }
-                            out.write("</select>");
-                            out.write("</td>");
-                            out.write("<tr>");
-                            out.write("<td> Start date: </td>");
                             try {
                                 //Retrieve the date
                                 date = databaseDateFormat.parse(databaseDateFormat.format(es.getStartDate()));
 
-                                //Format the date string to MM/dd/yyyy
-                                dateString = userDateFormat.format(date);
+                                //Set the new formatted date
+                                es.setStartDate(date);
 
-                                //Display the date
-                                out.write("<td> <input type=\"text\" class=\"start-date\" value=\"" + dateString + "\"> </td>");
                             } catch (ParseException ex) {
                                 logger.log(Level.INFO, "String is unparseable to date format");
                             }
-                            out.write("</tr>");
-                            out.write("<tr>");
-                            out.write("<td> End date: </td>");
-                            out.write("<td> ");
                             try {
                                 //Retrieve the date
                                 date = databaseDateFormat.parse(databaseDateFormat.format(es.getEndDate()));
 
-                                //Format the date string to MM/dd/yyyy
-                                dateString = userDateFormat.format(date);
+                                //Set the new formatted date 
+                                es.setEndDate(date);
 
-                                //Display the date
-                                out.write("<input type=\"text\" class=\"end-date\" onchange=\"checkDate(); return false;\" value=\"" + dateString + "\">");
                             } catch (ParseException ex) {
                                 logger.log(Level.INFO, "String is unparseable to date format");
                             }
-                            out.write("<span id=\"information-box\" class=\"alert alert-warning\" hidden></span> ");
-                            out.write("</td>");
-                            out.write("</tr>");
-                            out.write("<tr>");
-                            out.write("<td> Academic year: </td>");
-                            out.write("<td> <input type=\"text\" id=\"academic-year\" value=\"" + es.getAcademicYear() + "\"> </td>");
-                            out.write("</tr>");
-                            out.write("<tr>");
-                            out.write("<td> Semester: </td>");
-                            out.write("<td> <input type=\"text\" id=\"semester\" value=\"" + es.getSemester() + "\"> </td>");
-                            out.write("</tr>");
-                            out.write("<tr>");
-                            out.write("<td> Admission month & year </td>");
                             try {
                                 //Get the date
                                 date = databaseDateFormat.parse(databaseDateFormat.format(es.getAdmissionYear()));
 
-                                //Parse the string to MMM yy
-                                dateString = yearMonthFormat.format(date);
+                                //Set the new formatted date
+                                es.setAdmissionYear(date);
 
-                                out.write("<td> <input type=\"date\" class=\"admission-month-year\" value=\"" + dateString + "\"/> </td>");
                             } catch (ParseException e) {
                                 logger.log(Level.INFO, "String is unparseable to date format");
                             }
-                            out.write("</tr>");
-                            out.write("<tr>");
-                            out.write("<td colspan=\"2\"></td>");
-                            out.write("</tr>");
-                            out.write("<tr>");
-                            if (faculty != null) {
-                                out.write("<td><button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=&facultyId=" + faculty.getId() + "')\">Courses of this session</button></td>");
-                            } else if (department != null) {
-                                out.write("<td><button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=" + department.getId() + "&facultyId=')\">Courses of this session</button></td>");
-                            }
-                            out.write("<td>");
-                            out.write("<button id=\"edit-evaluation-session-button\" class=\"btn btn-default\" onclick=\"editEvaluationSession('" + es.getId() + "')\"> Edit this session </button>");
-                            out.write("<button id=\"close-evaluation-session-button\" class=\"btn btn-default\" onclick=\"closeEvaluationSession('" + es.getId() + "')\"> Close this session </button>");
-                            out.write("</td>");
-                            out.write("</tr>");
-                            out.write("</tbody>");
+
                         }
 
-                    } else {
-                        out.write("");
                     }
 
-                    return;
+                    //Provide the evaluation sessions on session
+                    logger.log(Level.INFO, "Providing the list of evaluation sessions on session");
+                    session.setAttribute("evaluationSessions", evaluationSessions);
+
+                    path = "/viewEvaluationSessions";
+                    logger.log(Level.INFO, "Path is: {0}", path);
+
+                    break;
 
                 case "/setupEvaluationSession":
 
@@ -398,10 +336,6 @@ public class EvaluationSessionController extends Controller {
                             logger.log(Level.INFO, "An error occurred while recording a copy of the question");
                         }
                     }
-
-                    //Generate tabe body to display the evaluation session details
-                    displayEvaluationSession(response, request, session);
-
                     return;
 
                 case "/editEvaluationSession":
@@ -479,9 +413,6 @@ public class EvaluationSessionController extends Controller {
                     } catch (InvalidArgumentException | InvalidStateException | DuplicateStateException e) {
                         logger.log(Level.INFO, "An error occurred during evaluation session update");
                     }
-
-                    //Generate table body to display the evaluation session
-                    displayEvaluationSession(response, request, session);
 
                     return;
 
@@ -996,8 +927,6 @@ public class EvaluationSessionController extends Controller {
                         return;
                     }
 
-                    //Reload evaluation sessions displayed
-                    displayEvaluationSession(response, request, session);
                     return;
             }
 
@@ -1050,183 +979,6 @@ public class EvaluationSessionController extends Controller {
         return "Short description";
     }// </editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Display evaluation session details">
-    private void displayEvaluationSession(HttpServletResponse response, HttpServletRequest request, HttpSession session) throws IOException {
-        //Declare the response writer
-        PrintWriter out = response.getWriter();
-        //Define the date format to be used
-        DateFormat yearMonthFormat = new SimpleDateFormat("MMM yyyy");
-        DateFormat userDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        DateFormat databaseDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-        Date date;
-        String dateString;
-        List<DegreeDetails> degrees = new ArrayList<>();
-
-        //Retrieve the faculty unique identifier if any
-        logger.log(Level.INFO, "Retrieving the faculty unique identifier if any");
-        faculty = new FacultyDetails();
-        try {
-            faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-            if (faculty.getId() == null) {
-                logger.log(Level.INFO, "The faculty unique identifier is not available");
-                faculty = null;
-            }
-        } catch (Exception e) {
-            logger.log(Level.INFO, "The faculty unique identifier is not available");
-            faculty = null;
-        }
-
-        //Retrieve the department unique identifier if any
-        logger.log(Level.INFO, "Retrieving the department unique identifier if any");
-        department = new DepartmentDetails();
-        try {
-            department.setId(Integer.parseInt(request.getParameter("departmentId")));
-            if (department.getId() == null) {
-                logger.log(Level.INFO, "The department unique identifier is not available");
-                department = null;
-            }
-        } catch (Exception e) {
-            logger.log(Level.INFO, "The department unique identifier is not available");
-            department = null;
-        }
-
-        if (faculty != null) {
-            try {
-                degrees = degreeService.retrieveFacultyDegrees(faculty.getId());
-            } catch (InvalidArgumentException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving the degrees");
-            }
-        } else if (department != null) {
-            try {
-                degrees = degreeService.retrieveDepartmentDegrees(department.getId());
-            } catch (InvalidArgumentException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving the degrees");
-            }
-        }
-
-        //Retrieve the active evaluation sessions
-        logger.log(Level.INFO, "Retrieving the active evaluation sessions");
-        List<EvaluationSessionDetails> evaluationSessions = new ArrayList<>();
-        try {
-            evaluationSessions = evaluationSessionService.retrieveEvaluationSessions(degrees);
-        } catch (InvalidArgumentException | InvalidStateException ex) {
-            logger.log(Level.INFO, "An error occurred while retrieving the active evaluation session");
-        }
-
-        if (!evaluationSessions.isEmpty()) {
-            //Generate evaluation session table body
-            logger.log(Level.INFO, "Generating evaluation session table body");
-
-            out.write("<thead>");
-            out.write("<tr>");
-            out.write("<th colspan=\"2\"> ACTIVE EVALUATION SESSIONS </th>");
-            out.write("</tr>");
-            out.write("</thead>");
-            out.write("<tfoot>");
-            out.write("<tr>");
-            out.write("<td colspan=\"2\">Evaluation sessions</tr>");
-            out.write("</tr>");
-            out.write("</tfoot>");
-
-            int count = 0;
-            out.write("<tbody>");
-            for (EvaluationSessionDetails es : evaluationSessions) {
-                if (count++ > 0) {
-                    out.write("<tr> <th colspan=\"2\"> </th> </tr>");
-                }
-                out.write("<tr>");
-                out.write("<td> Degree: </td>");
-                out.write("<td>");
-                out.write("<select id=\"course-of-session-degree\">");
-                for (DegreeDetails d : degrees) {
-                    out.write("<option value=\"" + d.getId() + "\">" + d.getName() + "</option>");
-                }
-                out.write("</select>");
-                out.write("</td>");
-                out.write("<tr>");
-                out.write("<td> Start date: </td>");
-                try {
-                    //Retrieve the date
-                    date = databaseDateFormat.parse(databaseDateFormat.format(es.getStartDate()));
-
-                    //Format the date string to MM/dd/yyyy
-                    dateString = userDateFormat.format(date);
-
-                    //Display the date
-                    out.write("<td> <input type=\"text\" class=\"start-date\" value=\"" + dateString + "\"> </td>");
-                } catch (ParseException ex) {
-                    logger.log(Level.INFO, "String is unparseable to date format");
-                }
-                out.write("</tr>");
-                out.write("<tr>");
-                out.write("<td> End date: </td>");
-                out.write("<td> ");
-                try {
-                    //Retrieve the date
-                    date = databaseDateFormat.parse(databaseDateFormat.format(es.getEndDate()));
-
-                    //Format the date string to MM/dd/yyyy
-                    dateString = userDateFormat.format(date);
-
-                    //Display the date
-                    out.write("<input type=\"text\" class=\"end-date\" onchange=\"checkDate(); return false;\" value=\"" + dateString + "\">");
-                } catch (ParseException ex) {
-                    logger.log(Level.INFO, "String is unparseable to date format");
-                }
-                out.write("<span id=\"information-box\" class=\"alert alert-warning\" hidden></span> ");
-                out.write("</td>");
-                out.write("</tr>");
-                out.write("<tr>");
-                out.write("<td> Academic year: </td>");
-                out.write("<td> <input type=\"text\" id=\"academic-year\" value=\"" + es.getAcademicYear() + "\"> </td>");
-                out.write("</tr>");
-                out.write("<tr>");
-                out.write("<td> Admission month & year </td>");
-                try {
-                    //Retrieve the date
-                    date = databaseDateFormat.parse(databaseDateFormat.format(es.getAdmissionYear()));
-
-                    //Format the date string to MM/dd/yyyy
-                    dateString = yearMonthFormat.format(date);
-
-                    //Display the date
-                    out.write("<td> <input type=\"date\" class=\"admission-month-year\" value=\"" + dateString + "\"/> </td>");
-
-                } catch (Exception e) {
-                    logger.log(Level.INFO, "String is unparseable to date format");
-                }
-                out.write("</tr>");
-                out.write("<tr>");
-                out.write("<td> Semester: </td>");
-                out.write("<td> <input type=\"text\" id=\"semester\" value=\"" + es.getSemester() + "\"> </td>");
-                out.write("</tr>");
-                out.write("<tr>");
-                out.write("<td colspan=\"2\"></td>");
-                out.write("</tr>");
-                out.write("<tr>");
-                if (faculty != null) {
-                    out.write("<td>");
-                    out.write("<button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=&facultyId=" + faculty.getId() + "')\">Courses of this session</button>");
-                    out.write("<input type=\"hidden\" name=\"facultyId\" id=\"facultyId\" value=\"" + faculty.getId() + "\">\n");
-                    out.write("</td>");
-                } else if (department != null) {
-                    out.write("<td>");
-                    out.write("<button id=\"view-courses-of-session-button\" class=\"btn btn-default\" onclick=\"loadWindow('/Ocena/retrieveCoursesOfSession?evaluationSessionId=" + es.getId() + "&degreeId=" + es.getDegree().getId() + "&departmentId=" + department.getId() + "&facultyId=')\">Courses of this session</button>");
-                    out.write("<input type=\"hidden\" name=\"departmentId\" id=\"departmentId\" value=\"" + department.getId() + "\">\n");
-                    out.write("</td>");
-                }
-                out.write("<td>");
-                out.write("<button id=\"edit-evaluation-session-button\" class=\"btn btn-default\" onclick=\"editEvaluationSession('" + es.getId() + "')\"> Edit this session </button>");
-                out.write("<button id=\"close-evaluation-session-button\" class=\"btn btn-default\" onclick=\"closeEvaluationSession('" + es.getId() + "')\"> Close this session </button>");
-                out.write("</td>");
-                out.write("</tr>");
-            }
-            out.write("</tbody>");
-        }
-    }
-
-    //</editor-fold>
-    private static final Logger logger = Logger.getLogger(EvaluationSessionController.class
-            .getSimpleName());
+    private static final Logger logger = Logger.getLogger(EvaluationSessionController.class.getSimpleName());
 
 }

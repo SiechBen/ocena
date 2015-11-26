@@ -124,7 +124,10 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
 
         //Check validity of the list of degrees 
         logger.log(Level.INFO, "Checking validity of the list of degrees ");
-        if (degrees.isEmpty()) {
+        if (degrees == null) {
+            logger.log(Level.INFO, "The degrees are not provided");
+            throw new InvalidArgumentException("13-565");
+        } else if (degrees.isEmpty()) {
             logger.log(Level.INFO, "The degrees are not provided");
             throw new InvalidArgumentException("13-565");
         }

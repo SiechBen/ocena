@@ -414,11 +414,11 @@ tfoot td {
     margin-left: 20px;
 }
 
-#edit-evaluation-session-button{
+.edit-evaluation-session-button{
     margin-left: 20px;
 }
 
-#close-evaluation-session-button{
+.close-evaluation-session-button{
     margin-left: 20px;
 }
 
