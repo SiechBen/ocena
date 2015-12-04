@@ -20,7 +20,7 @@
 
                 <div>
                     <form id="edit-admin-user-profile-form" action="/Ocena/editUserProfile" method="POST"> 
-                        <input name="person-id" id="edit-admin-person-id" type="hidden" value="${sessionScope.person.id}">
+                        <input name="person-id" id="edit-person-id" type="hidden" value="${sessionScope.person.id}">
                         <input name="faculty-id" type="hidden" value="${sessionScope.faculty.id}"/>
                         <input name="college-id" type="hidden" value="${sessionScope.college.id}"/>
                         <input name="contact-id" type="hidden" value="${sessionScope.contact.id}"/>
@@ -73,9 +73,10 @@
                                 <td><input id="edit-admin-town" name="town" type="text" value="${sessionScope.postalContact.town}"/></td>
                                 <td><label for="country">Country</label></td>
                                 <td>
-                                    <select id="edit-admin-country" name="country" value="${sessionScope.postalContact.country.id}">
+                                    <select id="edit-country" name="country" >
+                                        <option value="${sessionScope.postalContact.country.id}" selected>${sessionScope.postalContact.country.name}</option>
                                         <c:forEach var="country" items="${applicationScope.countries}">
-                                            <option value="${country.id}" <c:if test="${country.id} = ${sessionScope.postalContact.country.id}">selected</c:if>>${country.name}</option>
+                                            <option value="${country.id}" >${country.name}</option>
                                         </c:forEach>
                                     </select>
                                 </td>
@@ -89,7 +90,7 @@
                                     <select id="edit-admin-campus-college" name="campus-college" onchange="updateAdminFaculties();
                                             return false;" required="true">
                                         <c:forEach var="college" items="${sessionScope.colleges}">
-                                            <option value="${college.id}"  <c:if test="${country.id} = ${sessionScope.postalContact.country.id}">selected</c:if>> ${college.name} </option>
+                                            <option value="${college.id}"> ${college.name} </option>
                                         </c:forEach>
                                     </select>
                                 </td>
@@ -103,17 +104,17 @@
                             </tr> 
                             <tr>
                                 <td><label for="old-password">Current password </label></td>
-                                <td><input id="edit-admin-old-password" name="old-password" type="password" onchange="validatePassword()"/></td>
-                                <td id="admin-valid-password-information"></td>
+                                <td><input id="edit-old-password" name="old-password" type="password" value="unset" onchange="validatePassword()"/></td>
+                                <td id="valid-password-information"></td>
                             </tr>
                             <tr>
                                 <td><label for="new-password">New password </label></td>
-                                <td><input id="edit-admin-new-password" name="new-password" type="password"/></td>
+                                <td><input id="edit-new-password" name="new-password" type="password"/></td>
                             </tr>
                             <tr>
                                 <td><label for="confirm-password">Confirm password </label></td>
-                                <td><input id="edit-admin-confirm-password" name="confirm-password" type="password" onchange="matchPassword()"/></td>
-                                <td id="admin-matching-password-information"></td>
+                                <td><input id="edit-confirm-password" name="confirm-password" type="password" onchange="matchPassword()"/></td>
+                                <td id="matching-password-information"></td>
                             </tr>
 
                             <tr><td colspan="4"></td></tr>
