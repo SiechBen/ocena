@@ -69,6 +69,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         logger.log(Level.INFO, "Add overall admin record to the database");
         try {
             em.persist(overallAdmin);
+            em.flush();
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during record creation");
             throw new EJBException("error_000_01");
@@ -93,7 +94,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {
             logger.log(Level.INFO, "The hashing algorithm was not found");
-            throw new InvalidArgumentException("error_000_01");
+            throw new InvalidArgumentException("error_007_01");
         }
 
         String encryptedPassword = accessService.generateSHAPassword(messageDigest, password);
@@ -106,7 +107,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
             overallAdmin = (OverallAdmin) q.getSingleResult();
         } catch (NoResultException e) {
             logger.log(Level.INFO, "Invalid user login attempt");
-            throw new InvalidLoginException("error_000_01");
+            throw new InvalidLoginException("error_006_08");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during login attempt", e);
             throw new InvalidLoginException("error_000_01");
@@ -163,7 +164,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
-            return;
+            throw new InvalidArgumentException("error_007_01");
         }
 
         overallAdmin = em.find(OverallAdmin.class, details.getId());
@@ -175,6 +176,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         logger.log(Level.INFO, "Edit overall admin record in the database");
         try {
             em.merge(overallAdmin);
+            em.flush();
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during record editing");
             throw new InvalidStateException("error_000_01");

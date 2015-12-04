@@ -47,7 +47,7 @@
                                             <td> ${pos.count} </td>
                                             <td> ${ratingValue.rating} </td>
                                             <td><button onclick="editRatingValue('${ratingValue.id}', '${ratingValue.rating}', '${aRatingType.id}')" ><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
-                                            <td><button onclick="removeRatingValue('${ratingValue.id}')" > <button class="glyphicon glyphicon-trash" ></button></td>
+                                            <td><button onclick="removeRatingValue('${ratingValue.id}')" > <span class="glyphicon glyphicon-trash" ></span></button></td>
                                         </tr>
                                     </c:forEach>
                                 </c:forEach>
@@ -79,8 +79,8 @@
                                     <tr <c:if test="pos % 2 == 0"> class="even" </c:if>>
                                         <td> ${pos.count} </td>
                                         <td> ${category.category} </td>
-                                        <td><button onclick="editQuestionCategory('${category.id}', '${category.category}')"> <button class="glyphicon glyphicon-pencil" ></button> </td>
-                                        <td><button onclick="removeQuestionCategory('${category.id}')"> <button class="glyphicon glyphicon-trash" ></button></td>
+                                        <td><button onclick="editQuestionCategory('${category.id}', '${category.category}')"> <span class="glyphicon glyphicon-pencil" ></span></button> </td>
+                                        <td><button onclick="removeQuestionCategory('${category.id}')"> <span class="glyphicon glyphicon-trash" ></span></button></td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -123,7 +123,7 @@
                                             <td> ${sessionScope.meansOfAnsweringByQuestionMap.get(question).meansOfAnswering} </td>
                                             <td> ${sessionScope.ratingTypesByQuestionMap.get(question).ratingType} </td>
                                             <td><button onclick="editQuestion('${question.question}', '${question.id}', '${questionCategory.id}', '${sessionScope.meansOfAnsweringByQuestionMap.get(question).id}', '${sessionScope.ratingTypesByQuestionMap.get(question).id}', '', '${sessionScope.department.id}')" ><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
-                                            <td><button onclick="removeQuestion('${question.id}', '', '${sessionScope.department.id}')" > <button class="glyphicon glyphicon-trash" ></button></td>
+                                            <td><button onclick="removeQuestion('${question.id}', '', '${sessionScope.department.id}')" > <span class="glyphicon glyphicon-trash" ></span></button></td>
                                         </tr>
                                     </c:forEach>
                                 </c:forEach>
@@ -156,7 +156,7 @@
                                         <td> ${pos.count} </td>
                                         <td> ${admission.admission} </td>
                                         <td><button onclick="editAdmission('${admission.id}', '${admission.admission}')" ><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
-                                        <td><button onclick="removeAdmission('${admission.id}')" > <button class="glyphicon glyphicon-trash" ></button></td>
+                                        <td><button onclick="removeAdmission('${admission.id}')" > <span class="glyphicon glyphicon-trash" ></span></button></td>
                                     </tr>
                                 </c:forEach>
                             </tbody>

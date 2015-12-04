@@ -30,13 +30,43 @@ html {
     font-size: 100%;
 }
 
-body{
-    color:#444444;
+body {
     background: #f2f2f2;
     font-family:"Century Gothic", Helvetica, sans-serif;
 }
 
 /* --------- 2. structure --------- */
+
+#system-info { 
+    position: absolute;
+    width: 976px;
+    height: 200px;
+    top: 5%;
+    left: 50%;  
+    // margin-top: -20px;
+    margin-left: -487px;
+    padding-top: 20px;
+    //border: 1px solid #000;
+}
+
+#system-name {
+    text-transform: uppercase;
+    font-size: 2.4em;
+    text-align: center;
+    margin: 10px;
+}
+
+#system-scope {
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 2.0em;
+    text-align: center;
+    margin: 10px;
+}
+
+#system-scope a {
+    color: #111;
+}
 
 #index-wrapper { 
     position: absolute;
@@ -125,7 +155,7 @@ body{
 }
 
 #slider-navigation ul button{
-   float:left;
+    float:left;
     border-right:1px solid #ccc;
     border-left:1px solid #ccc;
     position:relative;
@@ -133,7 +163,7 @@ body{
 }
 
 #slider-navigation ul li{
-   float:left;
+    float:left;
     border-right:1px solid #ccc;
     border-left:1px solid #ccc;
     position:relative;
@@ -525,7 +555,7 @@ h1 {
     text-transform: uppercase;
     font-size: 1.2em;
     font-weight: normal;
-    color: #999;
+    color: #111;
     padding-bottom: 7px;
     margin-bottom: 7px;
     border-bottom: 1px solid orange;

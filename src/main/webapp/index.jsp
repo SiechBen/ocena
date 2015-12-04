@@ -18,8 +18,17 @@
         </style>
     </head>
     <body>
+        <div id="system-info">
+            <div id="system-name"> OCENA - ONLINE COURSE/LECTURER EVALUATION SYSTEM </div>
+            <div id="system-scope">  
+                <a href="http://www.uonbi.ac.ke/">
+                    <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
+                    THE UNIVERSITY OF NAIROBI
+                </a>
+            </div>
+        </div>
         <div id="index-wrapper">
-            <h1>Login to proceed with course/lecturer evaluation</h1>
+            <h1>Login to proceed with evaluation</h1>
             <div>
                 <form action="/Ocena/login" method="post" id="login-form">
                     <table class="table table-responsive table-hover">

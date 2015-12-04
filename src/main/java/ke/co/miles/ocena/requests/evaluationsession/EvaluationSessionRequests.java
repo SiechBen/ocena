@@ -129,7 +129,7 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
             throw new InvalidArgumentException("13-565");
         } else if (degrees.isEmpty()) {
             logger.log(Level.INFO, "The degrees are not provided");
-            throw new InvalidArgumentException("13-565");
+            throw new InvalidArgumentException("error_000_02");
         }
 
         //Retrieving active evaluation session records from the database

@@ -33,7 +33,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
 
 //<editor-fold defaultstate="collapsed" desc="Create">
     @Override
-    public Integer addEvaluatedQuestionAnswer(EvaluatedQuestionAnswerDetails evaluatedQuestionAnswerDetails, CourseOfInstanceDetails courseOfInstanceDetails) throws InvalidArgumentException {
+    public Integer addEvaluatedQuestionAnswer(EvaluatedQuestionAnswerDetails evaluatedQuestionAnswerDetails) throws InvalidArgumentException {
         //Method for adding a evaluated question answer record to the database
         logger.log(Level.INFO, "Entered the method for adding a evaluated question answer record to the database");
 
@@ -68,6 +68,33 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         } else if (evaluatedQuestionAnswerDetails.getEvaluationInstance() == null) {
             logger.log(Level.INFO, "The evaluation instance is null");
             throw new InvalidArgumentException("19-002");
+        } else if (evaluatedQuestionAnswerDetails.getCourseOfInstance() == null) {
+            logger.log(Level.INFO, "The course of instance is null");
+            throw new InvalidArgumentException("19-002");
+        }
+
+        ///Prevent duplicate evaluated question answer creation
+        logger.log(Level.INFO, "Checking against duplicate evaluated question answer creation");
+        q = em.createNamedQuery("EvaluatedQuestionAnswer.findByEvaluationInstanceIdAndEvaluatedQuestionIdAndCourseOfInstanceId");
+        q.setParameter("evaluationInstanceId", evaluatedQuestionAnswerDetails.getEvaluationInstance().getId());
+        q.setParameter("evaluatedQuestionId", evaluatedQuestionAnswerDetails.getEvaluatedQuestion().getId());
+        q.setParameter("courseOfInstanceId", evaluatedQuestionAnswerDetails.getCourseOfInstance().getId());
+
+        evaluatedQuestionAnswer = new EvaluatedQuestionAnswer();
+        try {
+            evaluatedQuestionAnswer = (EvaluatedQuestionAnswer) q.getSingleResult();
+        } catch (NoResultException e) {
+            logger.log(Level.SEVERE, "The evaluated question answer has no duplicate");
+            evaluatedQuestionAnswer = null;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("0-002");
+        }
+
+        //If adding would be creating a duplicate
+        if (evaluatedQuestionAnswer != null) {
+            logger.log(Level.SEVERE, "The evaluated question answer if added would be a duplicate");
+            throw new InvalidArgumentException("9-002");
         }
 
         //Creating a container to hold evaluated question answer record
@@ -79,7 +106,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         evaluatedQuestionAnswer.setComment2(evaluatedQuestionAnswerDetails.getComment2());
         evaluatedQuestionAnswer.setComment3(evaluatedQuestionAnswerDetails.getComment3());
         evaluatedQuestionAnswer.setReasoning(evaluatedQuestionAnswerDetails.getReasoning());
-        evaluatedQuestionAnswer.setCourseOfInstance(em.find(CourseOfInstance.class, courseOfInstanceDetails.getId()));
+        evaluatedQuestionAnswer.setCourseOfInstance(em.find(CourseOfInstance.class, evaluatedQuestionAnswerDetails.getCourseOfInstance().getId()));
         evaluatedQuestionAnswer.setEvaluatedQuestion(evaluatedQuestionService.retrieveEvaluatedQuestion(evaluatedQuestionAnswerDetails.getEvaluatedQuestion(),
                 evaluatedQuestionAnswerDetails.getEvaluationInstance().getEvaluationSession()));
         evaluatedQuestionAnswer.setEvaluationInstance(evaluationInstanceService.retrieveEvaluationInstance(evaluatedQuestionAnswerDetails.getEvaluationInstance()));
@@ -164,6 +191,9 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         //Retrieving the evaluated question answer record from the database
         logger.log(Level.INFO, "Retrieving the evaluated question answer record from the database");
         q = em.createNamedQuery("EvaluatedQuestionAnswer.findByEvaluationInstanceIdAndEvaluatedQuestionIdAndCourseOfInstanceId");
+        logger.log(Level.INFO, "\033[32;3mEvaluation instance id: {0}", currentEvaluationInstance.getId());
+        logger.log(Level.INFO, "\033[32;3mEvaluated question id: {0}", currentEvaluatedQuestion.getId());
+        logger.log(Level.INFO, "\033[32;3mCourse of instance id: {0}", currentCourseOfInstance.getId());
         q.setParameter("evaluationInstanceId", currentEvaluationInstance.getId());
         q.setParameter("evaluatedQuestionId", currentEvaluatedQuestion.getId());
         q.setParameter("courseOfInstanceId", currentCourseOfInstance.getId());
@@ -172,7 +202,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         try {
             evaluatedQuestionAnswer = (EvaluatedQuestionAnswer) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.SEVERE, "The evaluated question answer was not recorded", e);
+            logger.log(Level.SEVERE, "The evaluated question answer was not recorded");
             return null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);

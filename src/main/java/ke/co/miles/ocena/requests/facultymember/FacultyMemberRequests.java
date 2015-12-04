@@ -124,7 +124,6 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             q = em.createNamedQuery("FacultyMember.findNonStudentsByFacultyId");
             q.setParameter("facultyMemberRoleId", FacultyMemberRoleDetail.STUDENT.getId());
             q.setParameter("facultyId", facultyDetails.getId());
-            System.out.println(facultyDetails.getId());
             try {
                 facultyMembers = q.getResultList();
             } catch (EJBException e) {
@@ -236,7 +235,6 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         //Creating a container to hold faculty member record
         logger.log(Level.INFO, "Creating a container to hold faculty member record");
         facultyMember = em.find(FacultyMember.class, details.getId());
-        System.out.println(details.getId());
         facultyMember.setId(details.getId());
         facultyMember.setActive(details.getActive());
         facultyMember.setAdmissionYear(details.getAdmissionYear());
@@ -244,10 +242,12 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         try {
             facultyMember.setFaculty(em.find(Faculty.class, details.getFaculty().getId()));
         } catch (Exception e) {
+            facultyMember.setFaculty(null);
         }
         try {
             facultyMember.setDepartment(em.find(Department.class, details.getDepartment().getId()));
         } catch (Exception e) {
+            facultyMember.setDepartment(null);
         }
         facultyMember.setFacultyMemberRole(em.find(FacultyMemberRole.class, details.getFacultyMemberRole().getId()));
 
@@ -255,6 +255,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         logger.log(Level.INFO, "Editing a faculty member record in the database");
         try {
             em.merge(facultyMember);
+            em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
             throw new EJBException("21-003");

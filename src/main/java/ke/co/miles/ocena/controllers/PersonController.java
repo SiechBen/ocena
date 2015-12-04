@@ -568,7 +568,7 @@ public class PersonController extends Controller {
 
                     //Read in the person's unique identifier
                     logger.log(Level.INFO, "Reading in the person's unique identifier");
-                    Integer personId = Integer.parseInt(request.getParameter("personId"));
+                    Integer personId = ((PersonDetails) session.getAttribute("person")).getId();
 
                     //Retrieve the person
                     logger.log(Level.INFO, "Retrieving the person");
@@ -655,7 +655,7 @@ public class PersonController extends Controller {
                     session.setAttribute("phoneContact", phoneContact);
 
                     //Retrieve the person's postal contact
-                    logger.log(Level.INFO, "Retrieving the person's phone contact");
+                    logger.log(Level.INFO, "Retrieving the person's postal contact");
                     postalContact = new PostalContactDetails();
                     try {
                         postalContact = postalContactService.retrievePostalContact(contact.getId());
@@ -744,47 +744,77 @@ public class PersonController extends Controller {
                         return;
                     }
 
-                    //Read in the faculty details
-                    logger.log(Level.INFO, "Reading in the faculty details");
-                    faculty = new FacultyDetails();
-                    try {
-                        faculty.setId(Integer.parseInt(request.getParameter("campus-faculty")));
-                    } catch (Exception e) {
-                        logger.log(Level.INFO, "The faculty is not edited");
-                        faculty.setId(facultyMember.getFaculty().getId());
-                    }
-
-                    //Read in the department details
-                    logger.log(Level.INFO, "Reading in the department details");
+                    //Read in the department
+                    logger.log(Level.INFO, "Read in the department details");
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("campus-department")));
+                        logger.log(Level.INFO, "Department details are provided");
+                        faculty = null;
                     } catch (Exception e) {
-                        logger.log(Level.INFO, "The department is not edited");
-                        department.setId(facultyMember.getDepartment().getId());
+                        logger.log(Level.INFO, "Department details are not provided");
+
+                        //Read in the faculty
+                        logger.log(Level.INFO, "Read in the faculty details");
+                        faculty = new FacultyDetails();
+                        try {
+                            faculty.setId(Integer.parseInt(request.getParameter("campus-faculty")));
+                            logger.log(Level.INFO, "Faculty details are provided");
+                            department = null;
+                        } catch (Exception ex) {
+                            logger.log(Level.INFO, "Faculty details are not provided");
+                            try {
+                                if (facultyMember.getFaculty().getId() != null) {
+                                    faculty.setId(facultyMember.getFaculty().getId());
+                                }
+                            } catch (Exception exc) {
+                                logger.log(Level.INFO, "Faculty details did not exist before");
+                            }
+
+                            try {
+                                if (facultyMember.getDepartment().getId() != null) {
+                                    department.setId(facultyMember.getDepartment().getId());
+                                }
+                            } catch (Exception exc) {
+                                logger.log(Level.INFO, "Department details did not exist before");
+                            }
+                        }
+
                     }
 
                     try {
-                        admissionYear = userDateFormat.parse(request.getParameter("admission-year"));
-                    } catch (Exception e) {
-                        logger.log(Level.INFO, "An error occurred while parsing the admission month and year", e);
-                        return;
+                        if (faculty.getId() != null) {
+                            try {
+                                if (department.getId() != null) {
+                                    if (facultyMember.getDepartment().getId() != null) {
+                                        department.setId(null);
+                                        logger.log(Level.INFO, "Department details cleared");
+                                    }
+                                }
+                            } catch (NullPointerException e) {
+                                logger.log(Level.INFO, "Department details are not provided, first check abandoned");
+                            }
+                        }
+                    } catch (NullPointerException e) {
+                        logger.log(Level.INFO, "Faculty details are not provided, first check abandoned");
                     }
 
-                    if (admissionYear != null) {
-                        holder = Calendar.getInstance();
-                        holder.setTime(admissionYear);
-
-                        calendar = Calendar.getInstance();
-                        calendar.clear();
-                        calendar.set(Calendar.MONTH, holder.get(Calendar.MONTH));
-                        calendar.set(Calendar.YEAR, holder.get(Calendar.YEAR));
-                        admissionYear = calendar.getTime();
+                    try {
+                        if (department.getId() != null) {
+                            try {
+                                if (faculty.getId() != null) {
+                                    if (facultyMember.getFaculty().getId() != null) {
+                                        faculty.setId(null);
+                                        logger.log(Level.INFO, "Faculty details cleared");
+                                    }
+                                }
+                            } catch (NullPointerException e) {
+                                logger.log(Level.INFO, "Faculty details are not provided, second check abandoned");
+                            }
+                        }
+                    } catch (NullPointerException e) {
+                        logger.log(Level.INFO, "Department details are not provided, second check abandoned");
                     }
-
-                    facultyMember.setFaculty(faculty);
-                    facultyMember.setDepartment(department);
-                    facultyMember.setAdmissionYear(admissionYear);
 
                     //Retrieve the person's user account
                     logger.log(Level.INFO, "Retrieving the person's user account");
@@ -795,6 +825,32 @@ public class PersonController extends Controller {
                         logger.log(Level.INFO, "An error occurred during user account record retrieval");
                         return;
                     }
+
+                    if (userAccount.getUserGroup().equals(UserGroupDetail.STUDENT)) {
+                        try {
+                            admissionYear = userDateFormat.parse(request.getParameter("admission-year"));
+                        } catch (Exception e) {
+                            logger.log(Level.INFO, "An error occurred while parsing the admission month and year", e);
+                            return;
+                        }
+
+                        if (admissionYear != null) {
+                            holder = Calendar.getInstance();
+                            holder.setTime(admissionYear);
+
+                            calendar = Calendar.getInstance();
+                            calendar.clear();
+                            calendar.set(Calendar.MONTH, holder.get(Calendar.MONTH));
+                            calendar.set(Calendar.YEAR, holder.get(Calendar.YEAR));
+                            admissionYear = calendar.getTime();
+                        }
+                    } else {
+                        admissionYear = null;
+                    }
+
+                    facultyMember.setFaculty(faculty);
+                    facultyMember.setDepartment(department);
+                    facultyMember.setAdmissionYear(admissionYear);
 
                     //Create a message digest algorithm for SHA-256 hashing algorithm
                     logger.log(Level.INFO, "Creating a message digest hashing algorithm object");

@@ -232,7 +232,7 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during postal record retrieval", e);
         }
-        
+
         //Removing a postal contact record from the database
         logger.log(Level.INFO, "Removing a postal contact record from the database");
         try {
@@ -273,6 +273,10 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
 
         countryDetails = new CountryDetails();
         countryDetails.setId(postalContact.getCountry().getId());
+        countryDetails.setIso(postalContact.getCountry().getIso());
+        countryDetails.setName(postalContact.getCountry().getName());
+        countryDetails.setNiceName(postalContact.getCountry().getNiceName());
+        countryDetails.setPhoneCode(postalContact.getCountry().getPhoneCode());
 
         PostalContactDetails details = new PostalContactDetails();
         details.setPostalCode(postalContact.getPostalCode());

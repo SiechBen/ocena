@@ -50,26 +50,26 @@ Author  : Ben Siech
                             </tr>
                             <tr>
                                 <td> Start date: </td>
-                                <td> <input type="date" class="start-date" value="<fmt:formatDate pattern="MM/dd/yyyy" value='${evaluationSession.startDate}' />" > </td>
+                                <td> <input readonly="true"  type="date" class="start-date" value="<fmt:formatDate pattern="MM/dd/yyyy" value='${evaluationSession.startDate}' />" > </td>
                             </tr>
                             <tr>
                                 <td> End date: </td>
                                 <td> 
-                                    <input type="date" class="end-date" value="<fmt:formatDate pattern="MM/dd/yyyy" value='${evaluationSession.endDate}' />" > 
+                                    <input readonly="true"  type="date" class="end-date" value="<fmt:formatDate pattern="MM/dd/yyyy" value='${evaluationSession.endDate}' />" > 
                                 </td>
                             </tr>
                             <tr>
                                 <td> Academic year </td>
-                                <td> <input type="text" class="academic-year" value="${evaluationSession.academicYear}" /> </td>
+                                <td> <input readonly="true"  type="text" class="academic-year" value="${evaluationSession.academicYear}" /> </td>
                             </tr>
 
                             <tr>
                                 <td> Semester: </td>
-                                <td> <input type="text" id="semester" value="${evaluationSession.semester}" > </td>
+                                <td> <input readonly="true"  type="text" id="semester" value="${evaluationSession.semester}" > </td>
                             </tr>
                             <tr>
                                 <td> Admission month & year </td>
-                                <td> <input type="date" class="admission-month-year" value="<fmt:formatDate pattern="MMM yyyy" value='${evaluationSession.admissionYear}' />" /> </td>
+                                <td> <input readonly="true"  type="date" class="admission-month-year" value="<fmt:formatDate pattern="MMM yyyy" value='${evaluationSession.admissionYear}' />" /> </td>
                             </tr> 
                             <tr>
                                 <td colspan="2"></td>
@@ -84,8 +84,8 @@ Author  : Ben Siech
                         </c:forEach>
                     </tbody>
                 </table>
-                <input type="hidden" name="facultyId" id="facultyId" value="${sessionScope.faculty.id}">
-                <input type="hidden" name="departmentId" id="departmentId" value="${sessionScope.department.id}">
+                <input readonly="true"  type="hidden" name="facultyId" id="facultyId" value="${sessionScope.faculty.id}">
+                <input readonly="true"  type="hidden" name="departmentId" id="departmentId" value="${sessionScope.department.id}">
                 <div class="dialog" id="evaluation-session-dialog">
                     <table>
                         <tr>

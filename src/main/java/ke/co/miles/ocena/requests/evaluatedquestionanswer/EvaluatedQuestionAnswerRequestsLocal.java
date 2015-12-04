@@ -26,11 +26,10 @@ public interface EvaluatedQuestionAnswerRequestsLocal {
     /**
      *
      * @param evaluatedQuestionAnswerDetails
-     * @param courseOfInstanceDetails
      * @return
      * @throws InvalidArgumentException
      */
-    public Integer addEvaluatedQuestionAnswer(EvaluatedQuestionAnswerDetails evaluatedQuestionAnswerDetails, CourseOfInstanceDetails courseOfInstanceDetails) throws InvalidArgumentException;
+    public Integer addEvaluatedQuestionAnswer(EvaluatedQuestionAnswerDetails evaluatedQuestionAnswerDetails) throws InvalidArgumentException;
 
     /**
      *

@@ -463,6 +463,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         logger.log(Level.FINE, "Convert list of degree to degree details");
         admissionDetails = new AdmissionDetails();
         admissionDetails.setId(degree.getAdmission().getId());
+        admissionDetails.setAdmission(degree.getAdmission().getAdmission());
 
         departmentDetails = new DepartmentDetails();
         try {

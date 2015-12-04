@@ -64,7 +64,7 @@ public class EvaluationController extends Controller {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter outWriter = response.getWriter();
-     
+
         HttpSession session = request.getSession();
         String path = request.getServletPath();
         Integer admissionId;
@@ -414,6 +414,11 @@ public class EvaluationController extends Controller {
                             courseOfInstance = courseOfInstanceService.addCourseOfInstance(courseOfInstance);
                         } catch (Exception e) {
                             logger.log(Level.INFO, "An error occurred while setting the course of instance");
+
+                            //Go back to the evaluation arena
+                            path = "/evaluationArena";
+                            logger.log(Level.INFO, "Path is : {0}", path);
+                            break;
                         }
 
                         //Read in the evaluation made for each question
@@ -448,7 +453,7 @@ public class EvaluationController extends Controller {
                             //Send the evaluation question answer to the entity manager for recording
                             logger.log(Level.INFO, "Sending the evaluation question answer to the entity manager for recording");
                             try {
-                                evaluatedQuestionAnswerService.addEvaluatedQuestionAnswer(evaluatedQuestionAnswer, courseOfInstance);
+                                evaluatedQuestionAnswerService.addEvaluatedQuestionAnswer(evaluatedQuestionAnswer);
                             } catch (Exception e) {
                                 logger.log(Level.INFO, "An error occurred during evaluation question answer record creation");
                             }

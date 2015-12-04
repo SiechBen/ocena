@@ -3145,27 +3145,6 @@ function matchPassword() {
     }
 }
 
-function validateAdminPassword() {
-    $.ajax({
-        url: "/Ocena/validatePassword",
-        type: "POST",
-        data: "password=" + $("#edit-admin-old-password").val() + "&personId=" + $("#edit-admin-person-id").val(),
-        success: function (data) {
-            $("#admin-valid-password-information").html(data);
-        }
-    });
-}
-
-function matchAdminPassword() {
-
-    var password = $("#edit-admin-new-password").val();
-    var confirmationPassword = $("#edit-admin-confirm-password").val();
-    if (password !== confirmationPassword) {
-        $("#admin-matching-password-information").html("<span class=\"btn btn-warning\">Passwords do not match!</span>");
-    } else {
-        $("#admin-matching-password-information").html("");
-    }
-}
 //</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="Overall admin">

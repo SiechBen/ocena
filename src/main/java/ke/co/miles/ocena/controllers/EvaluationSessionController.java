@@ -167,11 +167,12 @@ public class EvaluationSessionController extends Controller {
 
                     //Retrieve the active evaluation sessions
                     logger.log(Level.INFO, "Retrieving the active evaluation sessions");
-                    List<EvaluationSessionDetails> evaluationSessions = new ArrayList<>();
+                    List<EvaluationSessionDetails> evaluationSessions;
                     try {
                         evaluationSessions = evaluationSessionService.retrieveEvaluationSessions(degrees);
                     } catch (InvalidArgumentException | InvalidStateException ex) {
                         logger.log(Level.INFO, "An error occurred while retrieving the active evaluation session");
+                        return;
                     }
 
                     if (!evaluationSessions.isEmpty()) {

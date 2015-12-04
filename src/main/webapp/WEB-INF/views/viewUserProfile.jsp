@@ -72,9 +72,10 @@
                                 <td><input id="edit-town" name="town" type="text" value="${sessionScope.postalContact.town}"/></td>
                                 <td><label for="country">Country</label></td>
                                 <td>
-                                    <select id="edit-country" name="country" value="${sessionScope.postalContact.country.id}">
+                                    <select id="edit-country" name="country" >
+                                        <option value="${sessionScope.postalContact.country.id}" selected>${sessionScope.postalContact.country.name}</option>
                                         <c:forEach var="country" items="${applicationScope.countries}">
-                                            <option value="${country.id}" <c:if test="${country.id} = ${sessionScope.postalContact.country.id}">selected</c:if>>${country.name}</option>
+                                            <option value="${country.id}" >${country.name}</option>
                                         </c:forEach>
                                     </select>
                                 </td>
@@ -88,7 +89,7 @@
                                     <select id="edit-campus-college" name="campus-college" onchange="updateEditFaculties();
                                             return false;" required="true">
                                         <c:forEach var="college" items="${sessionScope.colleges}">
-                                            <option value="${college.id}"  <c:if test="${country.id} = ${sessionScope.postalContact.country.id}">selected</c:if>> ${college.name} </option>
+                                            <option value="${college.id}"> ${college.name} </option>
                                         </c:forEach>
                                     </select>
                                 </td>
