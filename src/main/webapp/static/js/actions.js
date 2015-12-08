@@ -863,8 +863,8 @@ function editInstitution(name, abbreviation, country) {
                     showMessage("Error", "College name is required");
                     return;
                 } else {
-                    if (name.length > 300) {
-                        showMessage("Error", "College name is longer than 300 characters");
+                    if (name.length > 120) {
+                        showMessage("Error", "College name is longer than 120 characters");
                         return;
                     }
                 }
@@ -1206,7 +1206,7 @@ function addFaculty(collegeId, collegeName) {
 //
 //                //Ascertain validity of town
 //                if (town === null) {
-//                    if (town.length > 30) {
+//                    if (town.length > 100) {
 //                        showMessage("Error", "Town name is longer than 30 characters");
 //                        return;
 //                    }
@@ -1382,8 +1382,8 @@ function addDepartment(facultyId, facultyName, collegeId) {
                 //
                 //                //Ascertain validity of town
                 //                if (town === null) {
-                //                    if (town.length > 30) {
-                //                        showMessage("Error", "Town name is longer than 30 characters");
+                //                    if (town.length > 100) {
+                //                        showMessage("Error", "Town name is longer than 100 characters");
                 //                        return;
                 //                    }
                 //                }
@@ -1803,8 +1803,8 @@ function addQuestionCategory() {
                     showMessage("Error", "The question category is null");
                     return;
                 } else {
-                    if (questionCategory.length > 60) {
-                        showMessage("Error", "The question category is longer than 60 characters");
+                    if (questionCategory.length > 120) {
+                        showMessage("Error", "The question category is longer than 120 characters");
                         return;
                     }
                 }
@@ -1846,8 +1846,8 @@ function editQuestionCategory(questionCategoryId, questionCategory) {
                     showMessage("Error", "The question category is null");
                     return;
                 } else {
-                    if (questionCategory.length > 60) {
-                        showMessage("Error", "The question category is longer than 60 characters");
+                    if (questionCategory.length > 120) {
+                        showMessage("Error", "The question category is longer than 120 characters");
                         return;
                     }
                 }

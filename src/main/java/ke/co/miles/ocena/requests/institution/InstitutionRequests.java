@@ -43,22 +43,22 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("13-001");
+            throw new InvalidArgumentException("error_012_01");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The institution name is null");
-            throw new InvalidArgumentException("13-002");
-        } else if (details.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The institution name is longer than 60 characters");
-            throw new InvalidArgumentException("13-003");
+            throw new InvalidArgumentException("error_012_02");
+        } else if (details.getName().trim().length() > 120) {
+            logger.log(Level.INFO, "The institution name is longer than 120 characters");
+            throw new InvalidArgumentException("error_012_03");
         } else if (details.getAbbreviation() == null || details.getAbbreviation().trim().length() == 0) {
-            logger.log(Level.INFO, "The abbreviation is null");
-            throw new InvalidArgumentException("13-004");
+            logger.log(Level.INFO, "The institution abbreviation is null");
+            throw new InvalidArgumentException("error_012_04");
         } else if (details.getAbbreviation().trim().length() > 20) {
-            logger.log(Level.INFO, "The abbreviation is longer than 20 characters");
-            throw new InvalidArgumentException("13-005");
+            logger.log(Level.INFO, "The institution abbreviation is longer than 20 characters");
+            throw new InvalidArgumentException("error_012_05");
         } else if (details.getCountry() == null) {
             logger.log(Level.INFO, "The country in which the institution is set up is null");
-            throw new InvalidArgumentException("13-006");
+            throw new InvalidArgumentException("error_012_06");
         }
 
         //Checking if the institution is a duplicate
@@ -72,17 +72,17 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             institution = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (institution != null) {
             logger.log(Level.SEVERE, "Institution name is already in use");
-            throw new InvalidArgumentException("13-007");
+            throw new InvalidArgumentException("error_012_07");
         }
 
-        //Checking if the abbreviation is a duplicate
-        logger.log(Level.INFO, "Checking if the abbreviation is a duplicate");
+        //Checking if the institution abbreviation is a duplicate
+        logger.log(Level.INFO, "Checking if the institution abbreviation is a duplicate");
         q = em.createNamedQuery("Institution.findByAbbreviation");
-        q.setParameter("abbreviation", details.getAbbreviation());
+        q.setParameter("institution abbreviation", details.getAbbreviation());
         try {
             institution = (Institution) q.getSingleResult();
         } catch (NoResultException e) {
@@ -90,11 +90,11 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             institution = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (institution != null) {
-            logger.log(Level.SEVERE, "Abbreviation is already in use");
-            throw new InvalidArgumentException("13-008");
+            logger.log(Level.SEVERE, "Institution institution abbreviation is already in use");
+            throw new InvalidArgumentException("error_012_08");
         }
 
         //Creating a container to hold institution record
@@ -112,7 +112,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -132,7 +132,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         logger.log(Level.INFO, "Checking validity of the institution list details passed in");
         if (institutions == null) {
             logger.log(Level.INFO, "The institution list is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_012_09");
         }
 
         //Retrieve the colleges in the institutions and put them in a map
@@ -159,8 +159,11 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the institution list details passed in");
         if (institution == null) {
-            logger.log(Level.INFO, "The institution list is null");
-            throw new InvalidArgumentException("13-004");
+            logger.log(Level.INFO, "The institution is null");
+            throw new InvalidArgumentException("error_012_01");
+        } else if (institution.getId() == null) {
+            logger.log(Level.INFO, "The unique identifier of the institution is null");
+            throw new InvalidArgumentException("error_012_10");
         }
 
         //Retrieve the colleges in the institutions and put them in a map
@@ -174,7 +177,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
     }
 
     @Override
-    public InstitutionDetails retrieveInstitution(PersonDetails details) throws InvalidArgumentException, InvalidStateException {
+    public InstitutionDetails retrieveInstitution(PersonDetails person) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving institution record from the database
         logger.log(Level.INFO, "Entered the method for retrieving institution record from the database");
 
@@ -182,19 +185,22 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         logger.log(Level.INFO, "Checking validity of the person details passed in");
         if (person == null) {
             logger.log(Level.INFO, "The person is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_012_04");
+        } else if (person.getId() == null) {
+            logger.log(Level.INFO, "The person's unique identifier is null");
+            throw new InvalidArgumentException("error_001_13");
         }
 
         //Finding the faculty member
         logger.log(Level.INFO, "Finding the faculty member");
         q = em.createNamedQuery("FacultyMember.findByPersonId");
-        q.setParameter("personId", details.getId());
+        q.setParameter("personId", person.getId());
         facultyMember = new FacultyMember();
         try {
             facultyMember = (FacultyMember) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("13-002");
+            throw new EJBException("error_000_01");
         }
 
         //Obtaining the respective institution
@@ -207,7 +213,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
     }
 
     @Override
-    public List<InstitutionDetails> retrieveInstitutions(PersonDetails details) throws InvalidArgumentException, InvalidStateException {
+    public List<InstitutionDetails> retrieveInstitutions(PersonDetails person) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving institution record from the database
         logger.log(Level.INFO, "Entered the method for retrieving institution record from the database");
 
@@ -215,19 +221,22 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         logger.log(Level.INFO, "Checking validity of the person details passed in");
         if (person == null) {
             logger.log(Level.INFO, "The person is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_012_04");
+        } else if (person.getId() == null) {
+            logger.log(Level.INFO, "The person's unique identifier is null");
+            throw new InvalidArgumentException("error_001_13");
         }
 
         //Finding the faculty member
         logger.log(Level.INFO, "Finding the faculty member");
         q = em.createNamedQuery("FacultyMember.findByPersonId");
-        q.setParameter("personId", details.getId());
+        q.setParameter("personId", person.getId());
         List<FacultyMember> facultyMembers;
         try {
             facultyMembers = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("13-002");
+            throw new EJBException("error_012_02");
         }
 
         //Obtaining the respective institutions
@@ -251,7 +260,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The institution's unique identifier is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_012_10");
         }
 
         //Retrieving the institution record from the database
@@ -262,7 +271,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             institution = (Institution) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details of the institution record
@@ -284,7 +293,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             institutions = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         for (Institution i : institutions) {
             if (i.getActive()) {
@@ -309,25 +318,25 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("13-001");
+            throw new InvalidArgumentException("error_012_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The institution's unique identifier is null");
-            throw new InvalidArgumentException("13-009");
+            throw new InvalidArgumentException("error_012_10");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The institution name is null");
-            throw new InvalidArgumentException("13-002");
-        } else if (details.getName().trim().length() > 60) {
-            logger.log(Level.INFO, "The institution name is longer than 60 characters");
-            throw new InvalidArgumentException("13-003");
+            throw new InvalidArgumentException("error_012_02");
+        } else if (details.getName().trim().length() > 120) {
+            logger.log(Level.INFO, "The institution name is longer than 120 characters");
+            throw new InvalidArgumentException("error_012_03");
         } else if (details.getAbbreviation() == null || details.getAbbreviation().trim().length() == 0) {
-            logger.log(Level.INFO, "The abbreviation is null");
-            throw new InvalidArgumentException("13-004");
+            logger.log(Level.INFO, "The institution abbreviation is null");
+            throw new InvalidArgumentException("error_012_04");
         } else if (details.getAbbreviation().trim().length() > 20) {
-            logger.log(Level.INFO, "The abbreviation is longer than 20 characters");
-            throw new InvalidArgumentException("13-005");
+            logger.log(Level.INFO, "The institution abbreviation is longer than 20 characters");
+            throw new InvalidArgumentException("error_012_05");
         } else if (details.getCountry() == null) {
             logger.log(Level.INFO, "The country in which the institution is set up is null");
-            throw new InvalidArgumentException("13-006");
+            throw new InvalidArgumentException("error_012_06");
         }
         //Checking if the institution is a duplicate
         logger.log(Level.INFO, "Checking if the institution name is a duplicate");
@@ -340,19 +349,19 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             institution = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (institution != null) {
             if (!institution.getId().equals(details.getId())) {
                 logger.log(Level.SEVERE, "Institution name is already in use");
-                throw new InvalidArgumentException("13-007");
+                throw new InvalidArgumentException("error_012_07");
             }
         }
 
-        //Checking if the abbreviation is a duplicate
-        logger.log(Level.INFO, "Checking if the abbreviation is a duplicate");
+        //Checking if the institution abbreviation is a duplicate
+        logger.log(Level.INFO, "Checking if the institution abbreviation is a duplicate");
         q = em.createNamedQuery("Institution.findByAbbreviation");
-        q.setParameter("abbreviation", details.getAbbreviation());
+        q.setParameter("institution abbreviation", details.getAbbreviation());
         try {
             institution = (Institution) q.getSingleResult();
         } catch (NoResultException e) {
@@ -360,12 +369,12 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             institution = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (institution != null) {
             if (!institution.getId().equals(details.getId())) {
-                logger.log(Level.SEVERE, "Abbreviation is already in use");
-                throw new InvalidArgumentException("13-008");
+                logger.log(Level.SEVERE, "Institution institution abbreviation is already in use");
+                throw new InvalidArgumentException("error_012_08");
             }
         }
 
@@ -385,7 +394,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("0-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -401,7 +410,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("13-009");
+            throw new InvalidArgumentException("error_012_10");
         }
 
         //Removing an institution record from the database
@@ -411,7 +420,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
             em.remove(institution);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("0-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -464,6 +473,7 @@ public class InstitutionRequests extends EntityRequests implements InstitutionRe
         return details;
     }
 //</editor-fold>
+    
     private static final Logger logger = Logger.getLogger(InstitutionRequests.class.getSimpleName());
 
 }

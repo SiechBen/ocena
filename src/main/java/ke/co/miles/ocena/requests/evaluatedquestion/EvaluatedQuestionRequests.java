@@ -50,8 +50,8 @@ public class EvaluatedQuestionRequests extends EntityRequests implements Evaluat
         } else if (details.getQuestion() == null || details.getQuestion().trim().length() == 0) {
             logger.log(Level.INFO, "The question is null");
             throw new InvalidArgumentException("18-002");
-        } else if (details.getQuestion().trim().length() > 200) {
-            logger.log(Level.INFO, "The question is longer than 200 characters");
+        } else if (details.getQuestion().trim().length() > 300) {
+            logger.log(Level.INFO, "The question is longer than 300 characters");
             throw new InvalidArgumentException("18-002");
         } else if (details.getMeansOfAnswering() == null) {
             logger.log(Level.INFO, "The means of answering is null");
@@ -173,8 +173,8 @@ public class EvaluatedQuestionRequests extends EntityRequests implements Evaluat
         } else if (details.getQuestion() == null || details.getQuestion().trim().length() == 0) {
             logger.log(Level.INFO, "The question is null");
             throw new InvalidArgumentException("18-002");
-        } else if (details.getQuestion().trim().length() > 200) {
-            logger.log(Level.INFO, "The question is longer than 200 characters");
+        } else if (details.getQuestion().trim().length() > 300) {
+            logger.log(Level.INFO, "The question is longer than 300 characters");
             throw new InvalidArgumentException("18-002");
         } else if (details.getMeansOfAnswering() == null) {
             logger.log(Level.INFO, "The means of answering is null");

@@ -41,7 +41,7 @@ public class AssessedEvaluationComment implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 200)
+    @Size(max = 300)
     @Column(name = "comment")
     private String comment;
     @Column(name = "active")

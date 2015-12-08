@@ -30,27 +30,27 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
 //<editor-fold defaultstate="collapsed" desc="Create">
     @Override
     public PhoneContact addPhoneContact(PhoneContactDetails details) throws InvalidArgumentException {
-        //Method for adding an phone contact record to the database
-        logger.log(Level.INFO, "Entered the method for adding an phone contact record to the database");
+        //Method for adding a phone contact record to the database
+        logger.log(Level.INFO, "Entered the method for adding a phone contact record to the database");
 
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("11-001");
+            throw new InvalidArgumentException("error_015_01");
         } else if (details.getMobileNumber() != null) {
             if (details.getMobileNumber().trim().length() > 20) {
                 logger.log(Level.INFO, "The mobile number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                throw new InvalidArgumentException("error_015_02");
             }
         } else if (details.getFixedNumber() != null) {
             if (details.getFixedNumber().trim().length() > 20) {
                 logger.log(Level.INFO, "The fixed number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                throw new InvalidArgumentException("error_015_03");
             }
         } else if (details.getContact() == null) {
             logger.log(Level.INFO, "The contact to which the phone contact belongs is null");
-            throw new InvalidArgumentException("11-004");
+            throw new InvalidArgumentException("error_015_04");
         }
 
         //Checking if the mobile number is a duplicate
@@ -64,11 +64,11 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
             phoneContact = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("11-002");
+            throw new EJBException("error_000_01");
         }
         if (phoneContact != null) {
             logger.log(Level.SEVERE, "Mobile number is already in use");
-            throw new InvalidArgumentException("11-005");
+            throw new InvalidArgumentException("error_015_05");
         }
 
         //Creating a container to hold phone contact record
@@ -79,13 +79,13 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
         phoneContact.setFixedNumber(details.getFixedNumber());
         phoneContact.setContact(em.find(Contact.class, details.getContact().getId()));
 
-        //Adding an phone contact record to the database
-        logger.log(Level.INFO, "Adding an phone contact record to the database");
+        //Adding a phone contact record to the database
+        logger.log(Level.INFO, "Adding a phone contact record to the database");
         try {
             em.persist(phoneContact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("11-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning new record added
@@ -104,8 +104,8 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the contact unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The contact which offers the phone contact is null");
-            throw new InvalidArgumentException("11-004");
+            logger.log(Level.INFO, "The contact to which the phone contact belongs is null");
+            throw new InvalidArgumentException("error_015_04");
         }
 
         //Retrieving phone contact records from the database
@@ -117,7 +117,7 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
             phoneContacts = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("11-002");
+            throw new EJBException("error_015_02");
         }
 
         //Returning the details list of phone contact records
@@ -133,8 +133,8 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the contact unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The contact which offers the phone contact is null");
-            throw new InvalidArgumentException("11-004");
+            logger.log(Level.INFO, "The contact to which the phone contact belongs is null");
+            throw new InvalidArgumentException("error_015_04");
         }
 
         //Retrieving phone contact records from the database
@@ -146,7 +146,7 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
             phoneContact = (PhoneContact) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("11-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of phone contact records
@@ -158,30 +158,30 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
 //<editor-fold defaultstate="collapsed" desc="Update">
     @Override
     public void editPhoneContact(PhoneContactDetails details) throws InvalidArgumentException, InvalidStateException {
-        //Method for editing an phone contact record in the database
-        logger.log(Level.INFO, "Entered the method for editing an phone contact record in the database");
+        //Method for editing a phone contact record in the database
+        logger.log(Level.INFO, "Entered the method for editing a phone contact record in the database");
 
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("11-001");
+            throw new InvalidArgumentException("error_015_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The phone contact's unique identifier is null");
-            throw new InvalidArgumentException("11-006");
+            throw new InvalidArgumentException("error_015_06");
         } else if (details.getMobileNumber() != null) {
             if (details.getMobileNumber().trim().length() > 20) {
                 logger.log(Level.INFO, "The mobile number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                throw new InvalidArgumentException("error_015_02");
             }
         } else if (details.getFixedNumber() != null) {
             if (details.getFixedNumber().trim().length() > 20) {
                 logger.log(Level.INFO, "The fixed number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                throw new InvalidArgumentException("error_015_03");
             }
         } else if (details.getContact() == null) {
             logger.log(Level.INFO, "The contact to which the phone contact belongs is null");
-            throw new InvalidArgumentException("11-004");
+            throw new InvalidArgumentException("error_015_04");
         }
 
         //Checking if the phone contact is a duplicate
@@ -195,12 +195,12 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
             phoneContact = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("11-002");
+            throw new EJBException("error_000_01");
         }
         if (phoneContact != null) {
             if (!(phoneContact.getId().equals(details.getId()))) {
                 logger.log(Level.SEVERE, "Mobile number is already in use");
-                throw new InvalidArgumentException("11-005");
+                throw new InvalidArgumentException("error_015_05");
             }
         }
 
@@ -213,14 +213,14 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
         phoneContact.setId(details.getId());
         phoneContact.setContact(em.find(Contact.class, details.getContact().getId()));
 
-        //Editing an phone contact record in the database
-        logger.log(Level.INFO, "Editing an phone contact record in the database");
+        //Editing a phone contact record in the database
+        logger.log(Level.INFO, "Editing a phone contact record in the database");
         try {
             em.merge(phoneContact);
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("11-003");
+            throw new InvalidStateException("error_000_01");
 
         }
     }
@@ -229,14 +229,14 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
 
     @Override
     public void removePhoneContact(Integer contactId) throws InvalidArgumentException, InvalidStateException {
-        //Method for removing an phone contact record from the database
-        logger.log(Level.INFO, "Entered the method for removing an phone contact record from the database");
+        //Method for removing a phone contact record from the database
+        logger.log(Level.INFO, "Entered the method for removing a phone contact record from the database");
 
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("11-006");
+            logger.log(Level.INFO, "The unique identifier of the phone contact is null");
+            throw new InvalidArgumentException("error_015_06");
         }
 
         //Get the phone contact record to be removed
@@ -255,7 +255,7 @@ public class PhoneContactRequests extends EntityRequests implements PhoneContact
             em.remove(phoneContact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("11-004");
+            throw new InvalidStateException("error_000_01");
 
         }
     }

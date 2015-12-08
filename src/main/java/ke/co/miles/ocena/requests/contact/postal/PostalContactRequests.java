@@ -38,28 +38,25 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("11-001");
+            throw new InvalidArgumentException("error_016_01");
         } else if (details.getBoxNumber() != null) {
             if (details.getBoxNumber().trim().length() > 20) {
                 logger.log(Level.INFO, "The box number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                throw new InvalidArgumentException("error_016_02");
             }
         } else if (details.getPostalCode() != null) {
             if (details.getPostalCode().trim().length() > 20) {
-                logger.log(Level.INFO, "The fixed number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                logger.log(Level.INFO, "The postal code is longer than 20 characters");
+                throw new InvalidArgumentException("error_016_03");
             }
         } else if (details.getTown() != null) {
-            if (details.getTown().trim().length() > 20) {
-                logger.log(Level.INFO, "The town is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+            if (details.getTown().trim().length() > 100) {
+                logger.log(Level.INFO, "The town is longer than 100 characters");
+                throw new InvalidArgumentException("error_016_04");
             }
         } else if (details.getContact() == null) {
             logger.log(Level.INFO, "The contact to which the postal contact belongs is null");
-            throw new InvalidArgumentException("11-004");
-        } else if (details.getCountry() == null) {
-            logger.log(Level.INFO, "The country to which the postal contact belongs is null");
-            throw new InvalidArgumentException("11-004");
+            throw new InvalidArgumentException("error_016_05");
         }
 
         //Creating a container to hold postal contact record
@@ -70,7 +67,9 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         postalContact.setBoxNumber(details.getBoxNumber());
         postalContact.setPostalCode(details.getPostalCode());
         postalContact.setContact(em.find(Contact.class, details.getContact().getId()));
-        postalContact.setCountry(em.find(Country.class, details.getCountry().getId()));
+        if (details.getCountry() != null) {
+            postalContact.setCountry(em.find(Country.class, details.getCountry().getId()));
+        }
 
         //Adding a postal contact record to the database
         logger.log(Level.INFO, "Adding a postal contact record to the database");
@@ -79,7 +78,7 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("11-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the new record added
@@ -98,8 +97,8 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the contact unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The contact which offers the postal contact is null");
-            throw new InvalidArgumentException("11-004");
+            logger.log(Level.INFO, "The contact to which the postal contact belongs is null");
+            throw new InvalidArgumentException("error_016_05");
         }
 
         //Retrieving postal contact records from the database
@@ -111,7 +110,7 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
             postalContacts = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("11-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of postal contact records
@@ -127,8 +126,8 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the contact unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The contact is null");
-            throw new InvalidArgumentException("11-004");
+            logger.log(Level.INFO, "The contact to which the postal contact belongs is null");
+            throw new InvalidArgumentException("error_016_05");
         }
 
         //Retrieving postal contact records from the database
@@ -140,7 +139,7 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
             postalContact = (PostalContact) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("11-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the postal contact record
@@ -159,31 +158,28 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("11-001");
+            throw new InvalidArgumentException("error_016_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The postal contact's unique identifier is null");
-            throw new InvalidArgumentException("11-006");
+            throw new InvalidArgumentException("error_016_06");
         } else if (details.getBoxNumber() != null) {
             if (details.getBoxNumber().trim().length() > 20) {
                 logger.log(Level.INFO, "The box number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                throw new InvalidArgumentException("error_016_02");
             }
         } else if (details.getPostalCode() != null) {
             if (details.getPostalCode().trim().length() > 20) {
-                logger.log(Level.INFO, "The fixed number is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+                logger.log(Level.INFO, "The postal code is longer than 20 characters");
+                throw new InvalidArgumentException("error_016_03");
             }
         } else if (details.getTown() != null) {
-            if (details.getTown().trim().length() > 20) {
-                logger.log(Level.INFO, "The town is longer than 20 characters");
-                throw new InvalidArgumentException("11-003");
+            if (details.getTown().trim().length() > 100) {
+                logger.log(Level.INFO, "The town name is longer than 100 characters");
+                throw new InvalidArgumentException("error_016_04");
             }
         } else if (details.getContact() == null) {
             logger.log(Level.INFO, "The contact to which the postal contact belongs is null");
-            throw new InvalidArgumentException("11-004");
-        } else if (details.getCountry() == null) {
-            logger.log(Level.INFO, "The country to which the postal contact belongs is null");
-            throw new InvalidArgumentException("11-004");
+            throw new InvalidArgumentException("error_016_05");
         }
 
         //Creating a container to hold postal contact record
@@ -195,7 +191,9 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         postalContact.setBoxNumber(details.getBoxNumber());
         postalContact.setPostalCode(details.getPostalCode());
         postalContact.setContact(em.find(Contact.class, details.getContact().getId()));
-        postalContact.setCountry(em.find(Country.class, details.getCountry().getId()));
+        if (details.getCountry() != null) {
+            postalContact.setCountry(em.find(Country.class, details.getCountry().getId()));
+        }
 
         //Editing a postal contact record in the database
         logger.log(Level.INFO, "Editing a postal contact record in the database");
@@ -204,7 +202,7 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("11-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -220,7 +218,7 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (contactId == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("11-006");
+            throw new InvalidArgumentException("error_016_06");
         }
 
         //Get the postal contact record to be removed
@@ -239,7 +237,7 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
             em.remove(postalContact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("11-004");
+            throw new InvalidStateException("error_000_01");
 
         }
     }
@@ -293,5 +291,6 @@ public class PostalContactRequests extends EntityRequests implements PostalConta
         return details;
     }
 //</editor-fold>
+
     private static final Logger logger = Logger.getLogger(PostalContactRequests.class.getSimpleName());
 }

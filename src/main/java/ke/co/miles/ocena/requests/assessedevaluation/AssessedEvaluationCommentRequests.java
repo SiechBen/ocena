@@ -37,15 +37,15 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("13-001");
+            throw new InvalidArgumentException("error_009_01");
         } else if (details.getComment() != null || details.getComment().trim().length() != 0) {
-            if (details.getComment().trim().length() > 200) {
-                logger.log(Level.INFO, "The assessed evaluation comment is longer than 200 characters");
-                throw new InvalidArgumentException("13-003");
+            if (details.getComment().trim().length() > 300) {
+                logger.log(Level.INFO, "The assessed evaluation comment is longer than 300 characters");
+                throw new InvalidArgumentException("error_009_02");
             }
         } else if (details.getAssessedEvaluation() == null) {
             logger.log(Level.INFO, "The assessed evaluation to which the assessed evaluation comment belongs is null");
-            throw new InvalidArgumentException("13-006");
+            throw new InvalidArgumentException("error_009_03");
         }
 
         //Creating a container to hold assessed evaluation comment record
@@ -62,7 +62,7 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -82,7 +82,7 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
         logger.log(Level.INFO, "Checking validity of the assessed evaluation details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The assessed evaluation is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_009_03");
         }
 
         //Finding the assessed evaluation comments
@@ -94,7 +94,7 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
             assessedEvaluationComments = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("13-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of assessed evaluation comment records
@@ -113,18 +113,18 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("13-001");
+            throw new InvalidArgumentException("error_009_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The assessed evaluation comment's unique identifier is null");
-            throw new InvalidArgumentException("13-009");
+            throw new InvalidArgumentException("error_009_04");
         } else if (details.getComment() != null || details.getComment().trim().length() != 0) {
-            if (details.getComment().trim().length() > 200) {
-                logger.log(Level.INFO, "The assessed evaluation comment is longer than 200 characters");
-                throw new InvalidArgumentException("13-003");
+            if (details.getComment().trim().length() > 300) {
+                logger.log(Level.INFO, "The assessed evaluation comment is longer than 300 characters");
+                throw new InvalidArgumentException("error_009_02");
             }
         } else if (details.getAssessedEvaluation() == null) {
             logger.log(Level.INFO, "The assessed evaluation to which the assessed evaluation comment belongs is null");
-            throw new InvalidArgumentException("13-006");
+            throw new InvalidArgumentException("error_009_03");
         }
 
         //Creating a container to hold assessed evaluation comment record
@@ -142,7 +142,7 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("0-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -158,7 +158,7 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("13-009");
+            throw new InvalidArgumentException("error_009_04");
         }
 
         //Removing an assessed evaluation comment record from the database
@@ -168,7 +168,7 @@ public class AssessedEvaluationCommentRequests extends EntityRequests implements
             em.remove(assessedEvaluationComment);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("0-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

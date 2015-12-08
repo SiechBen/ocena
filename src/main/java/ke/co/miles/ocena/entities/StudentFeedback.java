@@ -54,7 +54,7 @@ public class StudentFeedback implements Serializable {
     @Column(name = "feedback")
     private String feedback;
     @Column(name = "date_completed")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateCompleted;
     @Column(name = "active")
     private Boolean active;

@@ -37,15 +37,15 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("10-001");
+            throw new InvalidArgumentException("error_014_01");
         } else if (details.getEmailAddress() != null) {
             if (details.getEmailAddress().trim().length() > 65) {
                 logger.log(Level.INFO, "The email address is longer than 65 characters");
-                throw new InvalidArgumentException("10-003");
+                throw new InvalidArgumentException("error_014_02");
             }
         } else if (details.getContact() == null) {
-            logger.log(Level.INFO, "The contact which offers the email contact is null");
-            throw new InvalidArgumentException("10-004");
+            logger.log(Level.INFO, "The contact to which the email contact belongs is null");
+            throw new InvalidArgumentException("error_014_03");
         }
 
         //Checking if the email contact is a duplicate
@@ -59,11 +59,11 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
             emailContact = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("10-002");
+            throw new EJBException("error_000_01");
         }
         if (emailContact != null) {
             logger.log(Level.SEVERE, "Email address is already in use");
-            throw new InvalidArgumentException("10-005");
+            throw new InvalidArgumentException("error_014_04");
         }
 
         //Creating a container to hold email contact record
@@ -79,7 +79,7 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
             em.persist(emailContact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("10-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the new record added
@@ -98,8 +98,8 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the contact unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The contact which offers the email contact is null");
-            throw new InvalidArgumentException("10-004");
+            logger.log(Level.INFO, "The contact to which the email contact belongs is null");
+            throw new InvalidArgumentException("error_014_03");
         }
 
         //Retrieving email contact records from the database
@@ -111,7 +111,7 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
             emailContacts = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("10-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of email contact records
@@ -127,8 +127,8 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the contact unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The contact is null");
-            throw new InvalidArgumentException("10-004");
+            logger.log(Level.INFO, "The contact to which the email contact belongs is null");
+            throw new InvalidArgumentException("error_014_03");
         }
 
         //Retrieving email contact records from the database
@@ -139,7 +139,7 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
             emailContact = (EmailContact) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("10-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of email contact records
@@ -158,18 +158,18 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("10-001");
+            throw new InvalidArgumentException("error_014_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The email contact's unique identifier is null");
-            throw new InvalidArgumentException("10-006");
+            throw new InvalidArgumentException("error_014_05");
         } else if (details.getEmailAddress() != null) {
             if (details.getEmailAddress().trim().length() > 65) {
                 logger.log(Level.INFO, "The email address is longer than 65 characters");
-                throw new InvalidArgumentException("10-003");
+                throw new InvalidArgumentException("error_014_02");
             }
         } else if (details.getContact() == null) {
-            logger.log(Level.INFO, "The contact which offers the email contact is null");
-            throw new InvalidArgumentException("10-004");
+            logger.log(Level.INFO, "The contact to which the email contact belongs is null");
+            throw new InvalidArgumentException("error_014_03");
         }
 
         //Checking if the email contact is a duplicate
@@ -183,12 +183,12 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
             emailContact = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("10-002");
+            throw new EJBException("error_000_01");
         }
         if (emailContact != null) {
             if (!(emailContact.getId().equals(details.getId()))) {
                 logger.log(Level.SEVERE, "Email address is already in use");
-                throw new InvalidArgumentException("10-005");
+                throw new InvalidArgumentException("error_014_04");
             }
         }
 
@@ -207,7 +207,7 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("10-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -222,8 +222,8 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (contactId == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("10-006");
+            logger.log(Level.INFO, "The unique identifier of the email contact is null");
+            throw new InvalidArgumentException("error_014_05");
         }
 
         //Get the email contact record to be removed
@@ -233,7 +233,7 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
         try {
             emailContact = (EmailContact) q.getSingleResult();
         } catch (Exception e) {
-            logger.log(Level.INFO, "An error occurred during phone record retrieval", e);
+            logger.log(Level.INFO, "An error occurred during email record retrieval", e);
         }
 
         //Remove an email contact record from the database
@@ -242,7 +242,7 @@ public class EmailContactRequests extends EntityRequests implements EmailContact
             em.remove(emailContact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("10-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

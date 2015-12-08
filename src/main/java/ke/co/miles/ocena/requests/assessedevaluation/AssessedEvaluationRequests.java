@@ -46,25 +46,25 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("18-001");
+            throw new InvalidArgumentException("error_010_01");
         } else if (details.getEvaluatedQuestion() == null) {
             logger.log(Level.INFO, "The evaluated question is null");
-            throw new InvalidArgumentException("18-002");
+            throw new InvalidArgumentException("error_010_02");
         } else if (details.getEvaluationSession() == null) {
             logger.log(Level.INFO, "The evaluation session is null");
-            throw new InvalidArgumentException("18-002");
+            throw new InvalidArgumentException("error_010_03");
         } else if (details.getPercentageScore() != null) {
             if (details.getPercentageScore().trim().length() > 20) {
                 logger.log(Level.INFO, "The percentage score is longer than 20 characters");
-                throw new InvalidArgumentException("18-002");
+                throw new InvalidArgumentException("error_010_04");
             }
         } else if (details.getQuestionCategory() == null) {
             logger.log(Level.INFO, "The question category is null");
-            throw new InvalidArgumentException("18-002");
+            throw new InvalidArgumentException("error_010_05");
         } else if (details.getQuestionDescription() != null) {
-            if (details.getQuestionDescription().trim().length() > 200) {
-                logger.log(Level.INFO, "The question description is longer than 200 characters");
-                throw new InvalidArgumentException("18-002");
+            if (details.getQuestionDescription().trim().length() > 300) {
+                logger.log(Level.INFO, "The question description is longer than 300 characters");
+                throw new InvalidArgumentException("error_010_06");
             }
         }
 
@@ -99,7 +99,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
             em.persist(assessedEvaluation);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning details of the record created
@@ -124,7 +124,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
             assessedEvaluations = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("18-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of assessed evaluation records
@@ -146,7 +146,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
             assessedEvaluations = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("18-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of assessed evaluation records
@@ -166,8 +166,8 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         try {
             questionCategories = q.getResultList();
         } catch (Exception e) {
-            logger.log(Level.INFO, "An error occurred while retrieving question categories from the database");
-            throw new InvalidStateException("0-002");
+            logger.log(Level.INFO, "An error occurred while retrieving question categories from the database", e);
+            throw new InvalidStateException("error_000_01");
         }
 
         //Retrieving assessed evaluation records from the database
@@ -183,7 +183,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
                         convertAssessedEvaluationsToAssessedEvaluationDetailsList(q.getResultList()));
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-                throw new EJBException("18-002");
+                throw new EJBException("error_000_01");
             }
         }
 
@@ -203,25 +203,25 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("18-001");
+            throw new InvalidArgumentException("error_010_01");
         } else if (details.getEvaluatedQuestion() == null) {
             logger.log(Level.INFO, "The evaluated question is null");
-            throw new InvalidArgumentException("18-002");
+            throw new InvalidArgumentException("error_010_02");
         } else if (details.getEvaluationSession() == null) {
             logger.log(Level.INFO, "The evaluation session is null");
-            throw new InvalidArgumentException("18-002");
+            throw new InvalidArgumentException("error_010_03");
         } else if (details.getPercentageScore() != null) {
             if (details.getPercentageScore().trim().length() > 20) {
                 logger.log(Level.INFO, "The percentage score is longer than 20 characters");
-                throw new InvalidArgumentException("18-002");
+                throw new InvalidArgumentException("error_010_04");
             }
         } else if (details.getQuestionCategory() == null) {
             logger.log(Level.INFO, "The question category is null");
-            throw new InvalidArgumentException("18-002");
+            throw new InvalidArgumentException("error_010_05");
         } else if (details.getQuestionDescription() != null) {
-            if (details.getQuestionDescription().trim().length() > 200) {
-                logger.log(Level.INFO, "The question description is longer than 200 characters");
-                throw new InvalidArgumentException("18-002");
+            if (details.getQuestionDescription().trim().length() > 300) {
+                logger.log(Level.INFO, "The question description is longer than 300 characters");
+                throw new InvalidArgumentException("error_010_06");
             }
         }
 
@@ -258,7 +258,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new EJBException("18-003");
+            throw new EJBException("error_000_01");
         }
 
     }
@@ -274,7 +274,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("18-006");
+            throw new InvalidArgumentException("error_010_07");
         }
 
         //Removing an assessed evaluation record from the database
@@ -284,7 +284,7 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
             em.remove(assessedEvaluation);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("18-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

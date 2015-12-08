@@ -20,6 +20,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -39,25 +41,28 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "AssessedEvaluation.findById", query = "SELECT a FROM AssessedEvaluation a WHERE a.id = :id"),
     @NamedQuery(name = "AssessedEvaluation.findByQuestionDescription", query = "SELECT a FROM AssessedEvaluation a WHERE a.questionDescription = :questionDescription"),
     @NamedQuery(name = "AssessedEvaluation.findByRating", query = "SELECT a FROM AssessedEvaluation a WHERE a.rating = :rating"),
+    @NamedQuery(name = "AssessedEvaluation.findByStandardDeviation", query = "SELECT a FROM AssessedEvaluation a WHERE a.standardDeviation = :standardDeviation"),
     @NamedQuery(name = "AssessedEvaluation.findByPercentageScore", query = "SELECT a FROM AssessedEvaluation a WHERE a.percentageScore = :percentageScore"),
     @NamedQuery(name = "AssessedEvaluation.findByVersion", query = "SELECT a FROM AssessedEvaluation a WHERE a.version = :version"),
     @NamedQuery(name = "AssessedEvaluation.findByActive", query = "SELECT a FROM AssessedEvaluation a WHERE a.active = :active")})
 public class AssessedEvaluation implements Serializable {
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "standard_deviation")
-    private Double standardDeviation;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Size(max = 200)
+    @Size(max = 300)
     @Column(name = "question_description")
     private String questionDescription;
     @Size(max = 10)
     @Column(name = "rating")
     private String rating;
+    @Max(value = 5)
+    @Min(value = 0)
+    @Column(name = "standard_deviation")
+    private Double standardDeviation;
     @Size(max = 20)
     @Column(name = "percentage_score")
     private String percentageScore;
@@ -109,6 +114,14 @@ public class AssessedEvaluation implements Serializable {
 
     public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    public Double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    public void setStandardDeviation(Double standardDeviation) {
+        this.standardDeviation = standardDeviation;
     }
 
     public String getPercentageScore() {
@@ -198,12 +211,4 @@ public class AssessedEvaluation implements Serializable {
         return "ke.co.miles.ocena.entities.AssessedEvaluation[ id=" + id + " ]";
     }
 
-    public Double getStandardDeviation() {
-        return standardDeviation;
-    }
-
-    public void setStandardDeviation(Double standardDeviation) {
-        this.standardDeviation = standardDeviation;
-    }
-    
 }

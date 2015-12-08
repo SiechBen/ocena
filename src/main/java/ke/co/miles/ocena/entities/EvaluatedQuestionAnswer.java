@@ -49,16 +49,16 @@ public class EvaluatedQuestionAnswer implements Serializable {
     @Size(max = 20)
     @Column(name = "rating")
     private String rating;
-    @Size(max = 200)
+    @Size(max = 300)
     @Column(name = "reasoning")
     private String reasoning;
-    @Size(max = 200)
+    @Size(max = 300)
     @Column(name = "comment1")
     private String comment1;
-    @Size(max = 200)
+    @Size(max = 300)
     @Column(name = "comment2")
     private String comment2;
-    @Size(max = 200)
+    @Size(max = 300)
     @Column(name = "comment3")
     private String comment3;
     @Column(name = "active")

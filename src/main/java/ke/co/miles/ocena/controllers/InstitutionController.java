@@ -97,7 +97,7 @@ public class InstitutionController extends Controller {
                         logger.log(Level.INFO, "Institution record creation failed", e);
                         return;
                     }
-                    try {
+                    try {   
                         institution = institutionService.retrieveInstitution();
                         getServletContext().setAttribute("institution", institution);
                     } catch (InvalidArgumentException | InvalidStateException e) {

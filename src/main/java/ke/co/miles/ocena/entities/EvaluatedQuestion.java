@@ -49,7 +49,7 @@ public class EvaluatedQuestion implements Serializable {
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 200)
+    @Size(min = 1, max = 300)
     @Column(name = "question")
     private String question;
     @Column(name = "active")

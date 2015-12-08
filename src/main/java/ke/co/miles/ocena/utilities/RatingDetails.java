@@ -6,7 +6,6 @@
 package ke.co.miles.ocena.utilities;
 
 import java.io.Serializable;
-import ke.co.miles.ocena.entities.Rating;
 
 /**
  *

@@ -42,7 +42,7 @@ public class QuestionCategory implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Short id;
-    @Size(max = 60)
+    @Size(max = 120)
     @Column(name = "category")
     private String category;
     @Column(name = "active")

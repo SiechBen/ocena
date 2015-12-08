@@ -218,6 +218,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         return overallAdminDetails;
     }
 //</editor-fold>
+
     private static final Logger logger = Logger.getLogger(OverallAdminRequests.class.getSimpleName());
 
 }

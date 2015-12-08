@@ -11,6 +11,8 @@
         <style type="text/css" media="screen">
             /* <![CDATA[ */
             @import url("static/plugins/bootstrap/bootstrap.min.css");
+            @import url("static/plugins/font-awesome/css/font-awesome.css");
+            @import url("static/plugins/bootstrap/bootstrap-social.css");
             @import url("static/plugins/jquery-ui/jquery-ui.min.css");
             @import url("static/plugins/jquery-ui/jquery-ui.css");
             @import url("static/css/default.css");
@@ -25,6 +27,17 @@
                     <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
                     THE UNIVERSITY OF NAIROBI
                 </a>
+            </div>
+            <div>
+                <button class="btn btn-social-icon btn-twitter">
+                    <span class="fa fa-twitter"></span>
+                </button>
+                <button class="btn btn-social-icon btn-facebook">
+                    <span class="fa fa-facebook"></span>
+                </button>
+                <button class="btn btn-social-icon btn-google">
+                    <span class="fa fa-google"></span>
+                </button>
             </div>
         </div>
         <div id="index-wrapper">

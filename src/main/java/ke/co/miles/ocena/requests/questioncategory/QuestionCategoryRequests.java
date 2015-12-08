@@ -39,8 +39,8 @@ public class QuestionCategoryRequests extends EntityRequests implements Question
         } else if (details.getCategory() == null || details.getCategory().trim().length() == 0) {
             logger.log(Level.INFO, "The question category is null");
             throw new InvalidArgumentException("error_004_02");
-        } else if (details.getCategory().trim().length() > 60) {
-            logger.log(Level.INFO, "The question category is longer than 60 characters");
+        } else if (details.getCategory().trim().length() > 120) {
+            logger.log(Level.INFO, "The question category is longer than 120 characters");
             throw new InvalidArgumentException("error_004_03");
         }
 
@@ -131,8 +131,8 @@ public class QuestionCategoryRequests extends EntityRequests implements Question
         }else if (details.getCategory() == null || details.getCategory().trim().length() == 0) {
             logger.log(Level.INFO, "The question category is null");
             throw new InvalidArgumentException("error_004_02");
-        } else if (details.getCategory().trim().length() > 60) {
-            logger.log(Level.INFO, "The question category is longer than 60 characters");
+        } else if (details.getCategory().trim().length() > 120) {
+            logger.log(Level.INFO, "The question category is longer than 120 characters");
             throw new InvalidArgumentException("error_004_03");
         }
 

@@ -49,7 +49,7 @@ public class PostalContact implements Serializable {
     @Size(max = 20)
     @Column(name = "postal_code")
     private String postalCode;
-    @Size(max = 30)
+    @Size(max = 100)
     @Column(name = "town")
     private String town;
     @Column(name = "active")

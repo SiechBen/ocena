@@ -43,24 +43,24 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             logger.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("19-001");
         } else if (evaluatedQuestionAnswerDetails.getComment1() != null) {
-            if (evaluatedQuestionAnswerDetails.getComment1().trim().length() > 200) {
-                logger.log(Level.INFO, "The first comment is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setComment1(evaluatedQuestionAnswerDetails.getComment1().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getComment1().trim().length() > 300) {
+                logger.log(Level.INFO, "The first comment is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setComment1(evaluatedQuestionAnswerDetails.getComment1().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getComment2() != null) {
-            if (evaluatedQuestionAnswerDetails.getComment2().trim().length() > 200) {
-                logger.log(Level.INFO, "The second comment is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setComment2(evaluatedQuestionAnswerDetails.getComment2().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getComment2().trim().length() > 300) {
+                logger.log(Level.INFO, "The second comment is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setComment2(evaluatedQuestionAnswerDetails.getComment2().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getComment3() != null) {
-            if (evaluatedQuestionAnswerDetails.getComment3().trim().length() > 200) {
-                logger.log(Level.INFO, "The third comment is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setComment3(evaluatedQuestionAnswerDetails.getComment3().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getComment3().trim().length() > 300) {
+                logger.log(Level.INFO, "The third comment is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setComment3(evaluatedQuestionAnswerDetails.getComment3().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getReasoning() != null) {
-            if (evaluatedQuestionAnswerDetails.getReasoning().trim().length() > 200) {
-                logger.log(Level.INFO, "The reasoning is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setReasoning(evaluatedQuestionAnswerDetails.getReasoning().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getReasoning().trim().length() > 300) {
+                logger.log(Level.INFO, "The reasoning is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setReasoning(evaluatedQuestionAnswerDetails.getReasoning().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getEvaluatedQuestion() == null) {
             logger.log(Level.INFO, "The evaluated question for which the answer belongs is null");
@@ -300,24 +300,24 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             logger.log(Level.INFO, "The faculty's unique identifier is null");
             throw new InvalidArgumentException("19-002");
         } else if (evaluatedQuestionAnswerDetails.getComment1() != null) {
-            if (evaluatedQuestionAnswerDetails.getComment1().trim().length() > 200) {
-                logger.log(Level.INFO, "The first comment is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setComment1(evaluatedQuestionAnswerDetails.getComment1().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getComment1().trim().length() > 300) {
+                logger.log(Level.INFO, "The first comment is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setComment1(evaluatedQuestionAnswerDetails.getComment1().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getComment2() != null) {
-            if (evaluatedQuestionAnswerDetails.getComment2().trim().length() > 200) {
-                logger.log(Level.INFO, "The second comment is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setComment2(evaluatedQuestionAnswerDetails.getComment2().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getComment2().trim().length() > 300) {
+                logger.log(Level.INFO, "The second comment is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setComment2(evaluatedQuestionAnswerDetails.getComment2().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getComment3() != null) {
-            if (evaluatedQuestionAnswerDetails.getComment3().trim().length() > 200) {
-                logger.log(Level.INFO, "The third comment is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setComment3(evaluatedQuestionAnswerDetails.getComment3().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getComment3().trim().length() > 300) {
+                logger.log(Level.INFO, "The third comment is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setComment3(evaluatedQuestionAnswerDetails.getComment3().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getReasoning() != null) {
-            if (evaluatedQuestionAnswerDetails.getReasoning().trim().length() > 200) {
-                logger.log(Level.INFO, "The reasoning is longer than 200 characters");
-                evaluatedQuestionAnswerDetails.setReasoning(evaluatedQuestionAnswerDetails.getReasoning().substring(0, 200));
+            if (evaluatedQuestionAnswerDetails.getReasoning().trim().length() > 300) {
+                logger.log(Level.INFO, "The reasoning is longer than 300 characters");
+                evaluatedQuestionAnswerDetails.setReasoning(evaluatedQuestionAnswerDetails.getReasoning().substring(0, 300));
             }
         } else if (evaluatedQuestionAnswerDetails.getEvaluatedQuestion() == null) {
             logger.log(Level.INFO, "The evaluated question for which the answer belongs is null");

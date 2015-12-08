@@ -35,13 +35,13 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("1-001");
+            throw new InvalidArgumentException("error_008_01");
         } else if (details.getAdmission() == null || details.getAdmission().trim().length() == 0) {
             logger.log(Level.INFO, "The admission is null");
-            throw new InvalidArgumentException("1-002");
+            throw new InvalidArgumentException("error_008_02");
         } else if (details.getAdmission().trim().length() > 60) {
             logger.log(Level.INFO, "The admission is longer than 60 characters");
-            throw new InvalidArgumentException("1-003");
+            throw new InvalidArgumentException("error_008_03");
         }
 
         //Checking if the admission is a duplicate
@@ -55,11 +55,11 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
             admission = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("1-002");
+            throw new EJBException("error_000_01");
         }
         if (admission != null) {
             logger.log(Level.SEVERE, "Admission is already in use");
-            throw new InvalidArgumentException("1-005");
+            throw new InvalidArgumentException("error_008_04");
         }
 
         //Creating a container to hold admission record
@@ -75,7 +75,7 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("1-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -99,7 +99,7 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
             admissions = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("1-002");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Returning the details list of admission records
@@ -118,16 +118,16 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("1-001");
+            throw new InvalidArgumentException("error_008_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The admission's unique identifier is null");
-            throw new InvalidArgumentException("1-006");
+            throw new InvalidArgumentException("error_008_05");
         } else if (details.getAdmission() == null || details.getAdmission().trim().length() == 0) {
             logger.log(Level.INFO, "The admission is null");
-            throw new InvalidArgumentException("1-002");
+            throw new InvalidArgumentException("error_008_02");
         } else if (details.getAdmission().trim().length() > 60) {
             logger.log(Level.INFO, "The admission is longer than 60 characters");
-            throw new InvalidArgumentException("1-003");
+            throw new InvalidArgumentException("error_008_03");
         }
 
         //Checking if the admission is a duplicate
@@ -141,12 +141,13 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
             admission = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("1-002");
+            throw new EJBException("error_000_01");
         }
+
         if (admission != null) {
             if (!(admission.getId().equals(details.getId()))) {
                 logger.log(Level.SEVERE, "Admission is already in use");
-                throw new InvalidArgumentException("1-005");
+                throw new InvalidArgumentException("error_008_04");
             }
         }
 
@@ -164,7 +165,7 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("1-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -180,7 +181,7 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("1-006");
+            throw new InvalidArgumentException("error_008_05");
         }
 
         //Removing an admission record from the database
@@ -190,7 +191,7 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
             em.remove(admission);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("1-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -231,5 +232,6 @@ public class AdmissionRequests extends EntityRequests implements AdmissionReques
         return details;
     }
 //</editor-fold>
+
     private static final Logger logger = Logger.getLogger(AdmissionRequests.class.getSimpleName());
 }

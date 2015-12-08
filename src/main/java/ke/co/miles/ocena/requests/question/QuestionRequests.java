@@ -51,8 +51,8 @@ public class QuestionRequests extends EntityRequests implements QuestionRequests
         } else if (details.getQuestion() == null || details.getQuestion().trim().length() == 0) {
             logger.log(Level.INFO, "The question is null");
             throw new InvalidArgumentException("error_005_02");
-        } else if (details.getQuestion().trim().length() > 200) {
-            logger.log(Level.INFO, "The question is longer than 200 characters");
+        } else if (details.getQuestion().trim().length() > 300) {
+            logger.log(Level.INFO, "The question is longer than 300 characters");
             throw new InvalidArgumentException("error_005_03");
         } else if (details.getMeansOfAnswering() == null) {
             logger.log(Level.INFO, "The means of answering is null");
@@ -475,8 +475,8 @@ public class QuestionRequests extends EntityRequests implements QuestionRequests
         } else if (details.getQuestion() == null || details.getQuestion().trim().length() == 0) {
             logger.log(Level.INFO, "The question is null");
             throw new InvalidArgumentException("error_005_02");
-        } else if (details.getQuestion().trim().length() > 200) {
-            logger.log(Level.INFO, "The question is longer than 200 characters");
+        } else if (details.getQuestion().trim().length() > 300) {
+            logger.log(Level.INFO, "The question is longer than 300 characters");
             throw new InvalidArgumentException("error_005_03");
         } else if (details.getMeansOfAnswering() == null) {
             logger.log(Level.INFO, "The means of answering is null");

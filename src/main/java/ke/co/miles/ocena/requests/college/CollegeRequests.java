@@ -40,22 +40,22 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("7-001");
+            throw new InvalidArgumentException("error_011_01");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The college name is null");
-            throw new InvalidArgumentException("7-002");
+            throw new InvalidArgumentException("error_011_02");
         } else if (details.getName().trim().length() > 300) {
             logger.log(Level.INFO, "The college name is longer than 300 characters");
-            throw new InvalidArgumentException("7-003");
+            throw new InvalidArgumentException("error_011_03");
         } else if (details.getAbbreviation() == null || details.getAbbreviation().trim().length() == 0) {
-            logger.log(Level.INFO, "The abbreviation is null");
-            throw new InvalidArgumentException("7-002");
+            logger.log(Level.INFO, "The college abbreviation is null");
+            throw new InvalidArgumentException("error_011_04");
         } else if (details.getAbbreviation().trim().length() > 20) {
-            logger.log(Level.INFO, "The abbreviation is longer than 20 characters");
-            throw new InvalidArgumentException("7-003");
+            logger.log(Level.INFO, "The college abbreviation is longer than 20 characters");
+            throw new InvalidArgumentException("error_011_05");
         } else if (details.getInstitution() == null) {
-            logger.log(Level.INFO, "The institution which offers the college is null");
-            throw new InvalidArgumentException("7-004");
+            logger.log(Level.INFO, "The institution to which the college belongs is null");
+            throw new InvalidArgumentException("error_011_06");
         }
 
         //Checking if the college name is a duplicate
@@ -65,33 +65,33 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         try {
             college = (College) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.INFO, "College is available for use");
+            logger.log(Level.INFO, "College name is available for use");
             college = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("7-002");
+            throw new EJBException("error_011_02");
         }
         if (college != null) {
             logger.log(Level.SEVERE, "College name is already in use");
-            throw new InvalidArgumentException("7-005");
+            throw new InvalidArgumentException("error_011_07");
         }
 
-        //Checking if the abbreviation is a duplicate
-        logger.log(Level.INFO, "Checking if the abbreviation is a duplicate");
+        //Checking if the college abbreviation is a duplicate
+        logger.log(Level.INFO, "Checking if the college abbreviation is a duplicate");
         q = em.createNamedQuery("College.findByAbbreviation");
         q.setParameter("abbreviation", details.getAbbreviation());
         try {
             college = (College) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.INFO, "College is available for use");
+            logger.log(Level.INFO, "College abbreviation is available for use");
             college = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("7-002");
+            throw new EJBException("error_000_01");
         }
         if (college != null) {
-            logger.log(Level.SEVERE, "Abbreviation is already in use");
-            throw new InvalidArgumentException("7-005");
+            logger.log(Level.SEVERE, "College abbreviation is already in use");
+            throw new InvalidArgumentException("error_011_08");
         }
 
         //Creating a container to hold college record
@@ -109,7 +109,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("7-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -129,7 +129,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         logger.log(Level.INFO, "Checking validity of the institution's unique identifier passed in");
         if (institutionId == null) {
             logger.log(Level.INFO, "The institution's unique identifier is null");
-            throw new InvalidArgumentException("21-006");
+            throw new InvalidArgumentException("error_012_0");
         }
 
         //Retrieve the colleges in an assessedEvaluationComment
@@ -156,8 +156,8 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the institution unique identifier passed in");
         if (institutionId == null) {
-            logger.log(Level.INFO, "The institution which offers the college is null");
-            throw new InvalidArgumentException("7-004");
+            logger.log(Level.INFO, "The institution to which the college belongs is null");
+            throw new InvalidArgumentException("error_011_06");
         }
 
         //Retrieving college records from the database
@@ -169,7 +169,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
             colleges = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("0-002");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Returning the details list of college records
@@ -186,7 +186,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         logger.log(Level.INFO, "Checking validity of the college unique identifier passed in");
         if (collegeId == null) {
             logger.log(Level.INFO, "The college unique identifier is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_011_09");
         }
 
         //Retrieving college records from the database
@@ -198,7 +198,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
             college = (College) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("0-002");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Returning the details of the college record
@@ -219,7 +219,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
             colleges = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("0-002");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Returning the details list of college records
@@ -238,25 +238,25 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("7-001");
+            throw new InvalidArgumentException("error_011_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The college's unique identifier is null");
-            throw new InvalidArgumentException("7-006");
+            throw new InvalidArgumentException("error_011_09");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The college name is null");
-            throw new InvalidArgumentException("7-002");
+            throw new InvalidArgumentException("error_011_02");
         } else if (details.getName().trim().length() > 300) {
             logger.log(Level.INFO, "The college name is longer than 300 characters");
-            throw new InvalidArgumentException("7-003");
+            throw new InvalidArgumentException("error_011_03");
         } else if (details.getAbbreviation() == null || details.getAbbreviation().trim().length() == 0) {
-            logger.log(Level.INFO, "The abbreviation is null");
-            throw new InvalidArgumentException("7-002");
+            logger.log(Level.INFO, "The college abbreviation is null");
+            throw new InvalidArgumentException("error_011_04");
         } else if (details.getAbbreviation().trim().length() > 20) {
-            logger.log(Level.INFO, "The abbreviation is longer than 20 characters");
-            throw new InvalidArgumentException("7-003");
+            logger.log(Level.INFO, "The college abbreviation is longer than 20 characters");
+            throw new InvalidArgumentException("error_011_05");
         } else if (details.getInstitution() == null) {
-            logger.log(Level.INFO, "The institution which offers the college is null");
-            throw new InvalidArgumentException("7-004");
+            logger.log(Level.INFO, "The institution to which the college belongs is null");
+            throw new InvalidArgumentException("error_011_06");
         }
 
         //Checking if the college name is a duplicate
@@ -266,35 +266,36 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         try {
             college = (College) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.INFO, "College is available for use");
+            logger.log(Level.INFO, "College name is available for use");
             college = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("7-002");
+            throw new EJBException("error_000_01");
         }
         if (college != null) {
             if (!college.getId().equals(details.getId())) {
                 logger.log(Level.SEVERE, "College name is already in use");
-                throw new InvalidArgumentException("7-005");
+                throw new InvalidArgumentException("error_011_07");
             }
         }
-        //Checking if the abbreviation is a duplicate
-        logger.log(Level.INFO, "Checking if the abbreviation is a duplicate");
+        
+        //Checking if the college abbreviation is a duplicate
+        logger.log(Level.INFO, "Checking if the college abbreviation is a duplicate");
         q = em.createNamedQuery("College.findByAbbreviation");
         q.setParameter("abbreviation", details.getAbbreviation());
         try {
             college = (College) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.INFO, "College is available for use");
+            logger.log(Level.INFO, "College name is available for use");
             college = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("7-002");
+            throw new EJBException("error_011_02");
         }
         if (college != null) {
             if (!college.getId().equals(details.getId())) {
-                logger.log(Level.SEVERE, "Abbreviation is already in use");
-                throw new InvalidArgumentException("7-005");
+                logger.log(Level.SEVERE, "College abbreviation is already in use");
+                throw new InvalidArgumentException("error_011_08");
             }
         }
 
@@ -314,7 +315,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("7-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -330,7 +331,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The college's unique identifier is null");
-            throw new InvalidArgumentException("7-006");
+            throw new InvalidArgumentException("error_011_09");
         }
 
         //Removing a college record from the database
@@ -340,7 +341,7 @@ public class CollegeRequests extends EntityRequests implements CollegeRequestsLo
             em.remove(college);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("7-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

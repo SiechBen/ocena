@@ -35,7 +35,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OverallAdmin.findByActive", query = "SELECT o FROM OverallAdmin o WHERE o.active = :active"),
     @NamedQuery(name = "OverallAdmin.findByVersion", query = "SELECT o FROM OverallAdmin o WHERE o.version = :version")})
 public class OverallAdmin implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -128,5 +127,5 @@ public class OverallAdmin implements Serializable {
     public String toString() {
         return "ke.co.miles.ocena.entities.OverallAdmin[ id=" + id + " ]";
     }
-
+    
 }

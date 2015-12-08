@@ -44,7 +44,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
             em.persist(contact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during contact record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         contactDetails = new ContactDetails();
@@ -85,7 +85,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
             contacts = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during retrieval", e);
-            throw new InvalidStateException("0-002");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Returning the record list
@@ -101,7 +101,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
         logger.log(Level.INFO, "Checking if unique identfier is valid");
         if (contactId == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("6-001");
+            throw new InvalidArgumentException("error_013_01");
         }
 
         //Retrieving contact records
@@ -113,7 +113,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
             contact = (Contact) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during retrieval", e);
-            throw new InvalidStateException("0-002");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Returning the record list
@@ -128,7 +128,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
         logger.log(Level.INFO, "Checking validity of details");
         if (contactDetails == null) {
             logger.log(Level.INFO, "Contact details are null");
-            throw new InvalidArgumentException("6-002");
+            throw new InvalidArgumentException("error_013_02");
         }
 
         //Create a contact record
@@ -143,7 +143,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
             em.merge(contact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during contact record update", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Create an email contact record
@@ -190,7 +190,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
         logger.log(Level.INFO, "Checking if unique identifer is null");
         if (contactId == null) {
             logger.log(Level.WARNING, "The contact's unique identifier is null");
-            throw new InvalidArgumentException("5-002");
+            throw new InvalidArgumentException("error_013_01");
         }
 
         //Get the contact record to be removed
@@ -205,7 +205,7 @@ public class ContactRequests extends EntityRequests implements ContactRequestsLo
             em.remove(contact);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during removal", e);
-            throw new InvalidStateException("0-004");
+            throw new InvalidStateException("error_000_01");
         }
     }
 //</editor-fold>
