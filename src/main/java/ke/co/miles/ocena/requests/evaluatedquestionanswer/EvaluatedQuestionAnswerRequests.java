@@ -41,7 +41,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (evaluatedQuestionAnswerDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("19-001");
+            throw new InvalidArgumentException("error_025_01");
         } else if (evaluatedQuestionAnswerDetails.getComment1() != null) {
             if (evaluatedQuestionAnswerDetails.getComment1().trim().length() > 300) {
                 logger.log(Level.INFO, "The first comment is longer than 300 characters");
@@ -64,13 +64,13 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             }
         } else if (evaluatedQuestionAnswerDetails.getEvaluatedQuestion() == null) {
             logger.log(Level.INFO, "The evaluated question for which the answer belongs is null");
-            throw new InvalidArgumentException("19-002");
+            throw new InvalidArgumentException("error_025_02");
         } else if (evaluatedQuestionAnswerDetails.getEvaluationInstance() == null) {
             logger.log(Level.INFO, "The evaluation instance is null");
-            throw new InvalidArgumentException("19-002");
+            throw new InvalidArgumentException("error_025_03");
         } else if (evaluatedQuestionAnswerDetails.getCourseOfInstance() == null) {
             logger.log(Level.INFO, "The course of instance is null");
-            throw new InvalidArgumentException("19-002");
+            throw new InvalidArgumentException("error_025_04");
         }
 
         ///Prevent duplicate evaluated question answer creation
@@ -88,13 +88,13 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             evaluatedQuestionAnswer = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
 
         //If adding would be creating a duplicate
         if (evaluatedQuestionAnswer != null) {
             logger.log(Level.SEVERE, "The evaluated question answer if added would be a duplicate");
-            throw new InvalidArgumentException("9-002");
+            throw new InvalidArgumentException("error_025_05");
         }
 
         //Creating a container to hold evaluated question answer record
@@ -118,7 +118,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -130,70 +130,35 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
 //<editor-fold defaultstate="collapsed" desc="Read">
 
     @Override
-    public List<EvaluatedQuestionAnswerDetails> retrieveEvaluatedQuestionAnswers(EvaluationSessionDetails evaluationSessionDetails) throws InvalidArgumentException, InvalidStateException {
-        //Method for retrieving evaluated question answers
-        logger.log(Level.INFO, "Entered the method for retrieving evaluated question answers");
-
-        //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of evaluation session details passed in");
-        if (evaluationSessionDetails == null) {
-            logger.log(Level.INFO, "The evaluation session is null");
-            throw new InvalidArgumentException("7-004");
-        } else if (evaluationSessionDetails.getId() == null) {
-            logger.log(Level.INFO, "The evaluation session's unique identifier is null");
-            throw new InvalidArgumentException("7-004");
-        }
-
-        //Retrieving evaluated question answer records from the database
-        logger.log(Level.INFO, "Retrieving evaluated question answer records from the database");
-        q = em.createNamedQuery("EvaluatedQuestionAnswer.findByEvaluationSessionId");
-        q.setParameter("evaluationSessionId", evaluationSessionDetails.getId());
-        List<EvaluatedQuestionAnswer> evaluatedQuestionAnswers = new ArrayList<>();
-        try {
-            evaluatedQuestionAnswers = q.getResultList();
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
-        }
-
-        //Returning the details list of evaluated question answer records
-        logger.log(Level.INFO, "Returning the details list of evaluated question answer records");
-        return convertFacultiesToEvaluatedQuestionAnswerDetailsList(evaluatedQuestionAnswers);
-    }
-
-    @Override
     public EvaluatedQuestionAnswerDetails retrieveEvaluatedQuestionAnswer(EvaluationInstanceDetails currentEvaluationInstance, EvaluatedQuestionDetails currentEvaluatedQuestion, CourseOfInstanceDetails currentCourseOfInstance) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving a specified evaluated question answer
         logger.log(Level.INFO, "Entered the method for retrieving a specified evaluated question answer");
 
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the details passed in");
-        if (currentEvaluationInstance == null) {
-            logger.log(Level.INFO, "The evaluation instance is null");
-            throw new InvalidArgumentException("7-004");
-        } else if (currentEvaluationInstance.getId() == null) {
-            logger.log(Level.INFO, "The evaluation instance's unique identifier is null");
-            throw new InvalidArgumentException("7-004");
-        } else if (currentEvaluatedQuestion == null) {
+        if (currentEvaluatedQuestion == null) {
             logger.log(Level.INFO, "The evaluated question is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_025_02");
         } else if (currentEvaluatedQuestion.getId() == null) {
             logger.log(Level.INFO, "The evaluated question's unique identifier is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_025_07");
+        } else if (currentEvaluationInstance == null) {
+            logger.log(Level.INFO, "The evaluation instance is null");
+            throw new InvalidArgumentException("error_025_03");
+        } else if (currentEvaluationInstance.getId() == null) {
+            logger.log(Level.INFO, "The evaluation instance's unique identifier is null");
+            throw new InvalidArgumentException("error_025_08");
         } else if (currentCourseOfInstance == null) {
             logger.log(Level.INFO, "The current course of instance is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_025_04");
         } else if (currentCourseOfInstance.getId() == null) {
             logger.log(Level.INFO, "The current course of instance's unique identifier is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_025_09");
         }
 
         //Retrieving the evaluated question answer record from the database
         logger.log(Level.INFO, "Retrieving the evaluated question answer record from the database");
         q = em.createNamedQuery("EvaluatedQuestionAnswer.findByEvaluationInstanceIdAndEvaluatedQuestionIdAndCourseOfInstanceId");
-        logger.log(Level.INFO, "\033[32;3mEvaluation instance id: {0}", currentEvaluationInstance.getId());
-        logger.log(Level.INFO, "\033[32;3mEvaluated question id: {0}", currentEvaluatedQuestion.getId());
-        logger.log(Level.INFO, "\033[32;3mCourse of instance id: {0}", currentCourseOfInstance.getId());
         q.setParameter("evaluationInstanceId", currentEvaluationInstance.getId());
         q.setParameter("evaluatedQuestionId", currentEvaluatedQuestion.getId());
         q.setParameter("courseOfInstanceId", currentCourseOfInstance.getId());
@@ -206,7 +171,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             return null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details of the evaluated question answer record
@@ -224,22 +189,22 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         logger.log(Level.INFO, "Validating the arguments");
         if (evaluatedQuestion == null) {
             logger.log(Level.INFO, "Evaluated question is null");
-            throw new InvalidArgumentException("7-006");
+            throw new InvalidArgumentException("error_025_02");
         } else if (evaluatedQuestion.getId() == null) {
             logger.log(Level.INFO, "The unique identifier of the evaluated question is nul");
-            throw new InvalidArgumentException("7-006");
+            throw new InvalidArgumentException("error_025_07");
         } else if (evaluationSession == null) {
-            logger.log(Level.INFO, "Evaluated session is null");
-            throw new InvalidArgumentException("7-006");
+            logger.log(Level.INFO, "Evaluation session is null");
+            throw new InvalidArgumentException("error_025_10");
         } else if (evaluationSession.getId() == null) {
-            logger.log(Level.INFO, "The unique identifier of the evaluated session is nul");
-            throw new InvalidArgumentException("7-006");
+            logger.log(Level.INFO, "The unique identifier of the evaluation session is null");
+            throw new InvalidArgumentException("error_025_11");
         } else if (courseOfSession == null) {
             logger.log(Level.INFO, "Course of sesison is null");
-            throw new InvalidArgumentException("7-006");
+            throw new InvalidArgumentException("error_025_12");
         } else if (courseOfSession.getId() == null) {
-            logger.log(Level.INFO, "The unique identifier of the course of sesison is nul");
-            throw new InvalidArgumentException("7-006");
+            logger.log(Level.INFO, "The unique identifier of the course of sesison is null");
+            throw new InvalidArgumentException("error_025_13");
         }
 
         //Retrieve all the evaluation instances of the sesion
@@ -295,10 +260,10 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (evaluatedQuestionAnswerDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("19-001");
+            throw new InvalidArgumentException("error_025_01");
         } else if (evaluatedQuestionAnswerDetails.getId() == null) {
-            logger.log(Level.INFO, "The faculty's unique identifier is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The unique identifier of the evaluated question answer is null");
+            throw new InvalidArgumentException("error_025_14");
         } else if (evaluatedQuestionAnswerDetails.getComment1() != null) {
             if (evaluatedQuestionAnswerDetails.getComment1().trim().length() > 300) {
                 logger.log(Level.INFO, "The first comment is longer than 300 characters");
@@ -321,10 +286,13 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             }
         } else if (evaluatedQuestionAnswerDetails.getEvaluatedQuestion() == null) {
             logger.log(Level.INFO, "The evaluated question for which the answer belongs is null");
-            throw new InvalidArgumentException("19-002");
+            throw new InvalidArgumentException("error_025_02");
         } else if (evaluatedQuestionAnswerDetails.getEvaluationInstance() == null) {
             logger.log(Level.INFO, "The evaluation instance is null");
-            throw new InvalidArgumentException("19-002");
+            throw new InvalidArgumentException("error_025_03");
+        } else if (courseOfInstanceDetails == null) {
+            logger.log(Level.INFO, "The course of instance is null");
+            throw new InvalidArgumentException("error_025_04");
         }
 
         //Creating a container to hold evaluated question answer record
@@ -348,7 +316,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new EJBException("19-003");
+            throw new EJBException("error_025_03");
         }
 
     }
@@ -363,8 +331,8 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("19-006");
+            logger.log(Level.INFO, "The unique identifier of the evaluated question answer is null");
+            throw new InvalidArgumentException("error_025_14");
         }
 
         //Removing a evaluated question answer record from the database
@@ -374,7 +342,7 @@ public class EvaluatedQuestionAnswerRequests extends EntityRequests implements E
             em.remove(evaluatedQuestionAnswer);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("0-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

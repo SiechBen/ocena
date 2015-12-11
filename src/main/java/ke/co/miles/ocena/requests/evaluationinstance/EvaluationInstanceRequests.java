@@ -37,16 +37,16 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("13-001");
+            throw new InvalidArgumentException("error_026_01");
         } else if (details.getAnonymousIdentity() == null || details.getAnonymousIdentity().trim().length() == 0) {
             logger.log(Level.INFO, "The anonymous identity is null");
-            throw new InvalidArgumentException("13-002");
+            throw new InvalidArgumentException("error_026_02");
         } else if (details.getAnonymousIdentity().trim().length() > 120) {
             logger.log(Level.INFO, "The anonymous identity is longer than 120 characters");
-            throw new InvalidArgumentException("13-003");
+            throw new InvalidArgumentException("error_026_03");
         } else if (details.getEvaluationSession() == null) {
             logger.log(Level.INFO, "The evaluation session is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_026_04");
         }
 
         //Check that the evaluation instance is unique to an evaluation session
@@ -61,7 +61,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             evaluationInstance = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (evaluationInstance != null) {
             logger.log(Level.SEVERE, "Evaluation instance is already in use");
@@ -82,7 +82,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -102,10 +102,10 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
         logger.log(Level.INFO, "Checking validity of the evaluation session details passed in");
         if (evaluationSessionDetails == null) {
             logger.log(Level.INFO, "The evaluation session details are null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_026_04");
         } else if (evaluationSessionDetails.getId() == null) {
             logger.log(Level.INFO, "The evaluation session unique identifier is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_026_05");
         }
 
         //Finding the evaluation instance
@@ -117,7 +117,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             evaluationInstances = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("13-002");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Returning the details list of evaluation instance records
@@ -134,10 +134,10 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
         logger.log(Level.INFO, "Checking validity of the evaluation session details passed in");
         if (evaluationInstanceDetails == null) {
             logger.log(Level.INFO, "The evaluation instance details are null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_026_01");
         } else if (evaluationInstanceDetails.getId() == null) {
-            logger.log(Level.INFO, "The evaluation instance unique identifier is null");
-            throw new InvalidArgumentException("13-004");
+            logger.log(Level.INFO, "The unique identifier of the evaluation instancce is null");
+            throw new InvalidArgumentException("error_026_06");
         }
 
         //Finding the evaluation instance
@@ -149,7 +149,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             evaluationInstance = (EvaluationInstance) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("13-002");
+            throw new EJBException("error_000_01");
         }
 
         //Return the evaluation instance
@@ -165,8 +165,8 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
         //Check validity of the evaluation session details
         logger.log(Level.INFO, "Checking validity of the evaluation session details passed in");
         if (evaluationInstanceId == null) {
-            logger.log(Level.INFO, "The evaluation instance unique identifier is null");
-            throw new InvalidArgumentException("13-004");
+            logger.log(Level.INFO, "The unique identifier of the evaluation instance is null");
+            throw new InvalidArgumentException("error_026_06");
         }
 
         //Finding the evaluation instance
@@ -178,7 +178,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             evaluationInstance = (EvaluationInstance) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("13-002");
+            throw new EJBException("error_000_01");
         }
 
         //Return the evaluation instance
@@ -197,19 +197,19 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (evaluationInstanceDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("13-001");
+            throw new InvalidArgumentException("error_026_01");
         } else if (evaluationInstanceDetails.getId() == null) {
-            logger.log(Level.INFO, "The evaluation instance's unique identifier is null");
-            throw new InvalidArgumentException("13-009");
+            logger.log(Level.INFO, "The unique identifier of the evaluation instance's is null");
+            throw new InvalidArgumentException("error_026_09");
         } else if (evaluationInstanceDetails.getAnonymousIdentity() == null || evaluationInstanceDetails.getAnonymousIdentity().trim().length() == 0) {
             logger.log(Level.INFO, "The anonymous identity is null");
-            throw new InvalidArgumentException("13-002");
+            throw new InvalidArgumentException("error_026_02");
         } else if (evaluationInstanceDetails.getAnonymousIdentity().trim().length() > 120) {
             logger.log(Level.INFO, "The anonymous identity is longer than 120 characters");
-            throw new InvalidArgumentException("13-003");
+            throw new InvalidArgumentException("error_026_03");
         } else if (evaluationInstanceDetails.getEvaluationSession() == null) {
             logger.log(Level.INFO, "The evaluation session is null");
-            throw new InvalidArgumentException("13-004");
+            throw new InvalidArgumentException("error_026_04");
         }
 
         //Check that the evaluation instance is unique to an evaluation session
@@ -224,12 +224,12 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             evaluationInstance = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (evaluationInstance != null) {
             if (!(evaluationInstance.getId().equals(evaluationInstanceDetails.getId()))) {
                 logger.log(Level.SEVERE, "Evaluation instance is already in use");
-                throw new InvalidArgumentException("13-008");
+                throw new InvalidArgumentException("error_026_07");
             }
         }
 
@@ -248,7 +248,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("0-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -264,7 +264,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("13-009");
+            throw new InvalidArgumentException("error_026_06");
         }
 
         //Removing an evaluation instance record from the database
@@ -274,7 +274,7 @@ public class EvaluationInstanceRequests extends EntityRequests implements Evalua
             em.remove(evaluationInstance);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("0-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

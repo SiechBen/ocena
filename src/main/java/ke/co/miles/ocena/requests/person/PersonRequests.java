@@ -49,34 +49,34 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (personDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("16-001");
+            throw new InvalidArgumentException("error_029_01");
         } else if (personDetails.getFirstName() == null || personDetails.getFirstName().trim().length() == 0) {
             logger.log(Level.INFO, "The first name is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_02");
         } else if (personDetails.getFirstName().trim().length() > 20) {
             logger.log(Level.INFO, "The first name is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_03");
         } else if (personDetails.getLastName() == null || personDetails.getLastName().trim().length() == 0) {
             logger.log(Level.INFO, "The last name is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_04");
         } else if (personDetails.getLastName().trim().length() > 20) {
             logger.log(Level.INFO, "The last name is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_05");
         } else if (personDetails.getReferenceNumber() == null || personDetails.getReferenceNumber().trim().length() == 0) {
             logger.log(Level.INFO, "The reference number is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_06");
         } else if (personDetails.getReferenceNumber().trim().length() > 20) {
             logger.log(Level.INFO, "The reference number is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_07");
         } else if (personDetails.getNationalIdOrPassport() == null || personDetails.getNationalIdOrPassport().trim().length() == 0) {
             logger.log(Level.INFO, "The national id or passport is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_08");
         } else if (personDetails.getNationalIdOrPassport().trim().length() > 20) {
             logger.log(Level.INFO, "The national id or passport is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_09");
         } else if (facultyMemberDetails == null) {
             logger.log(Level.INFO, "The faculty member details are null");
-            throw new InvalidArgumentException("16-012");
+            throw new InvalidArgumentException("error_028_01");
         }
 
         //Checking if the reference number is a duplicate
@@ -90,11 +90,11 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             person = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("16-002");
+            throw new EJBException("error_000_01");
         }
         if (person != null) {
             logger.log(Level.SEVERE, "The reference number is already in use");
-            throw new InvalidArgumentException("16-005");
+            throw new InvalidArgumentException("error_029_10");
         }
 
         //Checking if the national id or passport number is a duplicate
@@ -108,11 +108,11 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             person = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("16-002");
+            throw new EJBException("error_000_01");
         }
         if (person != null) {
             logger.log(Level.SEVERE, "The national id or passport number is already in use");
-            throw new InvalidArgumentException("16-005");
+            throw new InvalidArgumentException("error_029_11");
         }
 
         //Creating a container to hold person record
@@ -131,7 +131,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             em.persist(person);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during person record creation", e);
-            throw new EJBException("16-001");
+            throw new EJBException("error_000_01");
         }
 
         //Create a message digest algorithm object for SHA-256 hashing algorithm
@@ -140,8 +140,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            logger.log(Level.INFO, "An error occurred while finding the hashing algorithm", e);
-            throw new Exception("16-012");
+            logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
+            throw new Exception("error_007_01");
         }
 
         //Create the person's user account
@@ -158,12 +158,11 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Create the user's account record
         logger.log(Level.INFO, "Creating the user's account record");
         try {
-
             em.persist(userAccount);
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during user account record creation", e);
-            throw new EJBException("16-001");
+            throw new EJBException("error_000_01");
         }
 
         //Create a faculty member record for the person
@@ -187,16 +186,16 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         logger.log(Level.INFO, "Checking validity of the institution unique identifier passed in");
         if (username == null || username.trim().length() == 0) {
             logger.log(Level.INFO, "The username is null");
-            throw new InvalidArgumentException("16-004");
+            throw new InvalidArgumentException("error_001_12");
         } else if (username.trim().length() > 20) {
-            logger.log(Level.INFO, "The password is longer than 20 characters");
-            throw new InvalidArgumentException("16-005");
+            logger.log(Level.INFO, "The username is longer than 20 characters");
+            throw new InvalidArgumentException("error_001_13");
         } else if (password == null || password.trim().length() == 0) {
             logger.log(Level.INFO, "The password is null");
-            throw new InvalidArgumentException("16-005");
+            throw new InvalidArgumentException("error_029_14");
         } else if (password.trim().length() > 150) {
             logger.log(Level.INFO, "The password is longer than 150 characters");
-            throw new InvalidArgumentException("16-005");
+            throw new InvalidArgumentException("error_029_15");
         }
 
         //Get the hashed password
@@ -204,8 +203,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {
-            logger.log(Level.SEVERE, "An error occurred while finding the hashing algorithm", ex);
-            throw new NoSuchAlgorithmException("16-009");
+            logger.log(Level.SEVERE, "An error occurred while finding the hashing algorithm");
+            throw new NoSuchAlgorithmException("error_007_01");
         }
         String hashedPassword = accessService.generateSHAPassword(messageDigest, password);
 
@@ -215,7 +214,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             userAccount = userAccountService.retrieveUserAccount(username, hashedPassword);
         } catch (InvalidArgumentException | InvalidLoginException e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new InvalidLoginException("error_001_09");
+            throw new InvalidLoginException("error_000_01");
         }
 
         //Creating and valuating a map of person details to their user group
@@ -237,8 +236,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the institution unique identifier passed in");
         if (institutionId == null) {
-            logger.log(Level.INFO, "The institution which offers the person is null");
-            throw new InvalidArgumentException("16-004");
+            logger.log(Level.INFO, "The institution to which the person is associated is null");
+            throw new InvalidArgumentException("error_029_16");
         }
 
         //Retrieving person records from the database
@@ -250,7 +249,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             people = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("16-0020");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of person records
@@ -266,8 +265,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking validity of the reference number passed in
         logger.log(Level.INFO, "Checking validity of the reference number passed in");
         if (referenceNumber == null) {
-            logger.log(Level.INFO, "The institution which offers the person is null");
-            throw new InvalidArgumentException("16-004");
+            logger.log(Level.INFO, "The reference number of the person is null");
+            throw new InvalidArgumentException("error_029_06");
         }
 
         //Retrieving person record from the database
@@ -279,10 +278,10 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             person = (Person) q.getSingleResult();
         } catch (NoResultException e) {
             logger.log(Level.SEVERE, "No such record exists", e);
-            throw new InvalidStateException("16-0020");
+            throw new InvalidStateException("error_029_18");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("16-0020");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details of the person record
@@ -298,8 +297,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking validity of the reference number passed in
         logger.log(Level.INFO, "Checking validity of the reference number passed in");
         if (personId == null) {
-            logger.log(Level.INFO, "The institution which offers the person is null");
-            throw new InvalidArgumentException("16-004");
+            logger.log(Level.INFO, "The institution to which the person is associated is null");
+            throw new InvalidArgumentException("error_029_16");
         }
 
         //Retrieving person record from the database
@@ -311,10 +310,10 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             person = (Person) q.getSingleResult();
         } catch (NoResultException e) {
             logger.log(Level.SEVERE, "No such record exists", e);
-            throw new InvalidStateException("16-0020");
+            throw new InvalidStateException("error_029_18");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("16-0020");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details of the person record
@@ -333,37 +332,37 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (personDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("16-001");
+            throw new InvalidArgumentException("error_029_01");
         } else if (personDetails.getId() == null) {
             logger.log(Level.INFO, "The person's unique identifier is null");
-            throw new InvalidArgumentException("16-006");
+            throw new InvalidArgumentException("error_029_17");
         } else if (personDetails.getFirstName() == null || personDetails.getFirstName().trim().length() == 0) {
             logger.log(Level.INFO, "The first name is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_02");
         } else if (personDetails.getFirstName().trim().length() > 20) {
             logger.log(Level.INFO, "The first name is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_03");
         } else if (personDetails.getLastName() == null || personDetails.getLastName().trim().length() == 0) {
             logger.log(Level.INFO, "The last name is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_04");
         } else if (personDetails.getLastName().trim().length() > 20) {
             logger.log(Level.INFO, "The last name is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_05");
         } else if (personDetails.getReferenceNumber() == null || personDetails.getReferenceNumber().trim().length() == 0) {
             logger.log(Level.INFO, "The reference number is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_06");
         } else if (personDetails.getReferenceNumber().trim().length() > 20) {
             logger.log(Level.INFO, "The reference number is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_07");
         } else if (personDetails.getNationalIdOrPassport() == null || personDetails.getNationalIdOrPassport().trim().length() == 0) {
             logger.log(Level.INFO, "The national id or passport is null");
-            throw new InvalidArgumentException("16-0020");
+            throw new InvalidArgumentException("error_029_08");
         } else if (personDetails.getNationalIdOrPassport().trim().length() > 20) {
             logger.log(Level.INFO, "The national id or passport is longer than 20 characters");
-            throw new InvalidArgumentException("16-003");
-        } else if (personDetails.getContact() == null) {
-            logger.log(Level.INFO, "The person's contact is null");
-            throw new InvalidArgumentException("16-003");
+            throw new InvalidArgumentException("error_029_09");
+        } else if (facultyMemberDetails == null) {
+            logger.log(Level.INFO, "The faculty member details are null");
+            throw new InvalidArgumentException("error_028_01");
         }
 
         //Checking if the reference number is a duplicate
@@ -377,12 +376,12 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             person = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("16-002");
+            throw new EJBException("error_000_01");
         }
         if (person != null) {
             if (!person.getId().equals(personDetails.getId())) {
                 logger.log(Level.SEVERE, "The reference number is already in use");
-                throw new InvalidArgumentException("16-005");
+                throw new InvalidArgumentException("error_029_10");
             }
         }
 
@@ -397,12 +396,12 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             person = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("16-002");
+            throw new EJBException("error_029_02");
         }
         if (person != null) {
             if (!person.getId().equals(personDetails.getId())) {
                 logger.log(Level.SEVERE, "The national id or passport number is already in use");
-                throw new InvalidArgumentException("16-005");
+                throw new InvalidArgumentException("error_029_11");
             }
         }
 
@@ -428,7 +427,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             em.merge(person);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during person record update", e);
-            throw new InvalidStateException("16-003");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Create a message digest algorithm object for SHA-256 hashing algorithm
@@ -437,8 +436,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            logger.log(Level.INFO, "An error occurred while finding the hashing algorithm", e);
-            throw new NoSuchAlgorithmException("16-012");
+            logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
+            throw new NoSuchAlgorithmException("error_007_01");
         }
 
         //Create the person's user account
@@ -449,7 +448,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             userAccount = (UserAccount) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during user account record retrieval");
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         userAccount.setActive(true);
         userAccount.setActiveFrom(null);
@@ -469,7 +468,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             userAccountService.editUserAccount(userAccountService.convertUserAccountToUserAccountDetails(userAccount));
         } catch (InvalidArgumentException | InvalidStateException e) {
             logger.log(Level.SEVERE, "An error occurred during user account record update", e);
-            throw new EJBException("16-001");
+            throw new EJBException("error_000_01");
         }
 
         //Edit the faculty member record for the person
@@ -479,7 +478,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             facultyMemberService.editFacultyMember(facultyMemberDetails);
         } catch (InvalidArgumentException | InvalidStateException e) {
             logger.log(Level.SEVERE, "An error occurred during faculty member record update", e);
-            throw new EJBException("16-001");
+            throw new EJBException("error_000_01");
         }
 
         //Commit the changes
@@ -488,7 +487,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "And error occurred while committing the changes", e);
-            throw new EJBException("16-001");
+            throw new EJBException("error_000_01");
         }
     }
 
@@ -502,8 +501,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("16-006");
+            logger.log(Level.INFO, "The person's unique identifier is null");
+            throw new InvalidArgumentException("error_029_17");
         }
 
         //Get the person record to be removed
@@ -517,7 +516,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             em.remove(person);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("0-004");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Remove the person's contact record

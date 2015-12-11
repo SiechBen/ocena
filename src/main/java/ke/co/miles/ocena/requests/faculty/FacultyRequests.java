@@ -41,22 +41,22 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (facultyDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("19-001");
+            throw new InvalidArgumentException("error_027_01");
         } else if (facultyDetails.getName() == null || facultyDetails.getName().trim().length() == 0) {
-            logger.log(Level.INFO, "The rating is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty name is null");
+            throw new InvalidArgumentException("error_027_02");
         } else if (facultyDetails.getName().trim().length() > 300) {
-            logger.log(Level.INFO, "The rating is longer than 300 characters");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty name is longer than 300 characters");
+            throw new InvalidArgumentException("error_027_02");
         } else if (facultyDetails.getAbbreviation() == null || facultyDetails.getAbbreviation().trim().length() == 0) {
-            logger.log(Level.INFO, "The rating is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty abbreviation is null");
+            throw new InvalidArgumentException("error_027_02");
         } else if (facultyDetails.getAbbreviation().trim().length() > 20) {
-            logger.log(Level.INFO, "The rating is longer than 20 characters");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty abbreviation is longer than 20 characters");
+            throw new InvalidArgumentException("error_027_02");
         } else if (facultyDetails.getCollege() == null) {
-            logger.log(Level.INFO, "The college the faculty is under is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The college under which the faculty is established is null");
+            throw new InvalidArgumentException("error_027_02");
         }
 
         //Checking if the faculty name is unique
@@ -70,12 +70,12 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             faculty = null;
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (faculty != null) {
             if (faculty.getId().equals(facultyDetails.getId())) {
-                logger.log(Level.INFO, "Faculty name exists already in the database for this faculty");
-                throw new EJBException("19-003");
+                logger.log(Level.INFO, "Faculty name exists already in the database");
+                throw new EJBException("error_027_07");
             }
         }
 
@@ -90,12 +90,12 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             faculty = null;
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (faculty != null) {
             if (faculty.getId().equals(facultyDetails.getId())) {
                 logger.log(Level.INFO, "Faculty abbreviation exists already in the database for this faculty");
-                throw new EJBException("19-003");
+                throw new EJBException("error_027_08");
             }
         }
 
@@ -115,7 +115,7 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -139,7 +139,7 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             faculties = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("error_000_01");
+            throw new InvalidStateException("error_00_01");
         }
 
         //Returning the details list of faculty records
@@ -155,8 +155,8 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the college unique identifier passed in");
         if (collegeId == null) {
-            logger.log(Level.INFO, "The college in which the faculty belongs is null");
-            throw new InvalidArgumentException("7-004");
+            logger.log(Level.INFO, "The unique identifier of the college in which the faculty belongs is null");
+            throw new InvalidArgumentException("error_027_09");
         }
 
         //Retrieving faculty records from the database
@@ -168,7 +168,7 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             faculties = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("error_000_01");
+            throw new InvalidStateException("error_00_01");
         }
 
         //Returning the details list of faculty records
@@ -185,7 +185,7 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         logger.log(Level.INFO, "Checking validity of the faculty unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier of the faculty is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_027_10");
         }
 
         //Retrieving the faculty record from the database
@@ -197,10 +197,10 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             faculty = (Faculty) q.getSingleResult();
         } catch (NoResultException e) {
             logger.log(Level.SEVERE, "No faculty record retrieved");
-            throw new InvalidStateException("7-004");
-          } catch (Exception e) {
+            throw new InvalidStateException("error_027_11");
+        } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new InvalidStateException("error_000_01");
+            throw new InvalidStateException("error_00_01");
         }
 
         //Returning the details of the faculty record
@@ -219,25 +219,25 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (facultyDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("19-001");
+            throw new InvalidArgumentException("error_027_01");
         } else if (facultyDetails.getId() == null) {
-            logger.log(Level.INFO, "The faculty's unique identifier is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The unique identifier of the faculty is null");
+            throw new InvalidArgumentException("error_027_10");
         } else if (facultyDetails.getName() == null || facultyDetails.getName().trim().length() == 0) {
-            logger.log(Level.INFO, "The rating is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty name is null");
+            throw new InvalidArgumentException("error_027_02");
         } else if (facultyDetails.getName().trim().length() > 300) {
-            logger.log(Level.INFO, "The rating is longer than 300 characters");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty name is longer than 300 characters");
+            throw new InvalidArgumentException("error_027_03");
         } else if (facultyDetails.getAbbreviation() == null || facultyDetails.getAbbreviation().trim().length() == 0) {
-            logger.log(Level.INFO, "The rating is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty abbreviation is null");
+            throw new InvalidArgumentException("error_027_04");
         } else if (facultyDetails.getAbbreviation().trim().length() > 20) {
-            logger.log(Level.INFO, "The rating is longer than 20 characters");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The faculty abbreviation is longer than 20 characters");
+            throw new InvalidArgumentException("error_027_05");
         } else if (facultyDetails.getCollege() == null) {
-            logger.log(Level.INFO, "The college the faculty is under is null");
-            throw new InvalidArgumentException("19-002");
+            logger.log(Level.INFO, "The college under which the faculty is established is null");
+            throw new InvalidArgumentException("error_027_06");
         }
 
         //Checking if the faculty name is unique
@@ -251,12 +251,12 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             faculty = null;
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (faculty != null) {
             if (!(faculty.getId().equals(facultyDetails.getId()))) {
                 logger.log(Level.INFO, "Faculty name exists already in the database for this faculty");
-                throw new EJBException("19-003");
+                throw new EJBException("error_027_07");
             }
         }
 
@@ -271,12 +271,12 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             faculty = null;
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
         if (faculty != null) {
             if (!(faculty.getId().equals(facultyDetails.getId()))) {
                 logger.log(Level.INFO, "Faculty abbreviation exists already in the database for this faculty");
-                throw new EJBException("19-003");
+                throw new EJBException("error_027_08");
             }
         }
 
@@ -302,7 +302,7 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new EJBException("19-003");
+            throw new EJBException("error_000_01");
         }
 
     }
@@ -317,8 +317,8 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("19-006");
+            logger.log(Level.INFO, "The unique identifier of the faculty is null");
+            throw new InvalidArgumentException("error_027_10");
         }
 
         //Get the faculty record to be removed
@@ -332,7 +332,7 @@ public class FacultyRequests extends EntityRequests implements FacultyRequestsLo
             em.remove(faculty);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("0-004");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Remove the faculty's contact record

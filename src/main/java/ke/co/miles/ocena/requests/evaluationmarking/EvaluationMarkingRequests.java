@@ -44,10 +44,10 @@ public class EvaluationMarkingRequests extends EntityRequests implements Evaluat
         logger.log(Level.INFO, "Checking validity of the evaluation session passed in");
         if (evaluationSessionDetails == null) {
             logger.log(Level.INFO, "The evaluation session is null");
-            throw new InvalidArgumentException("30-001");
+            throw new InvalidArgumentException("error_030_01");
         } else if (evaluationSessionDetails.getId() == null) {
             logger.log(Level.INFO, "The evaluation session's unique identifier is null");
-            throw new InvalidArgumentException("30-002");
+            throw new InvalidArgumentException("error_030_02");
         }
 
         //Retrieve the list of courses of this session

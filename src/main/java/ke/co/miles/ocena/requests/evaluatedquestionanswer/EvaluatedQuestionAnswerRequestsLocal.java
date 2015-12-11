@@ -41,15 +41,6 @@ public interface EvaluatedQuestionAnswerRequestsLocal {
 
     /**
      *
-     * @param evaluationSessionDetails
-     * @return
-     * @throws InvalidArgumentException
-     * @throws InvalidStateException
-     */
-    public List<EvaluatedQuestionAnswerDetails> retrieveEvaluatedQuestionAnswers(EvaluationSessionDetails evaluationSessionDetails) throws InvalidArgumentException, InvalidStateException;
-
-    /**
-     *
      * @param evaluatedQuestionAnswerDetails
      * @param courseOfInstanceDetails
      * @throws InvalidArgumentException

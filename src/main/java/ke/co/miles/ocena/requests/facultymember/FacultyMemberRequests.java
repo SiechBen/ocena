@@ -42,20 +42,20 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("21-001");
+            throw new InvalidArgumentException("error_028_01");
         } else if (details.getFacultyMemberRole() == null) {
-            logger.log(Level.INFO, "The means of answering is null");
-            throw new InvalidArgumentException("21-002");
+            logger.log(Level.INFO, "The faculty member role is null");
+            throw new InvalidArgumentException("error_028_02");
         } else if (details.getPerson() == null) {
-            logger.log(Level.INFO, "The category in which the faculty member falls is null");
-            throw new InvalidArgumentException("21-002");
+            logger.log(Level.INFO, "The person making up the faculty member is null");
+            throw new InvalidArgumentException("error_028_03");
         } else if (details.getFaculty() == null && details.getDepartment() == null) {
             logger.log(Level.INFO, "The faculty and department are null");
-            throw new InvalidArgumentException("21-002");
+            throw new InvalidArgumentException("error_028_04");
         } else if (details.getFacultyMemberRole().equals(FacultyMemberRoleDetail.STUDENT)) {
             if (details.getAdmissionYear() == null) {
                 logger.log(Level.INFO, "The admission year is null");
-                throw new InvalidArgumentException("21-002");
+                throw new InvalidArgumentException("error_028_05");
             }
         }
 
@@ -82,7 +82,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("0-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -102,7 +102,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         logger.log(Level.INFO, "Checking validity of the object passed in");
         if (object == null) {
             logger.log(Level.INFO, "The faculty or department is null");
-            throw new InvalidArgumentException("21-006");
+            throw new InvalidArgumentException("error_028_04");
         }
 
         //Identify the object
@@ -155,7 +155,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         logger.log(Level.INFO, "Checking that the person's unique identifier passed in are not null");
         if (personId == null) {
             logger.log(Level.INFO, "The person's unique identifier is null");
-            throw new InvalidArgumentException("21-007");
+            throw new InvalidArgumentException("error_028_06");
         }
 
         //Retrieve faculty member record from the database
@@ -166,7 +166,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             facultyMember = (FacultyMember) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("21-002");
+            throw new EJBException("error_000_01");
         }
 
         //Return the faculty member record
@@ -182,8 +182,8 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         //Check that the unique identifier passed in are not null
         logger.log(Level.INFO, "Checking that the unique identifier passed in are not null");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("21-007");
+            logger.log(Level.INFO, "The faculty member's unique identifier is null");
+            throw new InvalidArgumentException("error_028_07");
         }
 
         //Retrieve faculty member record from the database
@@ -194,7 +194,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             facultyMember = (FacultyMember) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("21-002");
+            throw new EJBException("error_000_01");
         }
 
         //Return the faculty member record
@@ -213,22 +213,23 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("21-001");
+            throw new InvalidArgumentException("error_028_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The faculty member's unique identifier is null");
-            throw new InvalidArgumentException("21-002");
+            throw new InvalidArgumentException("error_028_07");
         } else if (details.getFacultyMemberRole() == null) {
-            logger.log(Level.INFO, "The means of answering is null");
+            logger.log(Level.INFO, "The faculty member role is null");
+            throw new InvalidArgumentException("error_028_02");
         } else if (details.getPerson() == null) {
-            logger.log(Level.INFO, "The category in which the faculty member falls is null");
-            throw new InvalidArgumentException("21-002");
+            logger.log(Level.INFO, "The person making up the faculty member is null");
+            throw new InvalidArgumentException("error_028_03");
         } else if (details.getFaculty() == null && details.getDepartment() == null) {
             logger.log(Level.INFO, "The faculty and department are null");
-            throw new InvalidArgumentException("21-002");
+            throw new InvalidArgumentException("error_028_04");
         } else if (details.getFacultyMemberRole().equals(FacultyMemberRoleDetail.STUDENT)) {
             if (details.getAdmissionYear() == null) {
                 logger.log(Level.INFO, "The admission year is null");
-                throw new InvalidArgumentException("21-002");
+                throw new InvalidArgumentException("error_028_05");
             }
         }
 
@@ -258,7 +259,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new EJBException("21-003");
+            throw new EJBException("error_000_01");
         }
 
     }
@@ -274,7 +275,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("21-006");
+            throw new InvalidArgumentException("error_028_07");
         }
 
         //Removing a faculty member record from the database
@@ -284,7 +285,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             em.remove(facultyMember);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("21-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
