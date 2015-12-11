@@ -7,6 +7,7 @@ package ke.co.miles.ocena.requests.coursesofinstance;
 
 import java.util.List;
 import javax.ejb.Local;
+import ke.co.miles.ocena.entities.CourseOfInstance;
 import ke.co.miles.ocena.exceptions.InvalidArgumentException;
 import ke.co.miles.ocena.exceptions.InvalidStateException;
 import ke.co.miles.ocena.utilities.CourseOfInstanceDetails;
@@ -71,5 +72,5 @@ public interface CourseOfInstanceRequestsLocal {
      * @throws InvalidStateException
      */
     public void removeCourseOfInstance(Integer id) throws InvalidArgumentException, InvalidStateException;
-
+    
 }

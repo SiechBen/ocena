@@ -43,28 +43,26 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("1-001");
+            throw new InvalidArgumentException("error_019_01");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The degree name is null");
-            throw new InvalidArgumentException("1-002");
+            throw new InvalidArgumentException("error_019_02");
         } else if (details.getName().trim().length() > 120) {
             logger.log(Level.INFO, "The degree name is longer than 120 characters");
-            throw new InvalidArgumentException("1-003");
+            throw new InvalidArgumentException("error_019_03");
         } else if (details.getAdmission() == null) {
             logger.log(Level.INFO, "The admission which offers the degree is null");
-            throw new InvalidArgumentException("1-004");
+            throw new InvalidArgumentException("error_019_04");
         } else if (details.getDepartment() == null && details.getFaculty() == null) {
             logger.log(Level.INFO, "The department and faculty are null");
-            throw new InvalidArgumentException("1-004");
+            throw new InvalidArgumentException("error_019_05");
         }
 
         //Checking if the degree is a duplicate
-        logger.log(Level.INFO,
-                "Checking if the degree name is a duplicate");
+        logger.log(Level.INFO, "Checking if the degree name is a duplicate");
         q = em.createNamedQuery("Degree.findByName");
 
-        q.setParameter(
-                "name", details.getName());
+        q.setParameter("name", details.getName());
         try {
             degree = (Degree) q.getSingleResult();
         } catch (NoResultException e) {
@@ -72,12 +70,12 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             degree = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("1-002");
+            throw new EJBException("error_000_01");
         }
         if (degree
                 != null) {
             logger.log(Level.SEVERE, "Degree name is already in use");
-            throw new InvalidArgumentException("1-005");
+            throw new InvalidArgumentException("error_019_06");
         }
 
         //Creating a container to hold degree record
@@ -100,19 +98,17 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         }
 
         //Adding a degree record to the database
-        logger.log(Level.INFO,
-                "Adding a degree record to the database");
+        logger.log(Level.INFO, "Adding a degree record to the database");
         try {
             em.persist(degree);
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("1-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
-        logger.log(Level.INFO,
-                "Returning the unique identifier of the new record added");
+        logger.log(Level.INFO, "Returning the unique identifier of the new record added");
         return degree.getId();
 
     }
@@ -120,9 +116,17 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
 //<editor-fold defaultstate="collapsed" desc="Read">
 
     @Override
-    public List<DegreeDetails> retrieveDegreesOfFacultyOrDepartmentAndAdmission(Object object, Integer admissionId) throws InvalidStateException {
+    public List<DegreeDetails> retrieveDegreesOfFacultyOrDepartmentAndAdmission(Object object, Integer admissionId) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving a list of degrees offered in a faculty by admission
         logger.log(Level.INFO, "Entered the method for retrieving a list of degrees offered in a faculty by admission");
+
+        if (object == null) {
+            logger.log(Level.INFO, "The department or faculty is null");
+            throw new InvalidArgumentException("error_019_05");
+        } else if (admissionId == null) {
+            logger.log(Level.INFO, "The unique identfier of the admission is null");
+            throw new InvalidArgumentException("error_008_05");
+        }
 
         //Retrieve the degree records from the database
         logger.log(Level.INFO, "Retrieving the degree records from the database");
@@ -142,7 +146,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             degrees = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.INFO, "An error occurred while retrieving the degree records ");
-            throw new InvalidStateException("13-009");
+            throw new InvalidStateException("error_000_01");
         }
 
         //Return the list
@@ -158,9 +162,10 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         //Retrieving degree records from the database
         logger.log(Level.INFO, "Retrieving degree records from the database");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier");
-            throw new InvalidArgumentException("1-003");
+            logger.log(Level.INFO, "The unique identifier of the degree is null");
+            throw new InvalidArgumentException("error_019_07");
         }
+
         //Retrieving degree records from the database
         logger.log(Level.INFO, "Retrieving degree records from the database");
         q = em.createNamedQuery("Degree.findById");
@@ -170,7 +175,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             degree = (Degree) q.getSingleResult();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("1-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the degree record
@@ -186,8 +191,8 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the admission unique identifier passed in");
         if (admissionId == null) {
-            logger.log(Level.INFO, "The admission which offers the degree is null");
-            throw new InvalidArgumentException("1-004");
+            logger.log(Level.INFO, "The unique identifier of the admission which offers the degree is null");
+            throw new InvalidArgumentException("error_019_08");
         }
 
         //Retrieving degree records from the database
@@ -199,7 +204,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             degrees = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("1-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of degree records
@@ -216,7 +221,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         logger.log(Level.INFO, "Ascertaining validity of the faculty unique identifier");
         if (facultyId == null) {
             logger.log(Level.INFO, "Faculty unique identifier is null");
-            throw new InvalidArgumentException("12-009");
+            throw new InvalidArgumentException("error_019_09");
         }
 
         //Retrieving degree records from the database
@@ -228,7 +233,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             degrees = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("18-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of degree records
@@ -245,7 +250,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         logger.log(Level.INFO, "Ascertaining validity of the department unique identifier");
         if (departmentId == null) {
             logger.log(Level.INFO, "Department unique identifier is null");
-            throw new InvalidArgumentException("12-009");
+            throw new InvalidArgumentException("error_019_10");
         }
 
         //Retrieving degree records from the database
@@ -257,7 +262,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             degrees = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("18-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of degree records
@@ -270,6 +275,13 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         //Method for retrieving a map of degrees in degree category of records of a faculty in the database
         logger.log(Level.INFO, "Entered the method for retrieving a map of degrees in degree category of records records of a faculty in the database");
 
+        //Ascertain validity of the faculty
+        logger.log(Level.INFO, "Ascertaining validity of the faculty");
+        if (faculty == null) {
+            logger.log(Level.INFO, "Faculty is null");
+            throw new InvalidArgumentException("error_019_11");
+        }
+
         //Retrieving degree category records from the database
         logger.log(Level.INFO, "Retrieving the degree category records from the database");
         q = em.createNamedQuery("Admission.findAll");
@@ -278,7 +290,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             admissions = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
 
         //Retrieve degrees in categories from the database and put them in a map
@@ -302,6 +314,13 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         //Method for retrieving a map of degrees in degree category of records of a department in the database
         logger.log(Level.INFO, "Entered the method for retrieving a map of degrees in degree category of records records of a department in the database");
 
+        //Ascertain validity of the department
+        logger.log(Level.INFO, "Ascertaining validity of the department");
+        if (faculty == null) {
+            logger.log(Level.INFO, "Department is null");
+            throw new InvalidArgumentException("error_019_12");
+        }
+
         //Retrieving degree category records from the database
         logger.log(Level.INFO, "Retrieving the degree category records from the database");
         q = em.createNamedQuery("Admission.findAll");
@@ -310,7 +329,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             admissions = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("0-002");
+            throw new EJBException("error_000_01");
         }
 
         //Retrieve degrees in categories from the database and put them in a map
@@ -340,22 +359,22 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("1-001");
+            throw new InvalidArgumentException("error_019_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The degree's unique identifier is null");
-            throw new InvalidArgumentException("1-006");
+            throw new InvalidArgumentException("error_019_07");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The degree name is null");
-            throw new InvalidArgumentException("1-002");
+            throw new InvalidArgumentException("error_019_02");
         } else if (details.getName().trim().length() > 120) {
             logger.log(Level.INFO, "The degree name is longer than 120 characters");
-            throw new InvalidArgumentException("1-003");
+            throw new InvalidArgumentException("error_019_03");
         } else if (details.getAdmission() == null) {
             logger.log(Level.INFO, "The admission which offers the degree is null");
-            throw new InvalidArgumentException("1-004");
+            throw new InvalidArgumentException("error_019_04");
         } else if (details.getDepartment() == null && details.getFaculty() == null) {
             logger.log(Level.INFO, "The department and faculty are null");
-            throw new InvalidArgumentException("1-004");
+            throw new InvalidArgumentException("error_019_05");
         }
 
         //Checking if the degree is a duplicate
@@ -369,12 +388,12 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             degree = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("1-002");
+            throw new EJBException("error_000_01");
         }
         if (degree != null) {
             if (!(degree.getId().equals(details.getId()))) {
                 logger.log(Level.SEVERE, "Degree name is already in use");
-                throw new InvalidArgumentException("1-005");
+                throw new InvalidArgumentException("error_019_06");
             }
         }
 
@@ -405,7 +424,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("1-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -420,8 +439,8 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("1-006");
+            logger.log(Level.INFO, "The unique identifier of the degree record is null");
+            throw new InvalidArgumentException("error_019_07");
         }
 
         //Removing a degree record from the database
@@ -431,7 +450,7 @@ public class DegreeRequests extends EntityRequests implements DegreeRequestsLoca
             em.remove(degree);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("1-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

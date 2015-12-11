@@ -37,22 +37,22 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("7-001");
+            throw new InvalidArgumentException("error_018_01");
         } else if (details.getTitle() == null || details.getTitle().trim().length() == 0) {
             logger.log(Level.INFO, "The course title is null");
-            throw new InvalidArgumentException("7-002");
+            throw new InvalidArgumentException("error_018_02");
         } else if (details.getTitle().trim().length() > 120) {
             logger.log(Level.INFO, "The course title is longer than 120 characters");
-            throw new InvalidArgumentException("7-003");
+            throw new InvalidArgumentException("error_018_03");
         } else if (details.getCode() == null || details.getCode().trim().length() == 0) {
             logger.log(Level.INFO, "The code is null");
-            throw new InvalidArgumentException("7-002");
+            throw new InvalidArgumentException("error_018_04");
         } else if (details.getCode().trim().length() > 20) {
             logger.log(Level.INFO, "The code is longer than 20 characters");
-            throw new InvalidArgumentException("7-003");
+            throw new InvalidArgumentException("error_018_05");
         } else if (details.getDegree() == null) {
             logger.log(Level.INFO, "The degree which offers the course is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_018_06");
         }
 
         //Checking if the course title is a duplicate
@@ -66,11 +66,11 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             course = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("7-002");
+            throw new EJBException("error_000_01");
         }
         if (course != null) {
             logger.log(Level.SEVERE, "Course title is already in use");
-            throw new InvalidArgumentException("7-005");
+            throw new InvalidArgumentException("error_018_07");
         }
 
         //Checking if the code is a duplicate
@@ -84,11 +84,11 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             course = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("7-002");
+            throw new EJBException("error_000_01");
         }
         if (course != null) {
             logger.log(Level.SEVERE, "Code is already in use");
-            throw new InvalidArgumentException("7-005");
+            throw new InvalidArgumentException("error_018_08");
         }
 
         //Creating a container to hold course record
@@ -105,7 +105,7 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             em.persist(course);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("7-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -124,8 +124,8 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the degree unique identifier passed in");
         if (degreeId == null) {
-            logger.log(Level.INFO, "The degree which offers the course is null");
-            throw new InvalidArgumentException("7-004");
+            logger.log(Level.INFO, "The unique identifier of the degree which offers the course is null");
+            throw new InvalidArgumentException("error_018_10");
         }
 
         //Retrieving course records from the database
@@ -137,7 +137,7 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             courses = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("7-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of course records
@@ -156,25 +156,25 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("7-001");
+            throw new InvalidArgumentException("error_018_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The course's unique identifier is null");
-            throw new InvalidArgumentException("7-006");
+            throw new InvalidArgumentException("error_018_09");
         } else if (details.getTitle() == null || details.getTitle().trim().length() == 0) {
             logger.log(Level.INFO, "The course title is null");
-            throw new InvalidArgumentException("7-002");
+            throw new InvalidArgumentException("error_018_02");
         } else if (details.getTitle().trim().length() > 120) {
             logger.log(Level.INFO, "The course title is longer than 120 characters");
-            throw new InvalidArgumentException("7-003");
+            throw new InvalidArgumentException("error_018_03");
         } else if (details.getCode() == null || details.getCode().trim().length() == 0) {
             logger.log(Level.INFO, "The code is null");
-            throw new InvalidArgumentException("7-002");
+            throw new InvalidArgumentException("error_018_04");
         } else if (details.getCode().trim().length() > 20) {
             logger.log(Level.INFO, "The code is longer than 20 characters");
-            throw new InvalidArgumentException("7-003");
+            throw new InvalidArgumentException("error_018_05");
         } else if (details.getDegree() == null) {
             logger.log(Level.INFO, "The degree which offers the course is null");
-            throw new InvalidArgumentException("7-004");
+            throw new InvalidArgumentException("error_018_06");
         }
 
         //Checking if the course title is a duplicate
@@ -188,12 +188,12 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             course = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("7-002");
+            throw new EJBException("error_000_01");
         }
         if (course != null) {
             if (!(course.getId().equals(details.getId()))) {
                 logger.log(Level.SEVERE, "Course title is already in use");
-                throw new InvalidArgumentException("7-005");
+                throw new InvalidArgumentException("error_018_07");
             }
         }
 
@@ -208,12 +208,12 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             course = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("7-002");
+            throw new EJBException("error_000_01");
         }
         if (course != null) {
             if (!(course.getId().equals(details.getId()))) {
                 logger.log(Level.SEVERE, "Course code is already in use");
-                throw new InvalidArgumentException("7-005");
+                throw new InvalidArgumentException("error_018_08");
             }
         }
 
@@ -232,7 +232,7 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             em.merge(course);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("7-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -248,7 +248,7 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
             logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("7-006");
+            throw new InvalidArgumentException("error_018_09");
         }
 
         //Removing a course record from the database
@@ -258,7 +258,7 @@ public class CourseRequests extends EntityRequests implements CourseRequestsLoca
             em.remove(course);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("7-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }

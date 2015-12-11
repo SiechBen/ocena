@@ -35,32 +35,32 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("14-001");
+            throw new InvalidArgumentException("error_017_01");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The country name is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_02");
         } else if (details.getName().trim().length() > 80) {
             logger.log(Level.INFO, "The country name is longer than 80 characters");
-            throw new InvalidArgumentException("14-003");
+            throw new InvalidArgumentException("error_017_03");
         } else if (details.getNiceName() == null || details.getNiceName().trim().length() == 0) {
             logger.log(Level.INFO, "The nice name is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_04");
         } else if (details.getNiceName().trim().length() > 80) {
             logger.log(Level.INFO, "The nice name is longer than 80 characters");
-            throw new InvalidArgumentException("14-003");
+            throw new InvalidArgumentException("error_017_05");
         } else if (details.getIso() == null || details.getIso().trim().length() == 0) {
             logger.log(Level.INFO, "The iso is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_06");
         } else if (details.getIso().trim().length() > 2) {
             logger.log(Level.INFO, "The iso is longer than 2 characters");
-            throw new InvalidArgumentException("14-003");
+            throw new InvalidArgumentException("error_017_07");
         } else if (details.getPhoneCode() == null) {
             logger.log(Level.INFO, "The phone code is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_08");
         } else if (details.getIso3() != null) {
             if (details.getIso3().trim().length() > 3) {
                 logger.log(Level.INFO, "The iso3 is longer than 3 characters");
-                throw new InvalidArgumentException("14-003");
+                throw new InvalidArgumentException("error_017_09");
             }
         }
 
@@ -74,12 +74,12 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             logger.log(Level.INFO, "Country name is available for use");
             country = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
             logger.log(Level.SEVERE, "Country name is already in use");
-            throw new InvalidArgumentException("14-005");
+            throw new InvalidArgumentException("error_017_10");
         }
 
         //Checking if the nice name is a duplicate
@@ -92,12 +92,12 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             logger.log(Level.INFO, "Nice name is available for use");
             country = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
             logger.log(Level.SEVERE, "Nice name is already in use");
-            throw new InvalidArgumentException("14-005");
+            throw new InvalidArgumentException("error_017_11");
         }
 
         //Checking if the iso is a duplicate
@@ -110,12 +110,12 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             logger.log(Level.INFO, "The iso is available for use");
             country = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
             logger.log(Level.SEVERE, "The iso is already in use");
-            throw new InvalidArgumentException("14-005");
+            throw new InvalidArgumentException("error_017_12");
         }
 
         //Checking if the phone code is a duplicate
@@ -128,12 +128,12 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             logger.log(Level.INFO, "Phone code is available for use");
             country = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
             logger.log(Level.SEVERE, "Phone code is already in use");
-            throw new InvalidArgumentException("14-005");
+            throw new InvalidArgumentException("error_017_13");
         }
 
         //Creating a container to hold country record
@@ -154,7 +154,7 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("14-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -173,12 +173,12 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
         //Retrieving country records from the database
         logger.log(Level.INFO, "Retrieving country records from the database");
         q = em.createNamedQuery("Country.findAll");
-         List<Country> countries = new ArrayList<>();
+        List<Country> countries = new ArrayList<>();
         try {
             countries = q.getResultList();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("14-002");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the details list of country records
@@ -197,35 +197,35 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("14-001");
+            throw new InvalidArgumentException("error_017_01");
         } else if (details.getId() == null) {
             logger.log(Level.INFO, "The country's unique identifier is null");
-            throw new InvalidArgumentException("14-006");
+            throw new InvalidArgumentException("error_017_14");
         } else if (details.getName() == null || details.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The country name is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_02");
         } else if (details.getName().trim().length() > 80) {
             logger.log(Level.INFO, "The country name is longer than 80 characters");
-            throw new InvalidArgumentException("14-003");
+            throw new InvalidArgumentException("error_017_03");
         } else if (details.getNiceName() == null || details.getNiceName().trim().length() == 0) {
             logger.log(Level.INFO, "The nice name is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_04");
         } else if (details.getNiceName().trim().length() > 80) {
             logger.log(Level.INFO, "The nice name is longer than 80 characters");
-            throw new InvalidArgumentException("14-003");
+            throw new InvalidArgumentException("error_017_05");
         } else if (details.getIso() == null || details.getIso().trim().length() == 0) {
             logger.log(Level.INFO, "The iso is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_06");
         } else if (details.getIso().trim().length() > 2) {
             logger.log(Level.INFO, "The iso is longer than 2 characters");
-            throw new InvalidArgumentException("14-003");
+            throw new InvalidArgumentException("error_017_07");
         } else if (details.getPhoneCode() == null) {
             logger.log(Level.INFO, "The phone code is null");
-            throw new InvalidArgumentException("14-002");
+            throw new InvalidArgumentException("error_017_08");
         } else if (details.getIso3() != null) {
             if (details.getIso3().trim().length() > 3) {
                 logger.log(Level.INFO, "The iso3 is longer than 3 characters");
-                throw new InvalidArgumentException("14-003");
+                throw new InvalidArgumentException("error_017_09");
             }
         }
 
@@ -240,11 +240,13 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             country = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
-            logger.log(Level.SEVERE, "Country name is already in use");
-            throw new InvalidArgumentException("14-005");
+            if (!country.getId().equals(details.getId())) {
+                logger.log(Level.SEVERE, "Country name is already in use");
+                throw new InvalidArgumentException("error_017_10");
+            }
         }
 
         //Checking if the nice name is a duplicate
@@ -257,12 +259,14 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             logger.log(Level.INFO, "Nice name is available for use");
             country = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
-            logger.log(Level.SEVERE, "Nice name is already in use");
-            throw new InvalidArgumentException("14-005");
+            if (!country.getId().equals(details.getId())) {
+                logger.log(Level.SEVERE, "Nice name is already in use");
+                throw new InvalidArgumentException("error_017_11");
+            }
         }
 
         //Checking if the iso is a duplicate
@@ -275,12 +279,14 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             logger.log(Level.INFO, "The iso is available for use");
             country = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
-            logger.log(Level.SEVERE, "The iso is already in use");
-            throw new InvalidArgumentException("14-005");
+            if (!country.getId().equals(details.getId())) {
+                logger.log(Level.SEVERE, "The iso is already in use");
+                throw new InvalidArgumentException("error_017_12");
+            }
         }
 
         //Checking if the phone code is a duplicate
@@ -293,12 +299,14 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             logger.log(Level.INFO, "Phone code is available for use");
             country = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("14-002");
+            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new EJBException("error_000_01");
         }
         if (country != null) {
-            logger.log(Level.SEVERE, "Phone code is already in use");
-            throw new InvalidArgumentException("14-005");
+            if (!country.getId().equals(details.getId())) {
+                logger.log(Level.SEVERE, "Phone code is already in use");
+                throw new InvalidArgumentException("error_017_13");
+            }
         }
 
         //Creating a container to hold country record
@@ -320,7 +328,7 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("14-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -335,8 +343,8 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("14-006");
+            logger.log(Level.INFO, "The unique identifier of the country record is null");
+            throw new InvalidArgumentException("error_017_14");
         }
 
         //Removing a country record from the database
@@ -346,7 +354,7 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
             em.remove(country);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record removal", e);
-            throw new InvalidStateException("14-004");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -391,5 +399,6 @@ public class CountryRequests extends EntityRequests implements CountryRequestsLo
         return details;
     }
 //</editor-fold>
+
     private static final Logger logger = Logger.getLogger(CountryRequests.class.getSimpleName());
 }

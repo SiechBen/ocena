@@ -41,22 +41,22 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (departmentDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("9-001");
+            throw new InvalidArgumentException("error_022_01");
         } else if (departmentDetails.getName() == null || departmentDetails.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The department name is null");
-            throw new InvalidArgumentException("9-002");
+            throw new InvalidArgumentException("error_022_02");
         } else if (departmentDetails.getName().trim().length() > 300) {
             logger.log(Level.INFO, "The department name is longer than 300 characters");
-            throw new InvalidArgumentException("9-003");
+            throw new InvalidArgumentException("error_022_03");
         } else if (departmentDetails.getAbbreviation() == null || departmentDetails.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The abbreviation is null");
-            throw new InvalidArgumentException("9-002");
+            throw new InvalidArgumentException("error_022_04");
         } else if (departmentDetails.getAbbreviation().trim().length() > 20) {
             logger.log(Level.INFO, "The abbreviation is longer than 20 characters");
-            throw new InvalidArgumentException("9-003");
+            throw new InvalidArgumentException("error_022_05");
         } else if (departmentDetails.getFaculty() == null) {
             logger.log(Level.INFO, "The faculty that the department lies under is null");
-            throw new InvalidArgumentException("9-004");
+            throw new InvalidArgumentException("error_022_06");
         }
 
         //Checking if the department name is a duplicate
@@ -70,11 +70,11 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             department = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("9-002");
+            throw new EJBException("error_000_01");
         }
         if (department != null) {
             logger.log(Level.SEVERE, "Department name is already in use");
-            throw new InvalidArgumentException("9-005");
+            throw new InvalidArgumentException("error_022_07");
         }
 
         //Checking if the abbreviation is a duplicate
@@ -88,11 +88,11 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             department = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("9-002");
+            throw new EJBException("error_000_01");
         }
         if (department != null) {
             logger.log(Level.SEVERE, "Abbreviation is already in use");
-            throw new InvalidArgumentException("9-005");
+            throw new InvalidArgumentException("error_022_08");
         }
 
         //Creating a container to hold department record
@@ -111,7 +111,7 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record creation", e);
-            throw new EJBException("9-001");
+            throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
@@ -131,7 +131,7 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         logger.log(Level.INFO, "Checking validity of the faculty unique identifier passed in");
         if (facultyId == null) {
             logger.log(Level.INFO, "The faculty that the department lies under is null");
-            throw new InvalidArgumentException("9-004");
+            throw new InvalidArgumentException("error_022_06");
         }
 
         //Retrieving department records from the database
@@ -156,6 +156,11 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         //Method for retrieving a department record
         logger.log(Level.INFO, "Entered the method for retrieving a department record");
 
+        if (id == null) {
+            logger.log(Level.INFO, "The unique identifier of the department is null");
+            throw new InvalidArgumentException("error_022_09");
+        }
+        
         //Retrieving the department record from the database
         logger.log(Level.INFO, "Retrieving the department record from the database");
         q = em.createNamedQuery("Department.findById");
@@ -165,7 +170,7 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             department = (Department) q.getSingleResult();
         } catch (NoResultException e) {
             logger.log(Level.SEVERE, "No department record retrieved");
-            throw new InvalidStateException("9-004");
+            throw new InvalidStateException("error_022_10");
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
             throw new InvalidStateException("error_000_01");
@@ -188,25 +193,25 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         logger.log(Level.INFO, "Checking validity of the details passed in");
         if (departmentDetails == null) {
             logger.log(Level.INFO, "The details are null");
-            throw new InvalidArgumentException("9-001");
+            throw new InvalidArgumentException("error_022_01");
         } else if (departmentDetails.getId() == null) {
             logger.log(Level.INFO, "The department's unique identifier is null");
-            throw new InvalidArgumentException("9-006");
+            throw new InvalidArgumentException("error_022_09");
         } else if (departmentDetails.getName() == null || departmentDetails.getName().trim().length() == 0) {
             logger.log(Level.INFO, "The department name is null");
-            throw new InvalidArgumentException("9-002");
+            throw new InvalidArgumentException("error_022_02");
         } else if (departmentDetails.getName().trim().length() > 300) {
             logger.log(Level.INFO, "The department name is longer than 300 characters");
-            throw new InvalidArgumentException("9-003");
+            throw new InvalidArgumentException("error_022_03");
         } else if (departmentDetails.getAbbreviation() == null || departmentDetails.getAbbreviation().trim().length() == 0) {
             logger.log(Level.INFO, "The abbreviation is null");
-            throw new InvalidArgumentException("9-002");
+            throw new InvalidArgumentException("error_022_04");
         } else if (departmentDetails.getAbbreviation().trim().length() > 20) {
             logger.log(Level.INFO, "The abbreviation is longer than 20 characters");
-            throw new InvalidArgumentException("9-003");
+            throw new InvalidArgumentException("error_022_05");
         } else if (departmentDetails.getFaculty() == null) {
             logger.log(Level.INFO, "The faculty that the department lies under is null");
-            throw new InvalidArgumentException("9-004");
+            throw new InvalidArgumentException("error_022_06");
         }
 
         //Checking if the department name is a duplicate
@@ -220,12 +225,12 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             department = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval");
-            throw new EJBException("9-002");
+            throw new EJBException("error_022_07");
         }
         if (department != null) {
             if (!(department.getId().equals(departmentDetails.getId()))) {
                 logger.log(Level.SEVERE, "Department name is already in use");
-                throw new InvalidArgumentException("9-005");
+                throw new InvalidArgumentException("error_000_01");
             }
         }
 
@@ -240,12 +245,12 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             department = null;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
-            throw new EJBException("9-002");
+            throw new EJBException("error_022_08");
         }
         if (department != null) {
             if (!(department.getId().equals(departmentDetails.getId()))) {
                 logger.log(Level.SEVERE, "Abbreviation is already in use");
-                throw new InvalidArgumentException("9-005");
+                throw new InvalidArgumentException("error_000_01");
             }
         }
 
@@ -271,7 +276,7 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
             em.flush();
         } catch (Exception e) {
             logger.log(Level.SEVERE, "An error occurred during record update", e);
-            throw new InvalidStateException("9-003");
+            throw new InvalidStateException("error_000_01");
         }
 
     }
@@ -286,8 +291,8 @@ public class DepartmentRequests extends EntityRequests implements DepartmentRequ
         //Checking validity of details
         logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("9-006");
+            logger.log(Level.INFO, "The unique identifier of the department is null");
+            throw new InvalidArgumentException("error_022_09");
         }
 
         //Get the department record to be removed

@@ -172,14 +172,14 @@ public class EvaluationController extends Controller {
                         if (faculty != null) {
                             try {
                                 degrees = degreeService.retrieveDegreesOfFacultyOrDepartmentAndAdmission(faculty, admissionId);
-                            } catch (InvalidStateException ex) {
+                            } catch (InvalidStateException | InvalidArgumentException ex) {
                                 logger.log(Level.INFO, "An error occurred during degree records retrieval");
                                 return;
                             }
                         } else if (department != null) {
                             try {
                                 degrees = degreeService.retrieveDegreesOfFacultyOrDepartmentAndAdmission(department, admissionId);
-                            } catch (InvalidStateException ex) {
+                            } catch (InvalidStateException | InvalidArgumentException ex) {
                                 logger.log(Level.INFO, "An error occurred during degree records retrieval");
                                 return;
                             }
@@ -187,11 +187,11 @@ public class EvaluationController extends Controller {
 
                         //Update the degree options
                         outWriter.write("<option disabled selected> Select degree </option>");
-                        for (DegreeDetails d : degrees) {
-                            outWriter.write(" <option value=\"" + d.getId() + "\"> " + d.getName() + " </option>\n");
+                        if (!degrees.isEmpty()) {
+                            for (DegreeDetails d : degrees) {
+                                outWriter.write(" <option value=\"" + d.getId() + "\"> " + d.getName() + " </option>\n");
+                            }
                         }
-                        outWriter.flush();
-                        outWriter.close();
                         return;
 
                     case "/updateCourses":

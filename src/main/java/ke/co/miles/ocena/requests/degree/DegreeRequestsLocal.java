@@ -111,7 +111,9 @@ public interface DegreeRequestsLocal {
      * @param object
      * @param admissionId
      * @return
+     * @throws ke.co.miles.ocena.exceptions.InvalidArgumentException
+     * @throws ke.co.miles.ocena.exceptions.InvalidStateException
      */
-    public List<DegreeDetails> retrieveDegreesOfFacultyOrDepartmentAndAdmission(Object object, Integer admissionId) throws InvalidStateException;
+    public List<DegreeDetails> retrieveDegreesOfFacultyOrDepartmentAndAdmission(Object object, Integer admissionId) throws InvalidArgumentException, InvalidStateException;
 
 }
