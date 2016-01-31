@@ -5,14 +5,14 @@
  */
 package ke.co.miles.ocena.requests.person;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.Local;
 import ke.co.miles.ocena.entities.Person;
+import ke.co.miles.ocena.exceptions.AlgorithmException;
 import ke.co.miles.ocena.exceptions.InvalidArgumentException;
-import ke.co.miles.ocena.exceptions.InvalidLoginException;
 import ke.co.miles.ocena.exceptions.InvalidStateException;
+import ke.co.miles.ocena.exceptions.MilesException;
 import ke.co.miles.ocena.utilities.EmailContactDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberDetails;
 import ke.co.miles.ocena.utilities.PersonDetails;
@@ -38,9 +38,9 @@ public interface PersonRequestsLocal {
      * @param postalContactDetails
      * @return
      * @throws InvalidArgumentException
-     * @throws Exception
+     * @throws AlgorithmException
      */
-    public Integer addPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, Exception;
+    public Integer addPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, AlgorithmException;
 
     /**
      *
@@ -64,11 +64,10 @@ public interface PersonRequestsLocal {
      * @param username
      * @param password
      * @return
-     * @throws InvalidArgumentException
-     * @throws InvalidLoginException
-     * @throws NoSuchAlgorithmException
+     * @throws ke.co.miles.ocena.exceptions.MilesException
+     * @throws ke.co.miles.ocena.exceptions.AlgorithmException
      */
-    public Map<PersonDetails, UserGroupDetail> retrievePerson(String username, String password) throws InvalidArgumentException, InvalidLoginException, NoSuchAlgorithmException;
+    public Map<PersonDetails, UserGroupDetail> retrievePerson(String username, String password) throws MilesException, AlgorithmException;
 
     /**
      *
@@ -105,8 +104,8 @@ public interface PersonRequestsLocal {
      * @param postalContactDetails
      * @throws InvalidArgumentException
      * @throws InvalidStateException
-     * @throws NoSuchAlgorithmException
+     * @throws AlgorithmException
      */
-    public void editPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, InvalidStateException, NoSuchAlgorithmException;
+    public void editPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, InvalidStateException, AlgorithmException;
 
 }

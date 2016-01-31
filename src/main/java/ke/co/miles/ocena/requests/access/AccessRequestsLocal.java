@@ -6,8 +6,8 @@
 package ke.co.miles.ocena.requests.access;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import javax.ejb.Local;
+import ke.co.miles.ocena.exceptions.AlgorithmException;
 import ke.co.miles.ocena.utilities.AccessCredentials;
 
 /**
@@ -22,9 +22,9 @@ public interface AccessRequestsLocal {
      * @param username
      * @param password
      * @return
-     * @throws NoSuchAlgorithmException
+     * @throws AlgorithmException
      */
-    public AccessCredentials addCredentials(String username, String password) throws NoSuchAlgorithmException;
+    public AccessCredentials addCredentials(String username, String password) throws AlgorithmException;
 
     /**
      *
@@ -38,7 +38,7 @@ public interface AccessRequestsLocal {
      *
      * @param username
      * @return
-     * @throws NoSuchAlgorithmException
+     * @throws AlgorithmException
      */
-    public String generateAnonymousIdentity(String username) throws NoSuchAlgorithmException;
+    public String generateAnonymousIdentity(String username) throws AlgorithmException;
 }

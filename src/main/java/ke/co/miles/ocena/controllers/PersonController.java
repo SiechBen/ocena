@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -25,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import ke.co.miles.ocena.defaults.Controller;
+import ke.co.miles.ocena.exceptions.AlgorithmException;
 import ke.co.miles.ocena.exceptions.InvalidArgumentException;
 import ke.co.miles.ocena.exceptions.InvalidStateException;
 import ke.co.miles.ocena.utilities.ContactDetails;
@@ -65,6 +68,10 @@ public class PersonController extends Controller {
         String destination;
         DateFormat userDateFormat = new SimpleDateFormat("MMM yyyy");
 
+        //Get the user's locale and the associated resource bundle
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -100,8 +107,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
                     try {
                         getServletContext().setAttribute("countries", countryService.retrieveCountries());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during countries retrieval", ex);
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -109,8 +119,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
-                    } catch (InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during colleges retrieval", ex);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -128,8 +141,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
                     try {
                         getServletContext().setAttribute("countries", countryService.retrieveCountries());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during countries retrieval", ex);
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -137,8 +153,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
-                    } catch (InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during colleges retrieval", ex);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -185,7 +204,7 @@ public class PersonController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("campus-faculty")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The person is not a member of a faculty");
                     }
 
@@ -193,7 +212,7 @@ public class PersonController extends Controller {
                     try {
                         department.setId(Integer.parseInt(request.getParameter("campus-department")));
                         faculty = new FacultyDetails();
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The person is not a member of a department");
                     }
 
@@ -205,8 +224,12 @@ public class PersonController extends Controller {
                         } else {
                             admissionYear = null;
                         }
-                    } catch (ParseException ex) {
-                        logger.log(Level.INFO, "An error occurred while parsing the admission month and year", ex);
+                    } catch (ParseException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("admission_year_parse_error"));
+                        logger.log(Level.INFO, bundle.getString("admission_year_parse_error"));
+
                         admissionYear = null;
                     }
 
@@ -236,7 +259,7 @@ public class PersonController extends Controller {
                         } else if (memberRole.equals(FacultyMemberRoleDetail.STUDENT)) {
                             userAccount.setUserGroup(UserGroupDetail.STUDENT);
                         }
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         memberRole = FacultyMemberRoleDetail.STUDENT;
                         userAccount.setUserGroup(UserGroupDetail.STUDENT);
                     }
@@ -250,8 +273,16 @@ public class PersonController extends Controller {
 
                     try {
                         personService.addPerson(person, userAccount, facultyMember, emailContact, phoneContact, postalContact);
-                    } catch (Exception e) {
-                        logger.log(Level.INFO, "Person record creation failed", e);
+                    } catch (AlgorithmException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                    } catch (InvalidArgumentException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     path = (String) session.getAttribute("home");
@@ -270,8 +301,11 @@ public class PersonController extends Controller {
                     try {
                         faculties = facultyService.retrieveFaculties(collegeId);
                         session.setAttribute("faculties", faculties);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty records retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -300,8 +334,11 @@ public class PersonController extends Controller {
                     try {
                         departments = departmentService.retrieveDepartments(facultyId);
                         session.setAttribute("departments", departments);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during department records retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -329,8 +366,11 @@ public class PersonController extends Controller {
                     try {
                         faculties = facultyService.retrieveFaculties(collegeId);
                         session.setAttribute("faculties", faculties);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty records retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -358,8 +398,11 @@ public class PersonController extends Controller {
                     try {
                         departments = departmentService.retrieveDepartments(facultyId);
                         session.setAttribute("departments", departments);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during department records retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -387,8 +430,11 @@ public class PersonController extends Controller {
                     try {
                         faculties = facultyService.retrieveFaculties(collegeId);
                         session.setAttribute("faculties", faculties);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty records retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -416,8 +462,11 @@ public class PersonController extends Controller {
                     try {
                         departments = departmentService.retrieveDepartments(facultyId);
                         session.setAttribute("departments", departments);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during department records retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -440,8 +489,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
-                    } catch (InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during colleges retrieval", ex);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -453,8 +505,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
-                    } catch (InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during colleges retrieval", ex);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
                     //Proceed to the page
@@ -470,8 +525,11 @@ public class PersonController extends Controller {
                     person = new PersonDetails();
                     try {
                         person = personService.retrievePerson(referenceNumber);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during person record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -480,8 +538,11 @@ public class PersonController extends Controller {
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccount(referenceNumber);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during user account record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -490,8 +551,11 @@ public class PersonController extends Controller {
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty member record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -508,8 +572,11 @@ public class PersonController extends Controller {
                     person = new PersonDetails();
                     try {
                         person = personService.retrievePerson(Integer.parseInt(request.getParameter("personId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during person record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -518,8 +585,11 @@ public class PersonController extends Controller {
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccount(person.getReferenceNumber());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during user account record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -533,7 +603,10 @@ public class PersonController extends Controller {
                     try {
                         userAccountService.editUserAccount(userAccount);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during user account record update");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -542,8 +615,11 @@ public class PersonController extends Controller {
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty member record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -552,8 +628,11 @@ public class PersonController extends Controller {
                     facultyMember.setFacultyMemberRole(FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("memberRole"))));
                     try {
                         facultyMemberService.editFacultyMember(facultyMember);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty member record update");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -575,8 +654,11 @@ public class PersonController extends Controller {
                     person = new PersonDetails();
                     try {
                         person = personService.retrievePerson(personId);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during person record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -589,8 +671,11 @@ public class PersonController extends Controller {
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccount(person.getReferenceNumber());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during user account record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -603,8 +688,11 @@ public class PersonController extends Controller {
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty member record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -617,8 +705,11 @@ public class PersonController extends Controller {
                     contact = new ContactDetails();
                     try {
                         contact = contactService.retrieveContact(person.getContact().getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during contact record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -631,8 +722,11 @@ public class PersonController extends Controller {
                     emailContact = new EmailContactDetails();
                     try {
                         emailContact = emailContactService.retrieveEmailContact(contact.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during email contact record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -645,8 +739,11 @@ public class PersonController extends Controller {
                     phoneContact = new PhoneContactDetails();
                     try {
                         phoneContact = phoneContactService.retrievePhoneContact(contact.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during phone contact record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -659,8 +756,11 @@ public class PersonController extends Controller {
                     postalContact = new PostalContactDetails();
                     try {
                         postalContact = postalContactService.retrievePostalContact(contact.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during postal contact record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -672,8 +772,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
-                    } catch (InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during colleges retrieval", ex);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -719,7 +822,7 @@ public class PersonController extends Controller {
                     country = new CountryDetails();
                     try {
                         country.setId(Integer.parseInt(request.getParameter("country")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         country.setId(new Integer("110"));
                     }
 
@@ -739,8 +842,11 @@ public class PersonController extends Controller {
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during faculty member record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -751,7 +857,7 @@ public class PersonController extends Controller {
                         department.setId(Integer.parseInt(request.getParameter("campus-department")));
                         logger.log(Level.INFO, "Department details are provided");
                         faculty = null;
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "Department details are not provided");
 
                         //Read in the faculty
@@ -821,16 +927,23 @@ public class PersonController extends Controller {
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccountByPersonId(Integer.parseInt(request.getParameter("person-id")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during user account record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     if (userAccount.getUserGroup().equals(UserGroupDetail.STUDENT)) {
                         try {
                             admissionYear = userDateFormat.parse(request.getParameter("admission-year"));
-                        } catch (Exception e) {
-                            logger.log(Level.INFO, "An error occurred while parsing the admission month and year", e);
+                        } catch (ParseException e) {
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            response.setContentType("text/html;charset=UTF-8");
+                            response.getWriter().write(bundle.getString("admission_year_parse_error"));
+                            logger.log(Level.INFO, bundle.getString("admission_year_parse_error"));
+
                             return;
                         }
 
@@ -858,7 +971,11 @@ public class PersonController extends Controller {
                     try {
                         messageDigest = MessageDigest.getInstance("SHA-256");
                     } catch (NoSuchAlgorithmException e) {
-                        logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
+
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("error_007_01"));
+                        logger.log(Level.INFO, bundle.getString("error_007_01"));
                         break;
                     }
 
@@ -893,8 +1010,16 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Editing the person details");
                     try {
                         personService.editPerson(person, userAccount, facultyMember, emailContact, phoneContact, postalContact);
-                    } catch (InvalidArgumentException | InvalidStateException | NoSuchAlgorithmException e) {
-                        logger.log(Level.INFO, "Person record creation failed", e);
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                    } catch (AlgorithmException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     path = (String) session.getAttribute("home");
@@ -908,8 +1033,11 @@ public class PersonController extends Controller {
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccountByPersonId(Integer.parseInt(request.getParameter("personId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during user account record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -918,7 +1046,10 @@ public class PersonController extends Controller {
                     try {
                         messageDigest = MessageDigest.getInstance("SHA-256");
                     } catch (NoSuchAlgorithmException e) {
-                        logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("error_007_01"));
+                        logger.log(Level.INFO, bundle.getString("error_007_01"));
                         break;
                     }
 
@@ -945,7 +1076,11 @@ public class PersonController extends Controller {
                     logger.log(Level.INFO, "Checking faculty member role");
                     try {
                         memberRole = FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("memberRole")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("invalid_id"));
+                        logger.log(Level.INFO, bundle.getString("invalid_id"));
                         return;
                     }
 
@@ -968,7 +1103,10 @@ public class PersonController extends Controller {
                 logger.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -1041,7 +1179,7 @@ public class PersonController extends Controller {
                 logger.log(Level.INFO, "The person does not belong to a faculty");
                 department = null;
             }
-        } catch (InvalidArgumentException | InvalidStateException ex) {
+        } catch (InvalidArgumentException | InvalidStateException e) {
             logger.log(Level.INFO, "The person does not belong to a department");
             department = null;
         }

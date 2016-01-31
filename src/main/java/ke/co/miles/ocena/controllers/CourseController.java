@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -43,6 +45,9 @@ public class CourseController extends Controller {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
 
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -69,6 +74,17 @@ public class CourseController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -84,8 +100,11 @@ public class CourseController extends Controller {
                     degree = new DegreeDetails();
                     try {
                         degree = degreeService.retrieveDegree(Integer.parseInt(request.getParameter("degreeId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Read in details for the course
@@ -101,7 +120,10 @@ public class CourseController extends Controller {
                     try {
                         courseService.addCourse(course);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.INFO, "An error occurred during course record creation");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -118,8 +140,11 @@ public class CourseController extends Controller {
                     degree = new DegreeDetails();
                     try {
                         degree = degreeService.retrieveDegree(Integer.parseInt(request.getParameter("degreeId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the list of courses from the database
@@ -127,8 +152,11 @@ public class CourseController extends Controller {
                     List<CourseDetails> courses = new ArrayList<>();
                     try {
                         courses = courseService.retrieveCoursesOfDegree(degree.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred while retrieving list of courses from the database");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the courses in the session
@@ -159,8 +187,11 @@ public class CourseController extends Controller {
                     degree = new DegreeDetails();
                     try {
                         degree = degreeService.retrieveDegree(Integer.parseInt(request.getParameter("degreeId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Read in details for the course
@@ -177,7 +208,10 @@ public class CourseController extends Controller {
                     try {
                         courseService.editCourse(course);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during course record update");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -192,16 +226,22 @@ public class CourseController extends Controller {
                     degree = new DegreeDetails();
                     try {
                         degree = degreeService.retrieveDegree(Integer.parseInt(request.getParameter("degreeId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during record retrieval");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Send the details to the entity manager for record removal from the database
                     logger.log(Level.INFO, "Sending the details to the entity manager for record removal from the database");
                     try {
                         courseService.removeCourse(Integer.parseInt(request.getParameter("courseId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during course record removal");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail other required records in the session and
@@ -214,7 +254,10 @@ public class CourseController extends Controller {
                 logger.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -262,13 +305,15 @@ public class CourseController extends Controller {
     private void generateTableBodyAndAvailOtherRecords(HttpSession session, HttpServletResponse response, DegreeDetails degree) throws IOException {
 
         //<editor-fold defaultstate="collapsed" desc="Avail other records in session"> 
-        //Retrieve the list of courses from the database
         logger.log(Level.INFO, "Retrieving the list of courses from the database");
         List<CourseDetails> courses = new ArrayList<>();
         try {
             courses = courseService.retrieveCoursesOfDegree(degree.getId());
-        } catch (InvalidArgumentException | InvalidStateException ex) {
-            logger.log(Level.INFO, "An error occurred while retrieving list of courses from the database");
+        } catch (InvalidArgumentException | InvalidStateException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(e.getCode()));
+            logger.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the courses in the session
@@ -279,6 +324,7 @@ public class CourseController extends Controller {
         logger.log(Level.INFO, "Availing the degree in session");
         session.setAttribute("degree", degree);
 
+        //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="Generate table body">
         int index = 0;
         PrintWriter out = response.getWriter();

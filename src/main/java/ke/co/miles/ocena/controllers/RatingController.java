@@ -70,6 +70,17 @@ public class RatingController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -97,7 +108,10 @@ public class RatingController extends Controller {
                     try {
                         ratingService.addRating(rating);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.INFO, "An error occurred during rating record creation");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of rating records from the database
@@ -105,7 +119,10 @@ public class RatingController extends Controller {
                     try {
                         ratingTypeAndValuesMap = ratingService.retrieveRatings();
                     } catch (InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during rating record creation", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the ratings session
@@ -135,7 +152,10 @@ public class RatingController extends Controller {
                     try {
                         ratingService.editRating(rating);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during rating record update");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of rating records from the database
@@ -143,7 +163,10 @@ public class RatingController extends Controller {
                     try {
                         ratingTypeAndValuesMap = ratingService.retrieveRatings();
                     } catch (InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during rating record update");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Display the new list of rating records
@@ -157,7 +180,10 @@ public class RatingController extends Controller {
                     try {
                         ratingService.removeRating(Short.parseShort(request.getParameter("ratingId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during rating record removal");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of rating records from the database
@@ -165,7 +191,10 @@ public class RatingController extends Controller {
                     try {
                         ratingTypeAndValuesMap = ratingService.retrieveRatings();
                     } catch (InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during rating record creation");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Display the new list of rating records
@@ -178,7 +207,10 @@ public class RatingController extends Controller {
                 logger.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }

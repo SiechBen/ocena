@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -42,6 +44,10 @@ public class CollegeController extends Controller {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
+
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -57,6 +63,17 @@ public class CollegeController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -84,7 +101,10 @@ public class CollegeController extends Controller {
                     try {
                         collegeService.addCollege(college);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.SEVERE, "An error occurred during college record details submission", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of colleges
@@ -92,8 +112,11 @@ public class CollegeController extends Controller {
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
-                    } catch (Exception e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of colleges", e);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the college records table
@@ -107,8 +130,11 @@ public class CollegeController extends Controller {
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
-                    } catch (InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of colleges in institutions map", ex);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     session.setAttribute("colleges", colleges);
@@ -133,7 +159,10 @@ public class CollegeController extends Controller {
                     try {
                         collegeService.editCollege(college);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during college record details submission", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of colleges
@@ -141,8 +170,11 @@ public class CollegeController extends Controller {
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
-                    } catch (Exception e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of colleges", e);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the college records table
@@ -157,7 +189,10 @@ public class CollegeController extends Controller {
                     try {
                         collegeService.removeCollege(Integer.parseInt(request.getParameter("id")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during college unique identifier submission", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of colleges
@@ -165,8 +200,11 @@ public class CollegeController extends Controller {
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
-                    } catch (Exception e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of colleges", e);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the college records table
@@ -181,7 +219,10 @@ public class CollegeController extends Controller {
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.SEVERE, "Request dispatch failed", e);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }

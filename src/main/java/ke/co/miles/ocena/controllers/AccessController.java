@@ -7,11 +7,12 @@ package ke.co.miles.ocena.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -20,9 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import ke.co.miles.ocena.defaults.Controller;
+import ke.co.miles.ocena.exceptions.AlgorithmException;
 import ke.co.miles.ocena.exceptions.InvalidArgumentException;
 import ke.co.miles.ocena.exceptions.InvalidLoginException;
 import ke.co.miles.ocena.exceptions.InvalidStateException;
+import ke.co.miles.ocena.exceptions.MilesException;
 import ke.co.miles.ocena.utilities.AdmissionDetails;
 import ke.co.miles.ocena.utilities.CountryDetails;
 import ke.co.miles.ocena.utilities.DegreeDetails;
@@ -58,6 +61,9 @@ public class AccessController extends Controller {
             throws ServletException, IOException {
 
         PrintWriter out = response.getWriter();
+
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
 
         //Get the user session
         HttpSession session = request.getSession(false);
@@ -111,6 +117,7 @@ public class AccessController extends Controller {
                         Map<PersonDetails, UserGroupDetail> personUserGroupMap;
                         try {
                             personUserGroupMap = personService.retrievePerson(username, password);
+                            logger.log(Level.INFO, "This person retrieved {0}", personUserGroupMap.keySet());
 
                             //Valid login attempt
                             out.write("<input type=\"hidden\" id=\"useful-username\" value=\"valid\">");
@@ -118,9 +125,24 @@ public class AccessController extends Controller {
 
                             return;
 
-                        } catch (InvalidArgumentException | InvalidLoginException | NoSuchAlgorithmException ex) {
+                        } catch (AlgorithmException ex) {
+
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            response.setContentType("text/html;charset=UTF-8");
+                            response.getWriter().write(bundle.getString(ex.getCode()));
+                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
 
                             return;
+
+                        } catch (MilesException ex) {
+
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            response.setContentType("text/html;charset=UTF-8");
+                            response.getWriter().write(bundle.getString(ex.getCode()));
+                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+
+                            return;
+
                         }
                     }
                 }
@@ -173,7 +195,21 @@ public class AccessController extends Controller {
                         Map<PersonDetails, UserGroupDetail> personUserGroupMap;
                         try {
                             personUserGroupMap = personService.retrievePerson(username, password);
-                        } catch (InvalidArgumentException | InvalidLoginException | NoSuchAlgorithmException ex) {
+                        } catch (MilesException ex) {
+
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            response.setContentType("text/html;charset=UTF-8");
+                            response.getWriter().write(bundle.getString(ex.getCode()));
+                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+
+                            return;
+
+                        } catch (AlgorithmException ex) {
+
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            response.setContentType("text/html;charset=UTF-8");
+                            response.getWriter().write(bundle.getString(ex.getCode()));
+                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
 
                             return;
                         }
@@ -298,7 +334,7 @@ public class AccessController extends Controller {
 
                                     //Retrieve records required at the faculty dashboard
                                     logger.log(Level.INFO, "Retrieving the records required at the faculty dashboard");
-                                    availOtherRequiredRecords(session, faculty);
+                                    availOtherRequiredRecords(session, response, faculty);
                                 }
 
                                 //If the student is the member of a department
@@ -323,7 +359,7 @@ public class AccessController extends Controller {
 
                                     //Retrieve records required at the department dashboard
                                     logger.log(Level.INFO, "Retrieving the records required at the department dashboard");
-                                    availOtherRequiredRecords(session, department);
+                                    availOtherRequiredRecords(session, response, department);
                                 }
 
                             }
@@ -380,7 +416,10 @@ public class AccessController extends Controller {
         try {
             request.getRequestDispatcher(destination).forward(request, response);
         } catch (ServletException | IOException e) {
-            logger.log(Level.SEVERE, "Request dispatch failed", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString("redirection_failed"));
+            logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
         }
     }
 
@@ -462,7 +501,7 @@ public class AccessController extends Controller {
     }// </editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Avail other required records">
-    private void availOtherRequiredRecords(HttpSession session, Object object) {
+    private void availOtherRequiredRecords(HttpSession session, HttpServletResponse response, Object object) throws IOException {
         List<QuestionDetails> questions = new ArrayList<>();
         List<AdmissionDetails> admissions = new ArrayList<>();
         Map<QuestionDetails, RatingTypeDetail> ratingTypesByQuestionMap;
@@ -580,7 +619,10 @@ public class AccessController extends Controller {
         try {
             ratingTypesByQuestionMap = questionService.retrieveRatingTypesByQuestion(questions);
         } catch (InvalidArgumentException ex) {
-            logger.log(Level.INFO, "An error occurred during rating record retrieval");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(ex.getCode()));
+            logger.log(Level.INFO, bundle.getString(ex.getCode()));
             return;
         }
 
@@ -593,7 +635,10 @@ public class AccessController extends Controller {
         try {
             meansOfAnsweringByQuestionMap = questionService.retrieveMeansOfAnsweringByQuestion(questions);
         } catch (InvalidArgumentException ex) {
-            logger.log(Level.INFO, "An error occurred during rating record retrieval");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(ex.getCode()));
+            logger.log(Level.INFO, bundle.getString(ex.getCode()));
             return;
         }
 

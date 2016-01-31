@@ -9,9 +9,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,6 +46,10 @@ public class ReportsController extends Controller {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
 
+        //Get the user's locale and the associated resource bundle
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -71,6 +76,17 @@ public class ReportsController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -96,20 +112,27 @@ public class ReportsController extends Controller {
                     filePath = context.getRealPath("/") + File.separator;
 
                     try {
-                        zipService.zipFolder(filePath + "Evaluation reports", filePath + "Evaluation reports.zip");
+                        zipService.zipFolder(filePath + bundle.getString("parent_folder").replaceAll("[\\\\/*<>|\"?]", "-"), filePath + bundle.getString("zip_name").replaceAll("[\\\\/*<>|\"?]", "-") + ".zip");
                     } catch (Exception ex) {
-                        logger.log(Level.INFO, "Evaluation reports could not be zipped successfully");
-                        return;
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("zip_error"));
+                        logger.log(Level.INFO, bundle.getString("zip_error"));
+
+                        path = (String) session.getAttribute("home");
+                        logger.log(Level.INFO, "Path is: {0}", path);
+
+                        break;
                     }
 
                     //Read input file from a path
                     logger.log(Level.INFO, "Reading input file from a path");
-                    downloadFile = new File(filePath + "Evaluation reports.zip");
+                    downloadFile = new File(filePath + bundle.getString("zip_name").replaceAll("[\\\\/*<>|\"?]", "-") + ".zip");
                     inStream = new FileInputStream(downloadFile);
 
                     //Get MIME type of the file
                     logger.log(Level.INFO, "Getting the MIME type of the file");
-                    mimeType = context.getMimeType("Evaluation reports.zip");
+                    mimeType = context.getMimeType(bundle.getString("zip_name").replaceAll("[\\\\/*<>|\"?]", "-") + ".zip");
                     if (mimeType == null) {
                         mimeType = "application/octet-stream";
                     }
@@ -125,11 +148,9 @@ public class ReportsController extends Controller {
                     headerValue = String.format("attachment; filename=\"%s\"", downloadFile.getName());
                     response.setHeader(headerKey, headerValue);
 
-                    //Obtain response's output stream
-                    logger.log(Level.INFO, "Obtaining response's output stream");
+                    //Obtain and write to response's output stream
+                    logger.log(Level.INFO, "Obtaining and writing to response's output stream");
 
-                    //Write to the output stream
-                    logger.log(Level.INFO, "Writing to the output stream");
                     buffer = new byte[4096];
                     while ((bytesRead = inStream.read(buffer)) > 0) {
                         outStream.write(buffer, 0, bytesRead);
@@ -142,7 +163,15 @@ public class ReportsController extends Controller {
                     outStream.close();
 
                     logger.log(Level.INFO, "\n\n\033[32;3m Download completed successfully\n\n");
-                    return;
+
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    response.setContentType("text/html;charset=UTF-8");
+                    response.getWriter().write(bundle.getString("download_success"));
+
+                    path = (String) session.getAttribute("home");
+                    logger.log(Level.INFO, "Path is: {0}", path);
+
+                    break;
 
                 case "/downloadFacultyReports":
                     //Get the servlet context
@@ -151,14 +180,22 @@ public class ReportsController extends Controller {
 
                     //Set the file path
                     logger.log(Level.INFO, "Setting the file path");
-                    filePath = context.getRealPath("/") + File.separator + "Evaluation reports" + File.separator;
+                    filePath = context.getRealPath("/") + File.separator + bundle.getString("parent_folder").replaceAll("[\\\\/*<>|\"?]", "-") + File.separator;
 
                     Map<AdmissionDetails, List<DegreeDetails>> degreesByAdmissionMap;
                     try {
                         degreesByAdmissionMap = (Map<AdmissionDetails, List<DegreeDetails>>) session.getAttribute("degreesByAdmissionMap");
                     } catch (Exception e) {
-                        logger.log(Level.INFO, "The degree map was not retrieved");
-                        return;
+                        logger.log(Level.INFO, bundle.getString("degrees_unavailable"));
+
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("degrees_unavailable"));
+
+                        path = (String) session.getAttribute("home");
+                        logger.log(Level.INFO, "Path is: {0}", path);
+
+                        break;
                     }
 
                     String sourceFolder;
@@ -173,8 +210,16 @@ public class ReportsController extends Controller {
                             try {
                                 zipService.zipFolder(sourceFolder, destinationFolder);
                             } catch (Exception ex) {
-                                logger.log(Level.INFO, "Evaluation reports could not be zipped successfully");
-                                return;
+                                logger.log(Level.INFO, bundle.getString("zip_error"));
+
+                                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                                response.setContentType("text/html;charset=UTF-8");
+                                response.getWriter().write(bundle.getString("zip_error"));
+
+                                path = (String) session.getAttribute("home");
+                                logger.log(Level.INFO, "Path is: {0}", path);
+
+                                break;
                             }
 
                             //Read input file from a path
@@ -221,15 +266,27 @@ public class ReportsController extends Controller {
                     outStream.close();
 
                     logger.log(Level.INFO, "\n\n\033[32;3m Downloads completed successfully\n\n");
-                    return;
+
+                    path = (String) session.getAttribute("home");
+                    logger.log(Level.INFO, "Path is: {0}", path);
+                    destination = "/WEB-INF/views" + path + ".jsp";
+                    try {
+                        logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                        request.getRequestDispatcher(destination).forward(request, response);
+                    } catch (ServletException | IOException e) {
+                        logger.log(Level.INFO, "Request dispatch failed");
+                    }
             }
 
-            destination = "WEB-INF/views" + path + ".jsp";
+            destination = "/WEB-INF/views" + path + ".jsp";
             try {
                 logger.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }

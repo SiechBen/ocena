@@ -28,17 +28,6 @@
                     THE UNIVERSITY OF NAIROBI
                 </a>
             </div>
-            <div>
-                <button class="btn btn-social-icon btn-twitter">
-                    <span class="fa fa-twitter"></span>
-                </button>
-                <button class="btn btn-social-icon btn-facebook">
-                    <span class="fa fa-facebook"></span>
-                </button>
-                <button class="btn btn-social-icon btn-google">
-                    <span class="fa fa-google"></span>
-                </button>
-            </div>
         </div>
         <div id="index-wrapper">
             <h1>Login to proceed with evaluation</h1>

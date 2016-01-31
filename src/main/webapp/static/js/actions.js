@@ -2416,6 +2416,28 @@ function editDegree(degreeName, degreeId, admission, facultyId, departmentId) {
     });
 }
 
+
+function removeDegree(degreeId, facultyId, departmentId) {
+
+//Ask user to confirm degree record removal
+    $("#message").text("Kindly login as admin");
+    $("#message-dialog").dialog({
+        width: 495,
+        height: "auto",
+        title: "Insufficient rights",
+        modal: true,
+        resizable: false,
+        buttons: {
+            "Ok": function () {
+                loadWindow();
+            }
+        },
+        close: function (ui, event) {
+
+        }
+    });
+}
+
 function removeDegree(degreeId, facultyId, departmentId) {
 
 //Ask user to confirm degree record removal

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -17,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import ke.co.miles.ocena.defaults.Controller;
-import ke.co.miles.ocena.entities.OverallAdmin;
+import ke.co.miles.ocena.exceptions.AlgorithmException;
 import ke.co.miles.ocena.exceptions.InvalidArgumentException;
 import ke.co.miles.ocena.exceptions.InvalidStateException;
 import ke.co.miles.ocena.utilities.OverallAdminDetails;
@@ -44,6 +46,10 @@ public class OverallAdminController extends Controller {
         PrintWriter out = response.getWriter();
         HttpSession session = request.getSession();
 
+        //Get the user's locale and the associated resource bundle
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (boolean) session.getAttribute("mainAdminSession");
@@ -58,6 +64,17 @@ public class OverallAdminController extends Controller {
         if (!adminSession) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -84,7 +101,10 @@ public class OverallAdminController extends Controller {
                     try {
                         messageDigest = MessageDigest.getInstance("SHA-256");
                     } catch (NoSuchAlgorithmException e) {
-                        logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("error_007_01"));
+                        logger.log(Level.INFO, bundle.getString("error_007_01"));
                         break;
                     }
 
@@ -120,7 +140,10 @@ public class OverallAdminController extends Controller {
                     try {
                         messageDigest = MessageDigest.getInstance("SHA-256");
                     } catch (NoSuchAlgorithmException e) {
-                        logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString("error_007_01"));
+                        logger.log(Level.INFO, bundle.getString("error_007_01"));
                         break;
                     }
 
@@ -153,8 +176,12 @@ public class OverallAdminController extends Controller {
 
                     try {
                         overallAdminService.editOverallAdmin(overallAdminDetails);
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "Overall admin credentia;s could not be edited");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        return;
                     }
 
                     path = (String) session.getAttribute("home");
@@ -168,7 +195,10 @@ public class OverallAdminController extends Controller {
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Forward dispatch could not be accomplished");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }

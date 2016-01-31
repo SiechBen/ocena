@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -48,6 +50,9 @@ public class DegreeController extends Controller {
         String path = request.getServletPath();
         String destination;
 
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -83,7 +88,7 @@ public class DegreeController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The degree does not belong to a faculty");
                         faculty = null;
                     }
@@ -93,7 +98,7 @@ public class DegreeController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The degree does not belong to a department");
                         department = null;
                     }
@@ -117,7 +122,10 @@ public class DegreeController extends Controller {
                     try {
                         degreeService.addDegree(degree);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.INFO, "An error occurred during degree record creation");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -137,7 +145,7 @@ public class DegreeController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The degree does not belong to a faculty");
                         faculty = null;
                     }
@@ -147,7 +155,7 @@ public class DegreeController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The degree does not belong to a department");
                         department = null;
                     }
@@ -172,7 +180,10 @@ public class DegreeController extends Controller {
                     try {
                         degreeService.editDegree(degree);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during degree record update");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -191,7 +202,7 @@ public class DegreeController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The degree does not belong to a faculty");
                         faculty = null;
                     }
@@ -201,7 +212,7 @@ public class DegreeController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The degree does not belong to a department");
                         department = null;
                     }
@@ -210,8 +221,11 @@ public class DegreeController extends Controller {
                     logger.log(Level.INFO, "Sending the details to the entity manager for record removal from the database");
                     try {
                         degreeService.removeDegree(Integer.parseInt(request.getParameter("degreeId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred during degree record removal");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail other required records in the session and
@@ -223,14 +237,20 @@ public class DegreeController extends Controller {
                     }
                     return;
             }
+
             destination = "WEB-INF/views" + path + ".jsp";
             try {
                 logger.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
+
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -290,8 +310,11 @@ public class DegreeController extends Controller {
                 //Retrieve the map of degrees by faculty from the database
                 logger.log(Level.INFO, "Retrieving the map of degrees by faculty from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfFacultyByAdmission(faculty);
-            } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of degrees in a faculty");
+            } catch (InvalidArgumentException | InvalidStateException e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString(e.getCode()));
+                logger.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
         } else if (object instanceof DepartmentDetails) {
@@ -304,8 +327,11 @@ public class DegreeController extends Controller {
                 //Retrieve the map of degrees by department from the database
                 logger.log(Level.INFO, "Retrieving the map of degrees by department from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfDepartmentByAdmission(department);
-            } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of degrees in a department");
+            } catch (InvalidArgumentException | InvalidStateException e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString(e.getCode()));
+                logger.log(Level.INFO, bundle.getString(e.getCode()));
             }
         }
 

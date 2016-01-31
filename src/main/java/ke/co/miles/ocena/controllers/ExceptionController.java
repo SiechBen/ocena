@@ -7,20 +7,22 @@ package ke.co.miles.ocena.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import ke.co.miles.ocena.defaults.Controller;
 
 /**
  *
  * @author Ben Siech
  */
 @WebServlet(name = "ExceptionController", urlPatterns = {"/test"})
-public class ExceptionController extends HttpServlet {
+public class ExceptionController extends Controller {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,20 +40,16 @@ public class ExceptionController extends HttpServlet {
         PrintWriter out = response.getWriter();
         String destination;
 
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         switch (path) {
             //Test if the path can be called
             case "/test":
-                String check = "check";
-                out.write("\n\n");
-                out.write("\nFaculty entity");
-                out.write("\nUsername          : " + request.getParameter("login-username"));
-                out.write("\nPassword          : " + request.getParameter("login-password"));
-                out.write("\nName              : " + check);
-                out.write("\nActive            : " + check);
-                out.write("\nVersion           : " + check);
-                out.write("\nContact id        : " + check);
-                out.write("\nCollege name      : " + check);
-                out.write("\n\n");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("test_success"));
+                logger.log(Level.INFO, bundle.getString("test_success"));
                 return;
         }
 
@@ -60,7 +58,10 @@ public class ExceptionController extends HttpServlet {
         try {
             request.getRequestDispatcher(destination).forward(request, response);
         } catch (ServletException | IOException e) {
-            logger.log(Level.SEVERE, "Request dispatch failed", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString("redirection_failed"));
+            logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
         }
 
         //Analyze the servlet error by getting the error details

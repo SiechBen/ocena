@@ -9,6 +9,8 @@ import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -41,8 +43,11 @@ public class AdmissionController extends Controller {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        
-         boolean adminSession;
+
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
+        boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
@@ -68,6 +73,17 @@ public class AdmissionController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -90,7 +106,10 @@ public class AdmissionController extends Controller {
                     try {
                         admissionService.addAdmission(admission);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.SEVERE, "An error occurred during admission record creation", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the admission records table
@@ -105,8 +124,11 @@ public class AdmissionController extends Controller {
                     List admissions = new ArrayList<>();
                     try {
                         admissions = admissionService.retrieveAdmissions();
-                    } catch (InvalidStateException ex) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of admissions in facultys map", ex);
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the admissions in the session
@@ -131,7 +153,10 @@ public class AdmissionController extends Controller {
                     try {
                         admissionService.editAdmission(admission);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during admission record update", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the admission records table
@@ -146,7 +171,10 @@ public class AdmissionController extends Controller {
                     try {
                         admissionService.removeAdmission(Integer.parseInt(request.getParameter("admissionId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during admission unique identifier submission", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the admission records table
@@ -161,7 +189,10 @@ public class AdmissionController extends Controller {
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.SEVERE, "Request dispatch failed", e);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -216,7 +247,10 @@ public class AdmissionController extends Controller {
         try {
             admissions = admissionService.retrieveAdmissions();
         } catch (InvalidStateException e) {
-            logger.log(Level.SEVERE, "An error occurred during retrieval of admissions", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(e.getCode()));
+            logger.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Generate table body

@@ -10,7 +10,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -50,6 +52,10 @@ public class QuestionController extends Controller {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
 
+        //Get the user's locale and the associated resource bundle
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -76,6 +82,17 @@ public class QuestionController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -92,7 +109,7 @@ public class QuestionController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The question does not belong to a faculty");
                         faculty = null;
                     }
@@ -102,7 +119,7 @@ public class QuestionController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The question does not belong to a department");
                         department = null;
                     }
@@ -112,7 +129,7 @@ public class QuestionController extends Controller {
                     questionCategory = new QuestionCategoryDetails();
                     try {
                         questionCategory.setId(Short.parseShort(request.getParameter("questionCategoryId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         questionCategory = null;
                     }
 
@@ -127,7 +144,7 @@ public class QuestionController extends Controller {
                     question.setMeansOfAnswering(MeansOfAnsweringDetail.getMeansOfAnswering(Short.parseShort(request.getParameter("meansOfAnsweringId"))));
                     try {
                         question.setRatingType(RatingTypeDetail.getRatingType(Short.parseShort(request.getParameter("ratingTypeId"))));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.FINE, "Rating type is null");
                     }
 
@@ -136,7 +153,10 @@ public class QuestionController extends Controller {
                     try {
                         questionService.addQuestion(question);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.INFO, "An error occurred during question record creation");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -156,7 +176,7 @@ public class QuestionController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The question does not belong to a faculty");
                         faculty = null;
                     }
@@ -166,7 +186,7 @@ public class QuestionController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The question does not belong to a department");
                         department = null;
                     }
@@ -176,7 +196,7 @@ public class QuestionController extends Controller {
                     questionCategory = new QuestionCategoryDetails();
                     try {
                         questionCategory.setId(Short.parseShort(request.getParameter("questionCategoryId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         questionCategory = null;
                     }
 
@@ -192,7 +212,7 @@ public class QuestionController extends Controller {
                     question.setMeansOfAnswering(MeansOfAnsweringDetail.getMeansOfAnswering(Short.parseShort(request.getParameter("meansOfAnsweringId"))));
                     try {
                         question.setRatingType(RatingTypeDetail.getRatingType(Short.parseShort(request.getParameter("ratingTypeId"))));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.FINE, "Rating type is null");
                     }
 
@@ -201,7 +221,10 @@ public class QuestionController extends Controller {
                     try {
                         questionService.editQuestion(question);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred during question record update");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -220,7 +243,7 @@ public class QuestionController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The question does not belong to a faculty");
                         faculty = null;
                     }
@@ -230,7 +253,7 @@ public class QuestionController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         logger.log(Level.INFO, "The question does not belong to a department");
                         department = null;
                     }
@@ -239,8 +262,8 @@ public class QuestionController extends Controller {
                     logger.log(Level.INFO, "Sending the details to the entity manager for record removal from the database");
                     try {
                         questionService.removeQuestion(Integer.parseInt(request.getParameter("questionId")));
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        Logger.getLogger(QuestionController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        Logger.getLogger(QuestionController.class.getName()).log(Level.SEVERE, null, e);
                     }
 
                     //Avail other required records in the session and
@@ -257,7 +280,10 @@ public class QuestionController extends Controller {
                 logger.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -326,8 +352,11 @@ public class QuestionController extends Controller {
                 //Retrieve the map of questions of a faculty in question categories from the database
                 logger.log(Level.INFO, "Retrieving the map of questions of a faculty in question categories from the database");
                 questionsInQuestionCategoryMap = questionService.retrieveQuestionsOfFacultyByQuestionCategories(faculty);
-            } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of questions in a faculty");
+            } catch (InvalidArgumentException | InvalidStateException e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString(e.getCode()));
+                logger.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
         } else if (object instanceof DepartmentDetails) {
@@ -341,8 +370,11 @@ public class QuestionController extends Controller {
                 //Retrieve the map of questions of a department in question categories from the database
                 logger.log(Level.INFO, "Retrieving the map of questions of a department in question categories from the database");
                 questionsInQuestionCategoryMap = questionService.retrieveQuestionsOfDepartmentByQuestionCategories(department);
-            } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of questions in a department");
+            } catch (InvalidArgumentException | InvalidStateException e) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString(e.getCode()));
+                logger.log(Level.INFO, bundle.getString(e.getCode()));
             }
         }
 
@@ -365,7 +397,10 @@ public class QuestionController extends Controller {
         try {
             questionCategories = questionCategoryService.retrieveQuestionCategories();
         } catch (InvalidArgumentException | InvalidStateException e) {
-            logger.log(Level.INFO, "An error occurred during question category record creation", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(e.getCode()));
+            logger.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the question categories in session
@@ -377,7 +412,10 @@ public class QuestionController extends Controller {
         try {
             ratingTypeAndValuesMap = ratingService.retrieveRatings();
         } catch (InvalidStateException e) {
-            logger.log(Level.INFO, "An error occurred during rating record retrieval", e);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(e.getCode()));
+            logger.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the map of rating types and values in session
@@ -392,8 +430,11 @@ public class QuestionController extends Controller {
         logger.log(Level.INFO, "Retrieving the map of rating types by question from the database");
         try {
             ratingTypesByQuestionMap = questionService.retrieveRatingTypesByQuestion(questions);
-        } catch (InvalidArgumentException ex) {
-            logger.log(Level.INFO, "An error occurred during rating record retrieval");
+        } catch (InvalidArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(e.getCode()));
+            logger.log(Level.INFO, bundle.getString(e.getCode()));
             return;
         }
 
@@ -405,8 +446,11 @@ public class QuestionController extends Controller {
         logger.log(Level.INFO, "Retrieving the map of means of answering by question from the database");
         try {
             meansOfAnsweringByQuestionMap = questionService.retrieveMeansOfAnsweringByQuestion(questions);
-        } catch (InvalidArgumentException ex) {
-            logger.log(Level.INFO, "An error occurred during rating record retrieval");
+        } catch (InvalidArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(e.getCode()));
+            logger.log(Level.INFO, bundle.getString(e.getCode()));
             return;
         }
 

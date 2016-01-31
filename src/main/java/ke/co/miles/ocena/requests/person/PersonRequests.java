@@ -20,9 +20,11 @@ import ke.co.miles.ocena.defaults.EntityRequests;
 import ke.co.miles.ocena.entities.Person;
 import ke.co.miles.ocena.entities.UserAccount;
 import ke.co.miles.ocena.entities.UserGroup;
+import ke.co.miles.ocena.exceptions.AlgorithmException;
 import ke.co.miles.ocena.exceptions.InvalidArgumentException;
 import ke.co.miles.ocena.exceptions.InvalidLoginException;
 import ke.co.miles.ocena.exceptions.InvalidStateException;
+import ke.co.miles.ocena.exceptions.MilesException;
 import ke.co.miles.ocena.utilities.ContactDetails;
 import ke.co.miles.ocena.utilities.EmailContactDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberDetails;
@@ -41,7 +43,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
 
 //<editor-fold defaultstate="collapsed" desc="Create">
     @Override
-    public Integer addPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, Exception {
+    public Integer addPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, AlgorithmException {
         //Method for adding a person record to the database
         logger.log(Level.INFO, "Entered the method for adding a person record to the database");
 
@@ -141,7 +143,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
-            throw new Exception("error_007_01");
+            throw new AlgorithmException("error_007_01");
         }
 
         //Create the person's user account
@@ -178,7 +180,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
 //<editor-fold defaultstate="collapsed" desc="Read">
 
     @Override
-    public Map<PersonDetails, UserGroupDetail> retrievePerson(String username, String password) throws InvalidArgumentException, InvalidLoginException, NoSuchAlgorithmException {
+    public Map<PersonDetails, UserGroupDetail> retrievePerson(String username, String password) throws MilesException, AlgorithmException {
         //Method for retrieving person record from the database
         logger.log(Level.INFO, "Entered the method for retrieving person records from the database");
 
@@ -204,8 +206,9 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {
             logger.log(Level.SEVERE, "An error occurred while finding the hashing algorithm");
-            throw new NoSuchAlgorithmException("error_007_01");
+            throw new AlgorithmException("error_007_01");
         }
+        
         String hashedPassword = accessService.generateSHAPassword(messageDigest, password);
 
         //Retrieving the user account record from the database
@@ -324,7 +327,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Update">
     @Override
-    public void editPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, InvalidStateException, NoSuchAlgorithmException {
+    public void editPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, InvalidStateException, AlgorithmException {
         //Method for editing a person record in the database
         logger.log(Level.INFO, "Entered the method for editing a person record in the database");
 
@@ -437,7 +440,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
-            throw new NoSuchAlgorithmException("error_007_01");
+            throw new AlgorithmException("error_007_01");
         }
 
         //Create the person's user account

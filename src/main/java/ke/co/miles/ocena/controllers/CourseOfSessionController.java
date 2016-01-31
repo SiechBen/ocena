@@ -10,7 +10,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -53,6 +55,9 @@ public class CourseOfSessionController extends Controller {
         HttpSession session = request.getSession();
         List<CourseOfSessionDetails> coursesOfSession;
 
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("subAdminSession");
@@ -68,6 +73,17 @@ public class CourseOfSessionController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -96,7 +112,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "An error occurred while retrieving the courses of session");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the courses of evaluation session in the session
@@ -109,7 +128,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         personByCourseOfSessionMap = courseOfSessionService.retrievePersonByCourseOfSession(coursesOfSession);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.INFO, "An error occurred while retrieving the map of people by course of session");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the map of people by faculty in the session
@@ -121,7 +143,7 @@ public class CourseOfSessionController extends Controller {
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         faculty = null;
                         logger.log(Level.INFO, "Faculty unique identifier is not provided");
                     }
@@ -131,7 +153,7 @@ public class CourseOfSessionController extends Controller {
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         department = null;
                         logger.log(Level.INFO, "Department unique identifier is not provided");
                     }
@@ -145,8 +167,11 @@ public class CourseOfSessionController extends Controller {
                         } else if (department != null) {
                             facultyMembers = facultyMemberService.retrieveNonStudentFacultyMembers(department);
                         }
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred while retrieving the active evaluation session");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the non-student faculty members in the session
@@ -159,7 +184,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         personByFacultyMemberMap = courseOfSessionService.retrievePersonByFacultyMember(facultyMembers);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.INFO, "An error occurred while retrieving the map of people by faculty");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the map of people by faculty in the session
@@ -176,8 +204,11 @@ public class CourseOfSessionController extends Controller {
                     List<CourseDetails> courses = new ArrayList<>();
                     try {
                         courses = courseService.retrieveCoursesOfDegree(degree.getId());
-                    } catch (InvalidArgumentException | InvalidStateException ex) {
-                        logger.log(Level.INFO, "An error occurred while retrieving list of courses from the database");
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the courses in the session
@@ -219,7 +250,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         courseOfSessionService.addCourseOfSession(courseOfSession);
                     } catch (InvalidArgumentException e) {
-                        logger.log(Level.SEVERE, "An error occurred during course of session record details submission");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of courses of session
@@ -228,7 +262,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of courses of session", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the course of session records table
@@ -268,7 +305,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         courseOfSessionService.editCourseOfSession(courseOfSession);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during course of session record details submission");
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of courses of session
@@ -277,7 +317,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of courses of session", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the course of session records table
@@ -293,7 +336,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         courseOfSessionService.removeCourseOfSession(Integer.parseInt(request.getParameter("courseOfSessionId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during courses of session unique identifier submission", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of courses of session
@@ -302,7 +348,10 @@ public class CourseOfSessionController extends Controller {
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of courses of session", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the course of session records table
@@ -318,7 +367,10 @@ public class CourseOfSessionController extends Controller {
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.SEVERE, "Request dispatch failed", e);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -372,7 +424,7 @@ public class CourseOfSessionController extends Controller {
         faculty = new FacultyDetails();
         try {
             faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             faculty = null;
         }
 
@@ -381,7 +433,7 @@ public class CourseOfSessionController extends Controller {
         department = new DepartmentDetails();
         try {
             department.setId(Integer.parseInt(request.getParameter("departmentId")));
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             department = null;
         }
 
@@ -391,7 +443,10 @@ public class CourseOfSessionController extends Controller {
         try {
             personByCourseOfSessionMap = courseOfSessionService.retrievePersonByCourseOfSession(coursesOfSession);
         } catch (InvalidArgumentException e) {
-            logger.log(Level.INFO, "An error occurred while retrieving the map of people by course of session");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write(bundle.getString(e.getCode()));
+            logger.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         for (CourseOfSessionDetails c : coursesOfSession) {

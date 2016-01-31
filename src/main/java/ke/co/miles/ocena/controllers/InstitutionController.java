@@ -7,6 +7,8 @@ package ke.co.miles.ocena.controllers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -40,6 +42,11 @@ public class InstitutionController extends Controller {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
+
+        //Get the user's locale and the associated resource bundle
+        Locale locale = request.getLocale();
+        bundle = ResourceBundle.getBundle("text", locale);
+
         boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
@@ -55,6 +62,17 @@ public class InstitutionController extends Controller {
         if (adminSession == false) {
             //Admin session not established
             logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+
+            String path = (String) session.getAttribute("home");
+            logger.log(Level.INFO, "Path is: {0}", path);
+            String destination = "/WEB-INF/views" + path + ".jsp";
+            try {
+                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                request.getRequestDispatcher(destination).forward(request, response);
+            } catch (ServletException | IOException e) {
+                logger.log(Level.INFO, "Request dispatch failed");
+            }
+
         } else if (adminSession == true) {
             //Admin session established
             logger.log(Level.INFO, "Admin session established hence responding to the request");
@@ -93,15 +111,21 @@ public class InstitutionController extends Controller {
                     institution.setActive(true);
                     try {
                         institutionService.addInstitution(institution);
-                    } catch (Exception e) {
-                        logger.log(Level.INFO, "Institution record creation failed", e);
+                    } catch (InvalidArgumentException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
-                    try {   
+                    try {
                         institution = institutionService.retrieveInstitution();
                         getServletContext().setAttribute("institution", institution);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.INFO, "Institution record retrieval failed", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -130,7 +154,10 @@ public class InstitutionController extends Controller {
                     try {
                         institutionService.editInstitution(institution);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during institution record details submission", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new institution details
@@ -140,7 +167,10 @@ public class InstitutionController extends Controller {
                         institution = institutionService.retrieveInstitution();
                         getServletContext().setAttribute("institution", institution);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of institutions", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the institution table
@@ -159,7 +189,10 @@ public class InstitutionController extends Controller {
                     try {
                         institutionService.removeInstitution(institution.getId());
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during institution unique identifier submission", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new institution details
@@ -174,7 +207,10 @@ public class InstitutionController extends Controller {
                         }
                         getServletContext().setAttribute("institution", institution);
                     } catch (InvalidArgumentException | InvalidStateException e) {
-                        logger.log(Level.SEVERE, "An error occurred during retrieval of institutions", e);
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        logger.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the institution table
@@ -188,7 +224,10 @@ public class InstitutionController extends Controller {
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.SEVERE, "Request dispatch failed", e);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write(bundle.getString("redirection_failed"));
+                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }

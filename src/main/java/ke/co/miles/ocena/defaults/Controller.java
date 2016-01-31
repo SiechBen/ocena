@@ -5,6 +5,7 @@
  */
 package ke.co.miles.ocena.defaults;
 
+import java.util.ResourceBundle;
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -83,8 +84,10 @@ public class Controller extends HttpServlet {
     protected EntityManager em;
     protected Query q;
 
+    protected ResourceBundle bundle;
+
     @EJB
-    protected  ZipRequestsLocal zipService;
+    protected ZipRequestsLocal zipService;
 
     @EJB
     protected OverallAdminRequestsLocal overallAdminService;

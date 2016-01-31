@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ke.co.miles.ocena.defaults.EntityRequests;
+import ke.co.miles.ocena.exceptions.AlgorithmException;
 import ke.co.miles.ocena.utilities.AccessCredentials;
 
 /**
@@ -25,10 +26,15 @@ import ke.co.miles.ocena.utilities.AccessCredentials;
 public class AccessRequests extends EntityRequests implements AccessRequestsLocal {
 
     @Override
-    public AccessCredentials addCredentials(String username, String password) throws NoSuchAlgorithmException {
+    public AccessCredentials addCredentials(String username, String password) throws AlgorithmException {
 
         //Hash the password
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance("SHA-256");
+        } catch (Exception e) {
+            throw new AlgorithmException("error_007_01");
+        }
         String hashedPassword = generateSHAPassword(messageDigest, password);
 
         //Create and populate the access credential data
@@ -87,14 +93,14 @@ public class AccessRequests extends EntityRequests implements AccessRequestsLoca
     }
 
     @Override
-    public String generateAnonymousIdentity(String username) throws NoSuchAlgorithmException {
+    public String generateAnonymousIdentity(String username) throws AlgorithmException {
         //Define the hashing algorithm
         logger.log(Level.INFO, "Defining the hashing algorithm");
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("SHA1");
         } catch (Exception e) {
-            throw new NoSuchAlgorithmException();
+            throw new AlgorithmException("error_007_01");
         }
 
         //Generate the anonymous identity
