@@ -248,16 +248,23 @@ public class PersonController extends Controller {
 
                     FacultyMemberRoleDetail memberRole;
                     try {
-                        memberRole = FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("memberRole")));
-
-                        if (memberRole.equals(FacultyMemberRoleDetail.LECTURER)) {
-                            userAccount.setUserGroup(UserGroupDetail.LECTURER);
-                        } else if (memberRole.equals(FacultyMemberRoleDetail.MANAGEMENT)) {
-                            userAccount.setUserGroup(UserGroupDetail.MANAGEMENT);
-                        } else if (memberRole.equals(FacultyMemberRoleDetail.OTHER_STAFF)) {
-                            userAccount.setUserGroup(UserGroupDetail.OTHER_STAFF);
-                        } else if (memberRole.equals(FacultyMemberRoleDetail.STUDENT)) {
-                            userAccount.setUserGroup(UserGroupDetail.STUDENT);
+                        memberRole = FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("faculty-member-role")));
+                        
+                        switch (memberRole) {
+                            case LECTURER:
+                                userAccount.setUserGroup(UserGroupDetail.LECTURER);
+                                break;
+                            case MANAGEMENT:
+                                userAccount.setUserGroup(UserGroupDetail.MANAGEMENT);
+                                break;
+                            case OTHER_STAFF:
+                                userAccount.setUserGroup(UserGroupDetail.OTHER_STAFF);
+                                break;
+                            case STUDENT:
+                                userAccount.setUserGroup(UserGroupDetail.STUDENT);
+                                break;
+                            default:
+                                break;
                         }
                     } catch (NumberFormatException e) {
                         memberRole = FacultyMemberRoleDetail.STUDENT;
