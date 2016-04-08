@@ -155,7 +155,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         userAccount.setUsername(personDetails.getReferenceNumber());
         userAccount.setPerson(em.find(Person.class, person.getId()));
         userAccount.setUserGroup(em.find(UserGroup.class, userAccountDetails.getUserGroup().getId()));
-        userAccount.setPassword(accessService.generateSHAPassword(messageDigest, personDetails.getNationalIdOrPassport()));
+        userAccount.setPassword(accessService.generateSHAPassword(messageDigest, personDetails.getReferenceNumber()));
 
         //Create the user's account record
         logger.log(Level.INFO, "Creating the user's account record");

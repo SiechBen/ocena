@@ -6,4 +6,10 @@ password=complex
 userName=root
 jdbcUrl=jdbc\:mysql\://localhost\:3306/ocena?zeroDateTimeBehavior\=convertToNull
 </Resource>
+  <Resource id="jdbc/ocena-r" type="javax.sql.DataSource">#Thu Apr 07 13:29:48 EAT 2016
+jdbcDriver=com.mysql.jdbc.Driver
+password=complex
+userName=remote
+jdbcUrl=jdbc\:mysql\://41.204.186.106\:3306/ocena?zeroDateTimeBehavior\=convertToNull
+</Resource>
 </resources>
