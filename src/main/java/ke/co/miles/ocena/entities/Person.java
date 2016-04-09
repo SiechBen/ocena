@@ -135,7 +135,7 @@ public class Person implements Serializable {
         this.nationalIdOrPassport = nationalIdOrPassport;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 

@@ -252,6 +252,10 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         ArrayList<HashMap<String, Enum>> enumMapList;
         HashMap<UserGroupDetail, FacultyMemberRoleDetail> enumMap;
         for (Person p : people) {
+
+            if (!p.isActive()) {
+                continue;
+            }
             enumMapList = new ArrayList<>();
             enumMap = new HashMap<>();
 
@@ -537,21 +541,23 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Get the person record to be removed
         LOGGER.log(Level.INFO, "Getting the person record to be removed");
         person = em.find(Person.class, id);
-        int contactId = person.getContact().getId();
 
-        //Removing a person record from the database
-        LOGGER.log(Level.INFO, "Removing a person record from the database");
+        //Deactivate the person record in the database
+        LOGGER.log(Level.INFO, "Deactivating the person record in the database");
+        person.setActive(Boolean.FALSE);
+
         try {
-            em.remove(person);
+            em.merge(person);
+            em.flush();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
             throw new InvalidStateException("error_000_01");
         }
 
-        //Remove the person's contact record
-        LOGGER.log(Level.INFO, "Removing the person's contact record");
-        contactService.removeContact(contactId);
-
+//        int contactId = person.getContact().getId();
+//        //Remove the person's contact record
+//        LOGGER.log(Level.INFO, "Removing the person's contact record");
+//        contactService.removeContact(contactId);
     }
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Convert">
@@ -588,7 +594,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         details.setFirstName(person.getFirstName());
         details.setLastName(person.getLastName());
         details.setVersion(person.getVersion());
-        details.setActive(person.getActive());
+        details.setActive(person.isActive());
         details.setContact(contactDetails);
         details.setId(person.getId());
 

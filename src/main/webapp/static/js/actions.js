@@ -888,7 +888,7 @@ function editInstitution(name, abbreviation, country) {
 
                 //Send the values to the application server for updating in the database
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/editInstitution",
                     data: "name=" + name + "&abbreviation=" + abbreviation + "&country=" + country,
                     success: function (data) {
@@ -899,7 +899,7 @@ function editInstitution(name, abbreviation, country) {
                         $("#institution-abbreviation").val("");
                         $("#country").val("");
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 $(this).dialog("close");
             }
@@ -923,7 +923,7 @@ function removeInstitution(id) {
         buttons: {
             "Yes": function () {
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/removeInstitution",
                     data: "id=" + id,
                     success: function (data) {
@@ -931,7 +931,7 @@ function removeInstitution(id) {
                         //Update institution table
                         $("#content").html(data);
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 //Close the dialog 
                 $(this).dialog("close");
@@ -989,7 +989,7 @@ function addCollege() {
 
                 //Send the values to the application server for database recording 
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/addCollege",
                     data: "name=" + name + "&abbreviation=" + abbreviation + "&institution=" + institution,
                     success: function (data) {
@@ -1000,7 +1000,7 @@ function addCollege() {
                         $("#college-name").focus();
                         $("#college-abbreviation").val("");
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
             }
 
@@ -1050,7 +1050,7 @@ function editCollege(id, name, abbreviation) {
 
                 //Send the values to the application server for updating in the database
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/editCollege",
                     data: "id=" + id + "&name=" + name + "&abbreviation=" + abbreviation,
                     success: function (data) {
@@ -1060,7 +1060,7 @@ function editCollege(id, name, abbreviation) {
                         $("#college-name").val("");
                         $("#college-abbreviation").val("");
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 $(this).dialog("close");
             }
@@ -1084,7 +1084,7 @@ function removeCollege(id) {
         buttons: {
             "Yes": function () {
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/removeCollege",
                     data: "id=" + id,
                     success: function (data) {
@@ -1092,7 +1092,7 @@ function removeCollege(id) {
                         //Update college table
                         $("table#college-table tbody").html(data);
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 //Close the dialog 
                 $(this).dialog("close");
@@ -1221,7 +1221,7 @@ function addFaculty(collegeId, collegeName) {
 
                 //Send the values to the application server for updating in the database
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/addFaculty",
                     data: "name=" + name + "&abbreviation=" + abbreviation + "&collegeId=" + collegeId +
                             "&email=" + email + "&mobileNumber=" + mobileNumber + "&fixedNumber=" + fixedNumber +
@@ -1237,7 +1237,7 @@ function addFaculty(collegeId, collegeName) {
                         $("#faculty-fixed-number").val("");
                         $("#faculty-box-number").val("");
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
             }
         },
@@ -1260,7 +1260,7 @@ function removeFaculty(id, college) {
         buttons: {
             "Yes": function () {
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/removeFaculty",
                     data: "id=" + id + "&collegeId=" + college,
                     success: function (data) {
@@ -1268,7 +1268,7 @@ function removeFaculty(id, college) {
                         //Update faculty table
                         $("table#faculty-table tbody").html(data);
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 //Close the dialog 
                 $(this).dialog("close");
@@ -1397,7 +1397,7 @@ function addDepartment(facultyId, facultyName, collegeId) {
 
                 //Send the values to the application server for updating in the database
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/addDepartment",
                     data: "name=" + name + "&abbreviation=" + abbreviation + "&facultyId=" + facultyId +
                             "&email=" + email + "&mobileNumber=" + mobileNumber + "&fixedNumber=" + fixedNumber +
@@ -1412,7 +1412,7 @@ function addDepartment(facultyId, facultyName, collegeId) {
                         $("#department-fixed-number").val("");
                         $("#department-box-number").val("");
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 //loadWindow("/Ocena/checkDepartment?facultyId=" + facultyId + "&collegeId=" + collegeId);
                 // Reload the page 
@@ -1438,7 +1438,7 @@ function addDepartment(facultyId, facultyName, collegeId) {
  $("#department-box-number").val("");
  
  },
- dataType: "html"
+ dataType: "HTML"
  });
  }
  },
@@ -1461,7 +1461,7 @@ function removeDepartment(id, faculty) {
         buttons: {
             "Yes": function () {
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/removeDepartment",
                     data: "id=" + id + "&facultyId=" + faculty,
                     success: function (data) {
@@ -1469,7 +1469,7 @@ function removeDepartment(id, faculty) {
                         //Update department table
                         $("table#department-table tbody").html(data);
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 // Reload the page 
                 window.setTimeout("location.reload()", 3000); //Reloads after three seconds
@@ -2767,7 +2767,7 @@ function checkDate() {
     //Read in the start date and end date
     var startDate = $("#evaluation-session-start-date").val();
     var endDate = $("#evaluation-session-end-date").val();
-    
+
     //Warn the user if end date comes before start date
     if (startDate > endDate) {
         $("#information-box").attr("hidden", false);
@@ -2984,6 +2984,54 @@ function retrieveUser() {
     });
 }
 
+function editPerson(personId) {
+    $.ajax({
+        type: "POST",
+        url: "/Ocena/editPerson",
+        data: "personId=" + personId.val(),
+        success: function (data) {
+            $("table#person-table tbody").html(data);
+        },
+        dataType: "HTML"
+    });
+}
+
+function removePerson(personId) {
+    $("#message").text("Are you sure you want to remove this person?");
+    //Confirm person removal request
+    $("#message-dialog").dialog({
+        width: 495,
+        height: "auto",
+        title: "Confirm request",
+        resizable: false,
+        modal: true,
+        context: $(this),
+        buttons: {
+            "Yes": function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Ocena/removeUser",
+                    data: "personId=" + personId,
+                    success: function (data) {
+                        $("table#person-table tbody").html(data);
+                    },
+                    dataType: "HTML"
+                });
+                //Close the dialog 
+                $(this).dialog("close");
+            },
+            "No": function () {
+                //Close the dialog 
+                $(this).dialog("close");
+            }
+
+        },
+        close: function (event, ui) {
+
+        }
+    });
+}
+
 function upgradeUser() {
     $.ajax({
         type: "POST",
@@ -3028,7 +3076,7 @@ function addCourseOfSession() {
 
                 //Send the values to the application server for database recording 
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/addCourseOfSession",
                     data: "courseId=" + course + "&facultyMemberId=" + facultyMember + "&evaluationSessionId=" + evaluationSession,
                     success: function (data) {
@@ -3038,7 +3086,7 @@ function addCourseOfSession() {
                         $("#course-of-session-course").val("");
                         $("#course-of-session-lecturer").val("");
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
             }
 
@@ -3079,7 +3127,7 @@ function editCourseOfSession(id, facultyMember, course) {
 
                 //Send the values to the application server for database recording 
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/editCourseOfSession",
                     data: "courseOfSessionId=" + id + "&courseId=" + course + "&facultyMemberId=" + facultyMember + "&evaluationSessionId=" + evaluationSession,
                     success: function (data) {
@@ -3089,7 +3137,7 @@ function editCourseOfSession(id, facultyMember, course) {
                         $("#course-of-session-course").val("");
                         $("#course-of-session-lecturer").val("");
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 //Close the dialog box
                 $(this).dialog("close");
@@ -3114,7 +3162,7 @@ function removeCourseOfSession(id) {
         buttons: {
             "Yes": function () {
                 $.ajax({
-                    type: "post",
+                    type: "POST",
                     url: "/Ocena/removeCourseOfSession",
                     data: "courseOfSessionId=" + id,
                     success: function (data) {
@@ -3122,7 +3170,7 @@ function removeCourseOfSession(id) {
                         //Update course of session table
                         $("table#course-of-session-table tbody").html(data);
                     },
-                    dataType: "html"
+                    dataType: "HTML"
                 });
                 //Close the dialog 
                 $(this).dialog("close");

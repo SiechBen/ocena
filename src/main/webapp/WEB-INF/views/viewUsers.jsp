@@ -24,7 +24,8 @@
                         <tr>
                             <th>&nbsp;</th>
                             <th>Name</th>
-                            <th>Reference/registration number</th>
+                            <th>Reference/registration no.</th>
+                            <th>National id/passport</th>
                             <th>User group</th>
                             <th>Faculty member role</th>
                             <th>&nbsp;</th>
@@ -42,18 +43,19 @@
                                 <td>${index.count}</td>
                                 <td>${person.firstName} ${person.lastName}</td>
                                 <td>${person.referenceNumber}</td>
+                                <td>${person.nationalIdOrPassport}</td>
                                 <c:forEach var="usergroup" items="${usersMap.get(person).keySet()}"> 
                                     <td>${usergroup.userGroup}</td>
                                     <td>${usersMap.get(person).get(usergroup).facultyMemberRole}</td>
                                 </c:forEach>
-                                <td><button onclick="editPerson('${person.id}', '${person.firstName}', '${person.lastName}', '${person.referenceNumber}')"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
+                                <td><button onclick="editPerson('${person.id}')"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button></td>
                                 <td><button onclick="removePerson('${person.id}')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
                 <div class="pull-right">
-                    <button type="button" class="btn btn-default"> <a role="menuitem" tabindex="-1" href="/Ocena/createAccountAtMainAdmin">Add person</a> </button>
+                    <button class="btn btn-default" onclick="loadWindow('/Ocena/createAccountAtMainAdmin')"> Add person </button>
                 </div>
                 <div class="dialog" id="person-dialog">
                     <table>

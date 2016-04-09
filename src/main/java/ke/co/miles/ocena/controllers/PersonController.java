@@ -1106,9 +1106,9 @@ public class PersonController extends Controller {
 
                 case "/retrieveUsers":
 
-                    LOGGER.log(Level.INFO, "Retrieving all users");
+                    LOGGER.log(Level.INFO, "Retrieving all active users");
                     HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> usersMap;
-                    
+
                     try {
                         usersMap = personService.retrievePersons();
                     } catch (InvalidArgumentException | InvalidStateException e) {
@@ -1120,10 +1120,41 @@ public class PersonController extends Controller {
                     }
 
                     session.setAttribute("usersMap", usersMap);
-                    
+
                     path = "/viewUsers";
                     LOGGER.log(Level.INFO, "Path is : {0}", path);
                     break;
+
+                case "/removeUser":
+
+                    LOGGER.log(Level.INFO, "Removing user");
+                    personId = Integer.parseInt(request.getParameter("personId"));
+                    try {
+                        personService.removePerson(personId);
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
+                    }
+
+                    LOGGER.log(Level.INFO, "Retrieving all active users");
+                    try {
+                        usersMap = personService.retrievePersons();
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
+                        return;
+                    }
+
+                    LOGGER.log(Level.INFO, "Update users table");
+                    updateUsersTable(response, usersMap);
+
+                    session.setAttribute("usersMap", usersMap);
+
+                    return;
 
             }
 
@@ -1280,6 +1311,32 @@ public class PersonController extends Controller {
 
     }
     //</editor-fold>
+
+    private void updateUsersTable(HttpServletResponse response, HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> usersMap) throws IOException {
+
+        LOGGER.log(Level.INFO, "Generating users table body");
+        PrintWriter out = response.getWriter();
+        int i = 0;
+        for (PersonDetails personDetails : usersMap.keySet()) {
+            if (++i % 2 == 0) {
+                out.write("<tr class=\"even\">");
+            } else {
+                out.write("<tr>");
+            }
+            out.write("<td>"+ i + "</td>");
+            out.write("<td>" + personDetails.getFirstName() + " " + personDetails.getLastName() + "</td>");
+            out.write("<td>" + personDetails.getReferenceNumber() + "</td>");
+            out.write("<td>" + personDetails.getNationalIdOrPassport() + "</td>");
+            for (UserGroupDetail userGroup : usersMap.get(personDetails).keySet()) {
+                out.write("<td>" + userGroup.getUserGroup() + "</td>");
+                out.write("<td>" + usersMap.get(personDetails).get(userGroup).getFacultyMemberRole() + "</td>");
+            }
+            out.write("<td><button onclick=\"editPerson('" + personDetails.getId() + "')\"><span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span></button></td>");
+            out.write("<td><button onclick=\"removePerson('" + personDetails.getId() + "')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\"></span></button></td>");
+            out.write("</tr>");
+        }
+
+    }
 
     private static final Logger LOGGER = Logger.getLogger(PersonController.class.getSimpleName());
 
