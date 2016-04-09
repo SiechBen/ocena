@@ -95,7 +95,7 @@ public class AccessRequests extends EntityRequests implements AccessRequestsLoca
     @Override
     public String generateAnonymousIdentity(String username) throws AlgorithmException {
         //Define the hashing algorithm
-        logger.log(Level.INFO, "Defining the hashing algorithm");
+        LOGGER.log(Level.INFO, "Defining the hashing algorithm");
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("SHA1");
@@ -104,7 +104,7 @@ public class AccessRequests extends EntityRequests implements AccessRequestsLoca
         }
 
         //Generate the anonymous identity
-        logger.log(Level.INFO, "Generating the anonymous identity");
+        LOGGER.log(Level.INFO, "Generating the anonymous identity");
         messageDigest.update(username.getBytes());
         byte byteData[] = messageDigest.digest();
         StringBuilder anonymousIdentity = new StringBuilder();
@@ -112,10 +112,10 @@ public class AccessRequests extends EntityRequests implements AccessRequestsLoca
             anonymousIdentity.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
         }
         //State characters that will be used to generate the anonymous identity
-        logger.log(Level.INFO, "Stating characters that will be used to generate the anonymous identity");
+        LOGGER.log(Level.INFO, "Stating characters that will be used to generate the anonymous identity");
 
         //Return the anonymous identity
-        logger.log(Level.INFO, "Returning the anonymous identity");
+        LOGGER.log(Level.INFO, "Returning the anonymous identity");
         return anonymousIdentity.toString();
     }
 
@@ -128,6 +128,6 @@ public class AccessRequests extends EntityRequests implements AccessRequestsLoca
     }
 
     private final int PASSWORD_LENGTH = 8;
-    private static final Logger logger = Logger.getLogger(AccessRequests.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(AccessRequests.class.getSimpleName());
 
 }

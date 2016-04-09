@@ -91,8 +91,8 @@ public class EvaluationSessionController extends Controller {
         /*       try {
          adminSession = (Boolean) session.getAttribute("mainAdminSession");
          } catch (Exception e) {
-         logger.log(Level.INFO, "Main admin session is null");
-         logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+         LOGGER.log(Level.INFO, "Main admin session is null");
+         LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
          request.getRequestDispatcher("index.jsp").forward(request, response);
          return;
          }
@@ -101,32 +101,32 @@ public class EvaluationSessionController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("subAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Sub admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Sub admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
    //     }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             switch (path) {
 
@@ -138,7 +138,7 @@ public class EvaluationSessionController extends Controller {
                 case "/viewEvaluationSessions":
 
                     //Retrieve the faculty unique identifier if any
-                    logger.log(Level.INFO, "Retrieving the faculty unique identifier if any");
+                    LOGGER.log(Level.INFO, "Retrieving the faculty unique identifier if any");
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
@@ -150,7 +150,7 @@ public class EvaluationSessionController extends Controller {
                     }
 
                     //Retrieve the department unique identifier if any
-                    logger.log(Level.INFO, "Retrieving the department unique identifier if any");
+                    LOGGER.log(Level.INFO, "Retrieving the department unique identifier if any");
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
@@ -168,7 +168,7 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
                     } else if (department != null) {
                         try {
@@ -177,19 +177,19 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
                     } else {
-                        logger.log(Level.INFO, "Both the faculty and department are null.Aborting");
+                        LOGGER.log(Level.INFO, "Both the faculty and department are null.Aborting");
                         return;
                     }
 
                     //Avail the degrees on session
-                    logger.log(Level.INFO, "Availing the degrees on session");
+                    LOGGER.log(Level.INFO, "Availing the degrees on session");
                     session.setAttribute("degrees", degrees);
 
                     //Retrieve the active evaluation sessions
-                    logger.log(Level.INFO, "Retrieving the active evaluation sessions");
+                    LOGGER.log(Level.INFO, "Retrieving the active evaluation sessions");
                     List<EvaluationSessionDetails> evaluationSessions;
                     try {
                         evaluationSessions = evaluationSessionService.retrieveEvaluationSessions(degrees);
@@ -197,13 +197,13 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     if (!evaluationSessions.isEmpty()) {
                         //Format the dates
-                        logger.log(Level.INFO, "Format the dates");
+                        LOGGER.log(Level.INFO, "Format the dates");
 
                         for (EvaluationSessionDetails es : evaluationSessions) {
                             try {
@@ -217,7 +217,7 @@ public class EvaluationSessionController extends Controller {
                                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                                 response.setContentType("text/html;charset=UTF-8");
                                 response.getWriter().write(bundle.getString("string_parse_error"));
-                                logger.log(Level.INFO, bundle.getString("string_parse_error"));
+                                LOGGER.log(Level.INFO, bundle.getString("string_parse_error"));
                             }
                             try {
                                 //Retrieve the date
@@ -230,7 +230,7 @@ public class EvaluationSessionController extends Controller {
                                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                                 response.setContentType("text/html;charset=UTF-8");
                                 response.getWriter().write(bundle.getString("string_parse_error"));
-                                logger.log(Level.INFO, bundle.getString("string_parse_error"));
+                                LOGGER.log(Level.INFO, bundle.getString("string_parse_error"));
                             }
                             try {
                                 //Get the date
@@ -243,7 +243,7 @@ public class EvaluationSessionController extends Controller {
                                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                                 response.setContentType("text/html;charset=UTF-8");
                                 response.getWriter().write(bundle.getString("string_parse_error"));
-                                logger.log(Level.INFO, bundle.getString("string_parse_error"));
+                                LOGGER.log(Level.INFO, bundle.getString("string_parse_error"));
                             }
 
                         }
@@ -251,11 +251,11 @@ public class EvaluationSessionController extends Controller {
                     }
 
                     //Provide the evaluation sessions on session
-                    logger.log(Level.INFO, "Providing the list of evaluation sessions on session");
+                    LOGGER.log(Level.INFO, "Providing the list of evaluation sessions on session");
                     session.setAttribute("evaluationSessions", evaluationSessions);
 
                     path = "/viewEvaluationSessions";
-                    logger.log(Level.INFO, "Path is: {0}", path);
+                    LOGGER.log(Level.INFO, "Path is: {0}", path);
 
                     break;
 
@@ -265,7 +265,7 @@ public class EvaluationSessionController extends Controller {
                     Integer evaluationSessionId;
 
                     //Read in the degree unique identifier if any
-                    logger.log(Level.INFO, "Reading in the degree unique identifier if any");
+                    LOGGER.log(Level.INFO, "Reading in the degree unique identifier if any");
                     degree = new DegreeDetails();
                     try {
                         degree = degreeService.retrieveDegree(Integer.parseInt(request.getParameter("degreeId")));
@@ -273,12 +273,12 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("invalid_id"));
-                        logger.log(Level.INFO, bundle.getString("invalid_id"));
+                        LOGGER.log(Level.INFO, bundle.getString("invalid_id"));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -289,7 +289,7 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("admission_year_parse_error"));
-                        logger.log(Level.INFO, bundle.getString("admission_year_parse_error"));
+                        LOGGER.log(Level.INFO, bundle.getString("admission_year_parse_error"));
                         return;
                     }
                     Calendar holder = Calendar.getInstance();
@@ -302,7 +302,7 @@ public class EvaluationSessionController extends Controller {
                     admissionYear = calendar.getTime();
 
                     //Read in the evaluation session details
-                    logger.log(Level.INFO, "Reading in the evaluation session details");
+                    LOGGER.log(Level.INFO, "Reading in the evaluation session details");
                     evaluationSession = new EvaluationSessionDetails();
                     evaluationSession.setDegree(degree);
                     evaluationSession.setActive(Boolean.TRUE);
@@ -322,7 +322,7 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("string_parse_error"));
-                        logger.log(Level.INFO, bundle.getString("string_parse_error"));
+                        LOGGER.log(Level.INFO, bundle.getString("string_parse_error"));
                         return;
                     }
                     try {
@@ -338,23 +338,23 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("string_parse_error"));
-                        logger.log(Level.INFO, bundle.getString("string_parse_error"));
+                        LOGGER.log(Level.INFO, bundle.getString("string_parse_error"));
                         return;
                     }
 
                     //Send the evaluation session details to the entity manager for record update
-                    logger.log(Level.INFO, "Sending the evaluation session details to the entity manager for record creation");
+                    LOGGER.log(Level.INFO, "Sending the evaluation session details to the entity manager for record creation");
                     try {
                         evaluationSession.setId(evaluationSessionService.addEvaluationSession(evaluationSession));
                     } catch (InvalidArgumentException | DuplicateStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the evaluation questions for the faculty or department
-                    logger.log(Level.INFO, "Retrieving the evaluation questions for the faculty or department");
+                    LOGGER.log(Level.INFO, "Retrieving the evaluation questions for the faculty or department");
                     List<QuestionDetails> questions = new ArrayList<>();
                     if (degree.getFaculty() != null) {
                         try {
@@ -363,7 +363,7 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
                     } else if (degree.getDepartment() != null) {
                         try {
@@ -372,15 +372,15 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
                     }
 
                     //Make copies of the questions for use in this session
-                    logger.log(Level.INFO, "Making copies of the questions for use in this session");
+                    LOGGER.log(Level.INFO, "Making copies of the questions for use in this session");
                     for (QuestionDetails qd : questions) {
                         //Create and fill a container to hold this question
-                        logger.log(Level.INFO, "Creating and filling a container to hold the question : {0}", qd);
+                        LOGGER.log(Level.INFO, "Creating and filling a container to hold the question : {0}", qd);
 
                         evaluatedQuestion = new EvaluatedQuestionDetails();
                         evaluatedQuestion.setActive(Boolean.TRUE);
@@ -391,14 +391,14 @@ public class EvaluationSessionController extends Controller {
                         evaluatedQuestion.setQuestionCategory(qd.getQuestionCategory());
 
                         //Record a copy of this question
-                        logger.log(Level.INFO, "Recording a copy of this question");
+                        LOGGER.log(Level.INFO, "Recording a copy of this question");
                         try {
                             evaluatedQuestionService.addEvaluatedQuestion(evaluatedQuestion);
                         } catch (InvalidArgumentException e) {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
                     }
                     return;
@@ -406,11 +406,11 @@ public class EvaluationSessionController extends Controller {
                 case "/editEvaluationSession":
 
                     //Read in the unique identifier for the evaluation session
-                    logger.log(Level.INFO, "Reading in the unique identifier for the evaluation session");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier for the evaluation session");
                     evaluationSessionId = Integer.parseInt(request.getParameter("evaluationSessionId"));
 
                     //Read in the degree unique identifier if any
-                    logger.log(Level.INFO, "Reading in the degree unique identifier if any");
+                    LOGGER.log(Level.INFO, "Reading in the degree unique identifier if any");
                     degree = new DegreeDetails();
                     try {
                         degree.setId(Integer.parseInt(request.getParameter("degreeId")));
@@ -418,7 +418,7 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("invalid_id"));
-                        logger.log(Level.INFO, bundle.getString("invalid_id"));
+                        LOGGER.log(Level.INFO, bundle.getString("invalid_id"));
                         return;
                     }
 
@@ -428,7 +428,7 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("admission_year_parse_error"));
-                        logger.log(Level.INFO, bundle.getString("admission_year_parse_error"));
+                        LOGGER.log(Level.INFO, bundle.getString("admission_year_parse_error"));
                         return;
                     }
 
@@ -442,7 +442,7 @@ public class EvaluationSessionController extends Controller {
                     admissionYear = calendar.getTime();
 
                     //Read in the evaluation session details
-                    logger.log(Level.INFO, "Reading in the evaluation session details");
+                    LOGGER.log(Level.INFO, "Reading in the evaluation session details");
                     evaluationSession = new EvaluationSessionDetails();
                     evaluationSession.setDegree(degree);
                     evaluationSession.setId(evaluationSessionId);
@@ -463,7 +463,7 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("string_parse_error"));
-                        logger.log(Level.INFO, bundle.getString("string_parse_error"));
+                        LOGGER.log(Level.INFO, bundle.getString("string_parse_error"));
                         return;
                     }
                     try {
@@ -479,19 +479,19 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("string_parse_error"));
-                        logger.log(Level.INFO, bundle.getString("string_parse_error"));
+                        LOGGER.log(Level.INFO, bundle.getString("string_parse_error"));
                         return;
                     }
 
                     //Send the evaluation session details to the entity manager for record creation
-                    logger.log(Level.INFO, "Sending the evaluation session details to the entity manager for record update");
+                    LOGGER.log(Level.INFO, "Sending the evaluation session details to the entity manager for record update");
                     try {
                         evaluationSessionService.editEvaluationSession(evaluationSession);
                     } catch (InvalidArgumentException | InvalidStateException | DuplicateStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     return;
@@ -499,30 +499,30 @@ public class EvaluationSessionController extends Controller {
                 case "/closeEvaluationSession":
 
                     //Retrieve the evaluation session record
-                    logger.log(Level.INFO, "Retrieving the evaluation session record");
+                    LOGGER.log(Level.INFO, "Retrieving the evaluation session record");
                     try {
                         evaluationSession = evaluationSessionService.retrieveEvaluationSession(Integer.parseInt(request.getParameter("evaluationSessionId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Mark the evaluation
-                    logger.log(Level.INFO, "Marking the evaluation");
+                    LOGGER.log(Level.INFO, "Marking the evaluation");
                     try {
                         evaluationMarkingService.markEvaluation(evaluationSession);
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve question categories
-                    logger.log(Level.INFO, "Retrieving question categories");
+                    LOGGER.log(Level.INFO, "Retrieving question categories");
                     List<QuestionCategoryDetails> questionCategories;
                     try {
                         questionCategories = questionCategoryService.retrieveQuestionCategories();
@@ -530,12 +530,12 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve the courses of this degree's evaluation session
-                    logger.log(Level.INFO, "Retrieving the courses of this degree's evaluation session");
+                    LOGGER.log(Level.INFO, "Retrieving the courses of this degree's evaluation session");
                     List<CourseOfSessionDetails> courses = new ArrayList<>();
                     try {
                         courses = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
@@ -543,7 +543,7 @@ public class EvaluationSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     DecimalFormat decimalFormat = new DecimalFormat("0.00");
@@ -559,7 +559,7 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         XWPFDocument evaluationReport = new XWPFDocument();
@@ -582,7 +582,7 @@ public class EvaluationSessionController extends Controller {
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("admission_year_parse_error") + "%n");
                             response.getWriter().write(bundle.getString("evaluation_report") + " " + bundle.getString("document_creation_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1} {2}", new Object[]{bundle.getString("admission_year_parse_error"), bundle.getString("evaluation_report"), bundle.getString("document_creation_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1} {2}", new Object[]{bundle.getString("admission_year_parse_error"), bundle.getString("evaluation_report"), bundle.getString("document_creation_failed")});
                             return;
                         }
                         new File(filePath).getParentFile().mkdirs();
@@ -593,7 +593,7 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("evaluation_report") + " " + bundle.getString("document_creation_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_report"), bundle.getString("document_creation_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_report"), bundle.getString("document_creation_failed")});
                             continue;
                         }
 
@@ -644,11 +644,11 @@ public class EvaluationSessionController extends Controller {
                                                     run.addBreak();
                                                     run.addBreak();
                                                 } catch (Exception ex) {
-                                                    logger.log(Level.INFO, "The rating standard deviation could not be rounded off");
+                                                    LOGGER.log(Level.INFO, "The rating standard deviation could not be rounded off");
                                                 }
                                             }
                                         } catch (Exception ex) {
-                                            logger.log(Level.INFO, "The rating is null");
+                                            LOGGER.log(Level.INFO, "The rating is null");
                                         }
                                         try {
                                             if (ae.getPercentageScore() != null) {
@@ -660,11 +660,11 @@ public class EvaluationSessionController extends Controller {
                                                     run.addBreak();
                                                     run.addBreak();
                                                 } catch (Exception ex) {
-                                                    logger.log(Level.INFO, "The percentage score could not be rounded off");
+                                                    LOGGER.log(Level.INFO, "The percentage score could not be rounded off");
                                                 }
                                             }
                                         } catch (Exception ex) {
-                                            logger.log(Level.INFO, "The percentage score is null");
+                                            LOGGER.log(Level.INFO, "The percentage score is null");
                                         }
 
                                     }
@@ -682,13 +682,13 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("evaluation_report") + " " + bundle.getString("document_writing_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_report"), bundle.getString("document_writing_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_report"), bundle.getString("document_writing_failed")});
                             continue;
                         }
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("evaluation_report") + " " + bundle.getString("document_creation_success").toLowerCase(locale));
-                        logger.log(Level.INFO, "\n\n\033[32;3m{0} {1}\n", new Object[]{bundle.getString("evaluation_report"), bundle.getString("document_creation_success")});
+                        LOGGER.log(Level.INFO, "\n\n\033[32;3m{0} {1}\n", new Object[]{bundle.getString("evaluation_report"), bundle.getString("document_creation_success")});
                     }
                     //</editor-fold>
 
@@ -698,7 +698,7 @@ public class EvaluationSessionController extends Controller {
                         try {
                             assessedEvaluations = assessedEvaluationService.retrieveAssessedEvaluationsByCourse(c);
                         } catch (InvalidArgumentException | InvalidStateException ex) {
-                            logger.log(Level.INFO, "An error occurred while retrieving the assessed evaluation of this course of session");
+                            LOGGER.log(Level.INFO, "An error occurred while retrieving the assessed evaluation of this course of session");
                         }
 
                         XWPFDocument evaluationSummaryReport = new XWPFDocument();
@@ -719,7 +719,7 @@ public class EvaluationSessionController extends Controller {
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("admission_year_parse_error") + "%n");
                             response.getWriter().write(bundle.getString("evaluation_summary_report") + " " + bundle.getString("document_creation_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1} {2}", new Object[]{bundle.getString("admission_year_parse_error"), bundle.getString("evaluation_summary_report"), bundle.getString("document_creation_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1} {2}", new Object[]{bundle.getString("admission_year_parse_error"), bundle.getString("evaluation_summary_report"), bundle.getString("document_creation_failed")});
                             return;
                         }
 
@@ -732,7 +732,7 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("evaluation_summary_report") + " " + bundle.getString("document_creation_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_summary_report"), bundle.getString("document_creation_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_summary_report"), bundle.getString("document_creation_failed")});
                             continue;
                         }
 
@@ -793,7 +793,7 @@ public class EvaluationSessionController extends Controller {
                                                 totalCount++;
                                             }
                                         } catch (Exception ex) {
-                                            logger.log(Level.INFO, "The rating is null");
+                                            LOGGER.log(Level.INFO, "The rating is null");
                                         }
 
                                     }
@@ -813,7 +813,7 @@ public class EvaluationSessionController extends Controller {
                             try {
                                 averageCategoryScore = Double.parseDouble(decimalFormat.format(averageCategoryScore));
                             } catch (Exception ex) {
-                                logger.log(Level.INFO, "Average category score could not be rounded off");
+                                LOGGER.log(Level.INFO, "Average category score could not be rounded off");
                             }
                             if (averageCategoryScore != 0.0) {
                                 tableRow = evaluationResultsTable.getRow(i++);
@@ -833,7 +833,7 @@ public class EvaluationSessionController extends Controller {
                         try {
                             percentageEvaluationScore = Double.parseDouble(decimalFormat.format(percentageEvaluationScore));
                         } catch (Exception ex) {
-                            logger.log(Level.INFO, "Percentage evaluation score could not be rounded off");
+                            LOGGER.log(Level.INFO, "Percentage evaluation score could not be rounded off");
                         }
 
                         XWPFTableRow summaryRow = evaluationResultsTable.getRow(i);
@@ -864,14 +864,14 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("evaluation_summary_report") + " " + bundle.getString("document_writing_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_summary_report"), bundle.getString("document_writing_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("evaluation_summary_report"), bundle.getString("document_writing_failed")});
                             continue;
                         }
 
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("evaluation_summary_report") + " " + bundle.getString("document_creation_success").toLowerCase(locale));
-                        logger.log(Level.INFO, "\n\n\033[32;3m{0} {1}\n", new Object[]{bundle.getString("evaluation_summary_report"), bundle.getString("document_creation_success")});
+                        LOGGER.log(Level.INFO, "\n\n\033[32;3m{0} {1}\n", new Object[]{bundle.getString("evaluation_summary_report"), bundle.getString("document_creation_success")});
                     }
                     //</editor-fold>
 
@@ -881,7 +881,7 @@ public class EvaluationSessionController extends Controller {
                         try {
                             assessedEvaluations = assessedEvaluationService.retrieveAssessedEvaluationsByCourse(c);
                         } catch (InvalidArgumentException | InvalidStateException ex) {
-                            logger.log(Level.INFO, "An error occurred while retrieving the assessed evaluation of this course of session");
+                            LOGGER.log(Level.INFO, "An error occurred while retrieving the assessed evaluation of this course of session");
                         }
 
                         XWPFDocument commentsReport = new XWPFDocument();
@@ -902,7 +902,7 @@ public class EvaluationSessionController extends Controller {
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("admission_year_parse_error") + "%n");
                             response.getWriter().write(bundle.getString("general_comments_report") + " " + bundle.getString("document_creation_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1} {2}", new Object[]{bundle.getString("admission_year_parse_error"), bundle.getString("general_comments_report"), bundle.getString("document_creation_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1} {2}", new Object[]{bundle.getString("admission_year_parse_error"), bundle.getString("general_comments_report"), bundle.getString("document_creation_failed")});
                             return;
                         }
 
@@ -915,7 +915,7 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("general_comments_report") + " " + bundle.getString("document_creation_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("general_comments_report"), bundle.getString("document_creation_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("general_comments_report"), bundle.getString("document_creation_failed")});
                             continue;
                         }
 
@@ -960,7 +960,7 @@ public class EvaluationSessionController extends Controller {
                                         try {
                                             evaluatedQuestionAnswers = evaluatedQuestionAnswerService.retrieveEvaluatedQuestionAnswers(ae.getEvaluatedQuestion(), evaluationSession, c);
                                         } catch (InvalidArgumentException | InvalidStateException ex) {
-                                            logger.log(Level.INFO, "An error occurred during retrieval");
+                                            LOGGER.log(Level.INFO, "An error occurred during retrieval");
                                             return;
                                         }
 
@@ -1005,7 +1005,7 @@ public class EvaluationSessionController extends Controller {
                                         try {
                                             evaluatedQuestionAnswers = evaluatedQuestionAnswerService.retrieveEvaluatedQuestionAnswers(ae.getEvaluatedQuestion(), evaluationSession, c);
                                         } catch (InvalidArgumentException | InvalidStateException ex) {
-                                            logger.log(Level.INFO, "An error occurred during retrieval");
+                                            LOGGER.log(Level.INFO, "An error occurred during retrieval");
                                             return;
                                         }
 
@@ -1037,30 +1037,30 @@ public class EvaluationSessionController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("general_comments_report") + " " + bundle.getString("document_writing_failed").toLowerCase(locale));
-                            logger.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("general_comments_report"), bundle.getString("document_writing_failed")});
+                            LOGGER.log(Level.INFO, "{0} {1}", new Object[]{bundle.getString("general_comments_report"), bundle.getString("document_writing_failed")});
                             continue;
                         }
 
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("general_comments_report") + " " + bundle.getString("document_creation_success").toLowerCase(locale));
-                        logger.log(Level.INFO, "\n\n\033[32;3m{0} {1}\n", new Object[]{bundle.getString("general_comments_report"), bundle.getString("document_creation_success")});
+                        LOGGER.log(Level.INFO, "\n\n\033[32;3m{0} {1}\n", new Object[]{bundle.getString("general_comments_report"), bundle.getString("document_creation_success")});
                     }
                     //</editor-fold>
 
                     //Deactivate the evaluation session
-                    logger.log(Level.INFO, "Deactivating the evaluation session");
+                    LOGGER.log(Level.INFO, "Deactivating the evaluation session");
                     evaluationSession.setActive(Boolean.FALSE);
 
                     //Send the evaluation session details to the entity manager for record update
-                    logger.log(Level.INFO, "Sending the evaluation session details to the entity manager for record update");
+                    LOGGER.log(Level.INFO, "Sending the evaluation session details to the entity manager for record update");
                     try {
                         evaluationSessionService.editEvaluationSession(evaluationSession);
                     } catch (InvalidArgumentException | InvalidStateException | DuplicateStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -1069,13 +1069,13 @@ public class EvaluationSessionController extends Controller {
 
             destination = "WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -1119,6 +1119,6 @@ public class EvaluationSessionController extends Controller {
         return "Short description";
     }// </editor-fold>
 
-    private static final Logger logger = Logger.getLogger(EvaluationSessionController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(EvaluationSessionController.class.getSimpleName());
 
 }

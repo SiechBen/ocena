@@ -57,8 +57,8 @@ public class DegreeController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Main admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Main admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
@@ -67,49 +67,49 @@ public class DegreeController extends Controller {
             try {
                 adminSession = (Boolean) session.getAttribute("subAdminSession");
             } catch (Exception e) {
-                logger.log(Level.INFO, "Sub admin session is null");
-                logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+                LOGGER.log(Level.INFO, "Sub admin session is null");
+                LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == true || adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Responding to the request");
+            LOGGER.log(Level.INFO, "Responding to the request");
 
             switch (path) {
                 case "/addDegree":
 
                     //Read in the unique identifier of the faculty to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the faculty to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the faculty to which the degree belongs");
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The degree does not belong to a faculty");
+                        LOGGER.log(Level.INFO, "The degree does not belong to a faculty");
                         faculty = null;
                     }
 
                     //Read in the unique identifier of the department to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the department to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the department to which the degree belongs");
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The degree does not belong to a department");
+                        LOGGER.log(Level.INFO, "The degree does not belong to a department");
                         department = null;
                     }
 
                     //Read in the unique identifier of the admission to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the admission to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the admission to which the degree belongs");
                     admission = new AdmissionDetails();
                     admission.setId(Integer.parseInt(request.getParameter("admissionId")));
 
                     //Read in details for the degree
-                    logger.log(Level.INFO, "Reading in details for the degree");
+                    LOGGER.log(Level.INFO, "Reading in details for the degree");
                     degree = new DegreeDetails();
                     degree.setActive(true);
                     degree.setFaculty(faculty);
@@ -118,14 +118,14 @@ public class DegreeController extends Controller {
                     degree.setName(request.getParameter("degreeName"));
 
                     //Send the details to the entity manager for recording in the database
-                    logger.log(Level.INFO, "Sending the details to the entity manager for recording in the database");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager for recording in the database");
                     try {
                         degreeService.addDegree(degree);
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -141,32 +141,32 @@ public class DegreeController extends Controller {
                 case "/editDegree":
 
                     //Read in the unique identifier of the faculty to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the faculty to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the faculty to which the degree belongs");
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The degree does not belong to a faculty");
+                        LOGGER.log(Level.INFO, "The degree does not belong to a faculty");
                         faculty = null;
                     }
 
                     //Read in the unique identifier of the department to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the department to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the department to which the degree belongs");
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The degree does not belong to a department");
+                        LOGGER.log(Level.INFO, "The degree does not belong to a department");
                         department = null;
                     }
 
                     //Read in the unique identifier of the admission to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the admission to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the admission to which the degree belongs");
                     admission = new AdmissionDetails();
                     admission.setId(Integer.parseInt(request.getParameter("admissionId")));
 
                     //Read in details for the degree
-                    logger.log(Level.INFO, "Reading in details for the degree");
+                    LOGGER.log(Level.INFO, "Reading in details for the degree");
                     degree = new DegreeDetails();
                     degree.setActive(true);
                     degree.setFaculty(faculty);
@@ -176,14 +176,14 @@ public class DegreeController extends Controller {
                     degree.setId(Integer.parseInt(request.getParameter("degreeId")));
 
                     //Send the details to the entity manager for record update in the database
-                    logger.log(Level.INFO, "Sending the details to the entity manager for record update in the database");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager for record update in the database");
                     try {
                         degreeService.editDegree(degree);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail records in the session and
@@ -198,34 +198,34 @@ public class DegreeController extends Controller {
                 case "/removeDegree":
 
                     //Read in the unique identifier of the faculty to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the faculty to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the faculty to which the degree belongs");
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The degree does not belong to a faculty");
+                        LOGGER.log(Level.INFO, "The degree does not belong to a faculty");
                         faculty = null;
                     }
 
                     //Read in the unique identifier of the department to which the degree belongs
-                    logger.log(Level.INFO, "Reading in the unique identifier of the department to which the degree belongs");
+                    LOGGER.log(Level.INFO, "Reading in the unique identifier of the department to which the degree belongs");
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The degree does not belong to a department");
+                        LOGGER.log(Level.INFO, "The degree does not belong to a department");
                         department = null;
                     }
 
                     //Send the details to the entity manager for record removal from the database
-                    logger.log(Level.INFO, "Sending the details to the entity manager for record removal from the database");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager for record removal from the database");
                     try {
                         degreeService.removeDegree(Integer.parseInt(request.getParameter("degreeId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail other required records in the session and
@@ -240,13 +240,13 @@ public class DegreeController extends Controller {
 
             destination = "WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
 
         }
@@ -299,44 +299,44 @@ public class DegreeController extends Controller {
         Map<AdmissionDetails, List<DegreeDetails>> degreesByAdmissionMap = new HashMap<>();
 
         //Determine the object's identity and cast it to the appropriate class then retrieve evaluation degrees about it
-        logger.log(Level.INFO, "Determining object's identity");
+        LOGGER.log(Level.INFO, "Determining object's identity");
         if (object instanceof FacultyDetails) {
 
             //Cast the object to FacultyDetails
-            logger.log(Level.INFO, "Casting the object to FacultyDetails");
+            LOGGER.log(Level.INFO, "Casting the object to FacultyDetails");
             faculty = (FacultyDetails) object;
             department = null;
             try {
                 //Retrieve the map of degrees by faculty from the database
-                logger.log(Level.INFO, "Retrieving the map of degrees by faculty from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of degrees by faculty from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfFacultyByAdmission(faculty);
             } catch (InvalidArgumentException | InvalidStateException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
         } else if (object instanceof DepartmentDetails) {
 
             //Cast the object to DepartmentDetails
-            logger.log(Level.INFO, "Casting the object to DepartmentDetails");
+            LOGGER.log(Level.INFO, "Casting the object to DepartmentDetails");
             department = (DepartmentDetails) object;
             faculty = null;
             try {
                 //Retrieve the map of degrees by department from the database
-                logger.log(Level.INFO, "Retrieving the map of degrees by department from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of degrees by department from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfDepartmentByAdmission(department);
             } catch (InvalidArgumentException | InvalidStateException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
         }
 
         //Avail the degrees in the session
-        logger.log(Level.INFO, "Availing the degrees in session");
+        LOGGER.log(Level.INFO, "Availing the degrees in session");
         session.setAttribute("degreesByAdmissionMap", degreesByAdmissionMap);
 
         //<editor-fold defaultstate="collapsed" desc="Generate table body">
@@ -369,6 +369,6 @@ public class DegreeController extends Controller {
     }
 //</editor-fold>   
 
-    private static final Logger logger = Logger.getLogger(DegreeController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(DegreeController.class.getSimpleName());
 
 }

@@ -36,31 +36,31 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
     @Override
     public Integer addFacultyMember(FacultyMemberDetails details) throws InvalidArgumentException {
         //Method for adding a faculty member record to the database
-        logger.log(Level.INFO, "Entered the method for adding a faculty member record to the database");
+        LOGGER.log(Level.INFO, "Entered the method for adding a faculty member record to the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_028_01");
         } else if (details.getFacultyMemberRole() == null) {
-            logger.log(Level.INFO, "The faculty member role is null");
+            LOGGER.log(Level.INFO, "The faculty member role is null");
             throw new InvalidArgumentException("error_028_02");
         } else if (details.getPerson() == null) {
-            logger.log(Level.INFO, "The person making up the faculty member is null");
+            LOGGER.log(Level.INFO, "The person making up the faculty member is null");
             throw new InvalidArgumentException("error_028_03");
         } else if (details.getFaculty() == null && details.getDepartment() == null) {
-            logger.log(Level.INFO, "The faculty and department are null");
+            LOGGER.log(Level.INFO, "The faculty and department are null");
             throw new InvalidArgumentException("error_028_04");
         } else if (details.getFacultyMemberRole().equals(FacultyMemberRoleDetail.STUDENT)) {
             if (details.getAdmissionYear() == null) {
-                logger.log(Level.INFO, "The admission year is null");
+                LOGGER.log(Level.INFO, "The admission year is null");
                 throw new InvalidArgumentException("error_028_05");
             }
         }
 
         //Creating a container to hold faculty member record
-        logger.log(Level.INFO, "Creating a container to hold faculty member record");
+        LOGGER.log(Level.INFO, "Creating a container to hold faculty member record");
         facultyMember = new FacultyMember();
         facultyMember.setActive(details.getActive());
         facultyMember.setAdmissionYear(details.getAdmissionYear());
@@ -76,17 +76,17 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         facultyMember.setFacultyMemberRole(em.find(FacultyMemberRole.class, details.getFacultyMemberRole().getId()));
 
         //Adding a faculty member record to the database
-        logger.log(Level.INFO, "Adding a faculty member record to the database");
+        LOGGER.log(Level.INFO, "Adding a faculty member record to the database");
         try {
             em.persist(facultyMember);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record creation", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record creation", e);
             throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
-        logger.log(Level.INFO, "Returning the unique identifier of the new record added");
+        LOGGER.log(Level.INFO, "Returning the unique identifier of the new record added");
         return facultyMember.getId();
 
     }
@@ -96,29 +96,29 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
     @Override
     public List<FacultyMemberDetails> retrieveNonStudentFacultyMembers(Object object) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving faculty member records from the database
-        logger.log(Level.INFO, "Entered the method for retrieving faculty member records from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving faculty member records from the database");
 
         //Checking validity of object details
-        logger.log(Level.INFO, "Checking validity of the object passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the object passed in");
         if (object == null) {
-            logger.log(Level.INFO, "The faculty or department is null");
+            LOGGER.log(Level.INFO, "The faculty or department is null");
             throw new InvalidArgumentException("error_028_04");
         }
 
         //Identify the object
-        logger.log(Level.INFO, "Identifying the object");
+        LOGGER.log(Level.INFO, "Identifying the object");
         if (object instanceof FacultyDetails) {
             facultyDetails = (FacultyDetails) object;
             departmentDetails = null;
-            logger.log(Level.INFO, "The object is an instance of Faculty");
+            LOGGER.log(Level.INFO, "The object is an instance of Faculty");
         } else if (object instanceof DepartmentDetails) {
             departmentDetails = (DepartmentDetails) object;
             facultyDetails = null;
-            logger.log(Level.INFO, "The object is an instance of Department");
+            LOGGER.log(Level.INFO, "The object is an instance of Department");
         }
 
         //Retrieving faculty member records from the database
-        logger.log(Level.INFO, "Retrieving faculty member records from the database");
+        LOGGER.log(Level.INFO, "Retrieving faculty member records from the database");
         List<FacultyMember> facultyMembers = new ArrayList<>();
         if (facultyDetails != null) {
             q = em.createNamedQuery("FacultyMember.findNonStudentsByFacultyId");
@@ -127,7 +127,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             try {
                 facultyMembers = q.getResultList();
             } catch (EJBException e) {
-                logger.log(Level.INFO, "An error occurred while retrieving the faculty member records");
+                LOGGER.log(Level.INFO, "An error occurred while retrieving the faculty member records");
             }
         } else if (departmentDetails != null) {
             q = em.createNamedQuery("FacultyMember.findNonStudentsByDepartmentId");
@@ -136,12 +136,12 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
             try {
                 facultyMembers = q.getResultList();
             } catch (EJBException e) {
-                logger.log(Level.INFO, "An error occurred while retrieving the faculty member records");
+                LOGGER.log(Level.INFO, "An error occurred while retrieving the faculty member records");
             }
         }
 
         //Returning the faculty members
-        logger.log(Level.INFO, "Returning the faculty members");
+        LOGGER.log(Level.INFO, "Returning the faculty members");
         return convertFacultyMembersToFacultyMemberDetailsList(facultyMembers);
 
     }
@@ -149,56 +149,56 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
     @Override
     public FacultyMemberDetails retrieveFacultyMemberByPerson(Integer personId) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving a faculty member record from the database
-        logger.log(Level.INFO, "Entered the method for retrieving a faculty member record from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving a faculty member record from the database");
 
         //Check that the person's unique identifier passed in are not null
-        logger.log(Level.INFO, "Checking that the person's unique identifier passed in are not null");
+        LOGGER.log(Level.INFO, "Checking that the person's unique identifier passed in are not null");
         if (personId == null) {
-            logger.log(Level.INFO, "The person's unique identifier is null");
+            LOGGER.log(Level.INFO, "The person's unique identifier is null");
             throw new InvalidArgumentException("error_028_06");
         }
 
         //Retrieve faculty member record from the database
-        logger.log(Level.INFO, "Retrieving faculty member record from the database");
+        LOGGER.log(Level.INFO, "Retrieving faculty member record from the database");
         q = em.createNamedQuery("FacultyMember.findByPersonId");
         q.setParameter("personId", personId);
         try {
             facultyMember = (FacultyMember) q.getSingleResult();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval");
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval");
             throw new EJBException("error_000_01");
         }
 
         //Return the faculty member record
-        logger.log(Level.INFO, "Returning the faculty member record");
+        LOGGER.log(Level.INFO, "Returning the faculty member record");
         return convertFacultyMemberToFacultyMemberDetails(facultyMember);
     }
 
     @Override
     public FacultyMemberDetails retrieveSpecificFacultyMember(Integer id) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving a faculty member record from the database
-        logger.log(Level.INFO, "Entered the method for retrieving a faculty member record from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving a faculty member record from the database");
 
         //Check that the unique identifier passed in are not null
-        logger.log(Level.INFO, "Checking that the unique identifier passed in are not null");
+        LOGGER.log(Level.INFO, "Checking that the unique identifier passed in are not null");
         if (id == null) {
-            logger.log(Level.INFO, "The faculty member's unique identifier is null");
+            LOGGER.log(Level.INFO, "The faculty member's unique identifier is null");
             throw new InvalidArgumentException("error_028_07");
         }
 
         //Retrieve faculty member record from the database
-        logger.log(Level.INFO, "Retrieving faculty member record from the database");
+        LOGGER.log(Level.INFO, "Retrieving faculty member record from the database");
         q = em.createNamedQuery("FacultyMember.findById");
         q.setParameter("id", id);
         try {
             facultyMember = (FacultyMember) q.getSingleResult();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Return the faculty member record
-        logger.log(Level.INFO, "Returning the faculty member record");
+        LOGGER.log(Level.INFO, "Returning the faculty member record");
         return convertFacultyMemberToFacultyMemberDetails(facultyMember);
     }
 
@@ -207,34 +207,34 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
     @Override
     public void editFacultyMember(FacultyMemberDetails details) throws InvalidArgumentException, InvalidStateException {
         //Method for editing a faculty member record in the database
-        logger.log(Level.INFO, "Entered the method for editing a faculty member record in the database");
+        LOGGER.log(Level.INFO, "Entered the method for editing a faculty member record in the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_028_01");
         } else if (details.getId() == null) {
-            logger.log(Level.INFO, "The faculty member's unique identifier is null");
+            LOGGER.log(Level.INFO, "The faculty member's unique identifier is null");
             throw new InvalidArgumentException("error_028_07");
         } else if (details.getFacultyMemberRole() == null) {
-            logger.log(Level.INFO, "The faculty member role is null");
+            LOGGER.log(Level.INFO, "The faculty member role is null");
             throw new InvalidArgumentException("error_028_02");
         } else if (details.getPerson() == null) {
-            logger.log(Level.INFO, "The person making up the faculty member is null");
+            LOGGER.log(Level.INFO, "The person making up the faculty member is null");
             throw new InvalidArgumentException("error_028_03");
         } else if (details.getFaculty() == null && details.getDepartment() == null) {
-            logger.log(Level.INFO, "The faculty and department are null");
+            LOGGER.log(Level.INFO, "The faculty and department are null");
             throw new InvalidArgumentException("error_028_04");
         } else if (details.getFacultyMemberRole().equals(FacultyMemberRoleDetail.STUDENT)) {
             if (details.getAdmissionYear() == null) {
-                logger.log(Level.INFO, "The admission year is null");
+                LOGGER.log(Level.INFO, "The admission year is null");
                 throw new InvalidArgumentException("error_028_05");
             }
         }
 
         //Creating a container to hold faculty member record
-        logger.log(Level.INFO, "Creating a container to hold faculty member record");
+        LOGGER.log(Level.INFO, "Creating a container to hold faculty member record");
         facultyMember = em.find(FacultyMember.class, details.getId());
         facultyMember.setId(details.getId());
         facultyMember.setActive(details.getActive());
@@ -253,12 +253,12 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         facultyMember.setFacultyMemberRole(em.find(FacultyMemberRole.class, details.getFacultyMemberRole().getId()));
 
         //Editing a faculty member record in the database
-        logger.log(Level.INFO, "Editing a faculty member record in the database");
+        LOGGER.log(Level.INFO, "Editing a faculty member record in the database");
         try {
             em.merge(facultyMember);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record update", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record update", e);
             throw new EJBException("error_000_01");
         }
 
@@ -269,22 +269,22 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
     @Override
     public void removeFacultyMember(Integer id) throws InvalidArgumentException, InvalidStateException {
         //Method for removing a faculty member record from the database
-        logger.log(Level.INFO, "Entered the method for removing a faculty member record from the database");
+        LOGGER.log(Level.INFO, "Entered the method for removing a faculty member record from the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
+            LOGGER.log(Level.INFO, "The unique identifier is null");
             throw new InvalidArgumentException("error_028_07");
         }
 
         //Removing a faculty member record from the database
-        logger.log(Level.INFO, "Removing a faculty member record from the database");
+        LOGGER.log(Level.INFO, "Removing a faculty member record from the database");
         facultyMember = em.find(FacultyMember.class, id);
         try {
             em.remove(facultyMember);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record removal", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
             throw new InvalidStateException("error_000_01");
         }
 
@@ -294,32 +294,32 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
 
     private List<FacultyMemberDetails> convertFacultyMembersToFacultyMemberDetailsList(List<FacultyMember> facultyMembers) {
         //Entered method for converting faculty members list to faculty member details list
-        logger.log(Level.FINE, "Entered method for converting faculty members list to faculty member details list");
+        LOGGER.log(Level.FINE, "Entered method for converting faculty members list to faculty member details list");
 
         //Convert list of faculty members to faculty member details list
-        logger.log(Level.FINE, "Convert list of faculty members to faculty member details list");
+        LOGGER.log(Level.FINE, "Convert list of faculty members to faculty member details list");
         List<FacultyMemberDetails> details = new ArrayList<>();
         for (FacultyMember a : facultyMembers) {
             details.add(convertFacultyMemberToFacultyMemberDetails(a));
         }
 
         //Returning converted faculty member details list
-        logger.log(Level.FINE, "Returning converted faculty member details list");
+        LOGGER.log(Level.FINE, "Returning converted faculty member details list");
         return details;
     }
 
     @Override
     public FacultyMemberDetails convertFacultyMemberToFacultyMemberDetails(FacultyMember facultyMember) {
         //Entered method for converting facultyMember to facultyMember details
-        logger.log(Level.FINE, "Entered method for converting faculty members to faculty member details");
+        LOGGER.log(Level.FINE, "Entered method for converting faculty members to faculty member details");
 
         //Convert list of facultyMember to facultyMember details
-        logger.log(Level.FINE, "Convert list of faculty member to faculty member details");
+        LOGGER.log(Level.FINE, "Convert list of faculty member to faculty member details");
         facultyDetails = new FacultyDetails();
         try {
             facultyDetails.setId(facultyMember.getFaculty().getId());
         } catch (Exception e) {
-            logger.log(Level.FINE, "The faculty member does not belong to a faculty");
+            LOGGER.log(Level.FINE, "The faculty member does not belong to a faculty");
             facultyDetails = null;
         }
 
@@ -327,7 +327,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         try {
             departmentDetails.setId(facultyMember.getDepartment().getId());
         } catch (Exception e) {
-            logger.log(Level.FINE, "The faculty member does not belong to a department");
+            LOGGER.log(Level.FINE, "The faculty member does not belong to a department");
             departmentDetails = null;
         }
 
@@ -350,11 +350,11 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         facultyMemberDetails.setFacultyMemberRole(facultyMemberRoleDetail);
 
         //Returning converted facultyMember details
-        logger.log(Level.FINE, "Returning converted faculty member details");
+        LOGGER.log(Level.FINE, "Returning converted faculty member details");
         return facultyMemberDetails;
     }
 //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(FacultyMemberRequests.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(FacultyMemberRequests.class.getSimpleName());
 
 }

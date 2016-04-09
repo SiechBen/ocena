@@ -58,31 +58,31 @@ public class FacultyController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Main admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Main admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             String path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             String destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             String path = request.getServletPath();
             String destination;
@@ -95,7 +95,7 @@ public class FacultyController extends Controller {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
             switch (path) {
@@ -135,7 +135,7 @@ public class FacultyController extends Controller {
                     postalContact.setPostalCode(request.getParameter("postalCode"));
 
                     //Read in values for the faculty record to be made
-                    logger.log(Level.INFO, "Reading in values for the faculty record to be made");
+                    LOGGER.log(Level.INFO, "Reading in values for the faculty record to be made");
                     faculty = new FacultyDetails();
                     faculty.setActive(true);
                     faculty.setCollege(college);
@@ -150,25 +150,25 @@ public class FacultyController extends Controller {
                     }
 
                     //Send the details to the entity manager
-                    logger.log(Level.INFO, "Sending the details to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager");
                     try {
                         facultyService.addFaculty(faculty, emailContact, phoneContact, postalContact);
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of faculties
-                    logger.log(Level.INFO, "Retrieving faculties from the database");
+                    LOGGER.log(Level.INFO, "Retrieving faculties from the database");
                     try {
                         faculties = facultyService.retrieveFaculties(college.getId());
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update table body
@@ -176,11 +176,11 @@ public class FacultyController extends Controller {
                     return;
                 case "/editFaculty":
                     //Read in the faculty's unique identifier
-                    logger.log(Level.INFO, "Retrieving the faculty's unique identifier");
+                    LOGGER.log(Level.INFO, "Retrieving the faculty's unique identifier");
                     int facultyId = Integer.parseInt(request.getParameter("facultyId"));
 
                     //Retrieve the faculty record from the database
-                    logger.log(Level.INFO, "Retrieving the faculty details from the database");
+                    LOGGER.log(Level.INFO, "Retrieving the faculty details from the database");
                     faculty = new FacultyDetails();
                     try {
                         faculty = facultyService.retrieveFaculty(facultyId);
@@ -188,11 +188,11 @@ public class FacultyController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the contact record from the database
-                    logger.log(Level.INFO, "Retrieving the contact details from the database");
+                    LOGGER.log(Level.INFO, "Retrieving the contact details from the database");
                     contact = new ContactDetails();
                     try {
                         contact = contactService.retrieveContact(faculty.getContact().getId());
@@ -200,11 +200,11 @@ public class FacultyController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the email contact details
-                    logger.log(Level.INFO, "Retrieving the email contact details");
+                    LOGGER.log(Level.INFO, "Retrieving the email contact details");
                     emailContact = new EmailContactDetails();
                     try {
                         emailContact = emailContactService.retrieveEmailContact(contact.getId());
@@ -212,11 +212,11 @@ public class FacultyController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the phone contact details
-                    logger.log(Level.INFO, "Retrieving the phone contact details");
+                    LOGGER.log(Level.INFO, "Retrieving the phone contact details");
                     phoneContact = new PhoneContactDetails();
                     try {
                         phoneContact = phoneContactService.retrievePhoneContact(contact.getId());
@@ -224,11 +224,11 @@ public class FacultyController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the postal contact details
-                    logger.log(Level.INFO, "Retrieving the postal contact details");
+                    LOGGER.log(Level.INFO, "Retrieving the postal contact details");
                     postalContact = new PostalContactDetails();
                     try {
                         postalContact = postalContactService.retrievePostalContact(contact.getId());
@@ -236,11 +236,11 @@ public class FacultyController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the faculty and its contacts in the session
-                    logger.log(Level.INFO, "Availing the faculty and its contacts in the session");
+                    LOGGER.log(Level.INFO, "Availing the faculty and its contacts in the session");
                     session.setAttribute("faculty", faculty);
                     session.setAttribute("contact", contact);
                     session.setAttribute("postalContact", postalContact);
@@ -248,7 +248,7 @@ public class FacultyController extends Controller {
                     session.setAttribute("emailContact", emailContact);
 
                     path = "/editFaculty";
-                    logger.log(Level.INFO, "Path is: {0}", path);
+                    LOGGER.log(Level.INFO, "Path is: {0}", path);
                     break;
 
                 case "/saveEditedFaculty":
@@ -259,7 +259,7 @@ public class FacultyController extends Controller {
                     contact.setActive(true);
 
                     //Read in values for the faculty record to be made
-                    logger.log(Level.INFO, "Reading in values for the faculty record to be made");
+                    LOGGER.log(Level.INFO, "Reading in values for the faculty record to be made");
                     faculty = new FacultyDetails();
                     faculty.setActive(true);
                     faculty.setCollege(college);
@@ -309,48 +309,48 @@ public class FacultyController extends Controller {
                     }
 
                     //Send the details to the entity manager
-                    logger.log(Level.INFO, "Sending the details to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager");
                     try {
                         facultyService.editFaculty(faculty, emailContact, phoneContact, postalContact);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the list of faculties and set the path to where they'll be displayed
                     path = retrieveFaculties(college, faculties, session, response);
-                    logger.log(Level.INFO, "Displaying the faculties \nPath is: {0}", path);
+                    LOGGER.log(Level.INFO, "Displaying the faculties \nPath is: {0}", path);
 
                     break;
 
                 case "/removeFaculty":
                     //Send the unique identifier of the faculty to be removed to the entity manager
-                    logger.log(Level.INFO, "Sending the unique identifier of the faculty to be removed to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the unique identifier of the faculty to be removed to the entity manager");
                     try {
                         facultyService.removeFaculty(Integer.parseInt(request.getParameter("id")));
                     } catch (NumberFormatException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("invalid_id"));
-                        logger.log(Level.INFO, bundle.getString("invalid_id"));
+                        LOGGER.log(Level.INFO, bundle.getString("invalid_id"));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of faculties
-                    logger.log(Level.INFO, "Retrieving faculties from the database");
+                    LOGGER.log(Level.INFO, "Retrieving faculties from the database");
                     try {
                         faculties = facultyService.retrieveFaculties(college.getId());
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update table body
@@ -361,13 +361,13 @@ public class FacultyController extends Controller {
 
             destination = "WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -435,28 +435,28 @@ public class FacultyController extends Controller {
     //<editor-fold defaultstate="collapsed" desc="Retrieve faculties">
     private String retrieveFaculties(CollegeDetails c, List<FacultyDetails> faculties, HttpSession session, HttpServletResponse response) throws IOException {
         //Retrieve the faculties from the database
-        logger.log(Level.INFO, "Retrieving faculties in {0} from the database", c.getName());
+        LOGGER.log(Level.INFO, "Retrieving faculties in {0} from the database", c.getName());
         try {
             faculties = facultyService.retrieveFaculties(c.getId());
         } catch (InvalidArgumentException | InvalidStateException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the faculties in the session
-        logger.log(Level.INFO, "Availing the list of faculties in the session");
+        LOGGER.log(Level.INFO, "Availing the list of faculties in the session");
         session.setAttribute("faculties", faculties);
         session.setAttribute("college", c);
 
         //Set the path to display the faculties
         String path = "/viewFaculties";
-        logger.log(Level.INFO, "Displaying the faculties \nPath is: {0}", path);
+        LOGGER.log(Level.INFO, "Displaying the faculties \nPath is: {0}", path);
         return path;
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(FacultyController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(FacultyController.class.getSimpleName());
 
 }

@@ -77,11 +77,11 @@ public class AccessController extends Controller {
             case "/index":
 
                 //Redirect to index page
-                logger.log(Level.INFO, "Path is: {0}", path);
+                LOGGER.log(Level.INFO, "Path is: {0}", path);
                 try {
                     request.getRequestDispatcher("index.jsp").forward(request, response);
                 } catch (IOException | ServletException e) {
-                    logger.log(Level.SEVERE, "Request dispatch failed", e);
+                    LOGGER.log(Level.SEVERE, "Request dispatch failed", e);
                 }
 
                 break;
@@ -102,7 +102,7 @@ public class AccessController extends Controller {
                         overallAdminDetails = overallAdminService.userExists(username, password);
                         userExists = true;
                     } catch (InvalidArgumentException | InvalidStateException | InvalidLoginException e) {
-                        logger.log(Level.INFO, "Invalid login attempt");
+                        LOGGER.log(Level.INFO, "Invalid login attempt");
                         userExists = false;
                     }
                     if (userExists) {
@@ -117,7 +117,7 @@ public class AccessController extends Controller {
                         Map<PersonDetails, UserGroupDetail> personUserGroupMap;
                         try {
                             personUserGroupMap = personService.retrievePerson(username, password);
-                            logger.log(Level.INFO, "This person retrieved {0}", personUserGroupMap.keySet());
+                            LOGGER.log(Level.INFO, "This person retrieved {0}", personUserGroupMap.keySet());
 
                             //Valid login attempt
                             out.write("<input type=\"hidden\" id=\"useful-username\" value=\"valid\">");
@@ -130,7 +130,7 @@ public class AccessController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(ex.getCode()));
-                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(ex.getCode()));
 
                             return;
 
@@ -139,7 +139,7 @@ public class AccessController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(ex.getCode()));
-                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(ex.getCode()));
 
                             return;
 
@@ -171,7 +171,7 @@ public class AccessController extends Controller {
                         overallAdminDetails = overallAdminService.userExists(username, password);
                         userExists = true;
                     } catch (InvalidArgumentException | InvalidStateException | InvalidLoginException e) {
-                        logger.log(Level.INFO, "Invalid login attempt");
+                        LOGGER.log(Level.INFO, "Invalid login attempt");
                         userExists = false;
                     }
                     if (userExists) {
@@ -187,7 +187,7 @@ public class AccessController extends Controller {
                         availApplicationAttributes();
 
                         path = "/adminDashboard";
-                        logger.log(Level.SEVERE, "Path is : {0}", path);
+                        LOGGER.log(Level.SEVERE, "Path is : {0}", path);
 
                     } else {
 
@@ -200,7 +200,7 @@ public class AccessController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(ex.getCode()));
-                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(ex.getCode()));
 
                             return;
 
@@ -209,7 +209,7 @@ public class AccessController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(ex.getCode()));
-                            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(ex.getCode()));
 
                             return;
                         }
@@ -300,29 +300,29 @@ public class AccessController extends Controller {
                             }
 
                             //Retrieve the corresponding faculty member 
-                            logger.log(Level.INFO, "Retrieving the corresponding faculty member");
+                            LOGGER.log(Level.INFO, "Retrieving the corresponding faculty member");
                             facultyMember = new FacultyMemberDetails();
                             try {
                                 facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
                             } catch (InvalidArgumentException | InvalidStateException ex) {
-                                logger.log(Level.INFO, "An error occurred during faculty member retrieval");
+                                LOGGER.log(Level.INFO, "An error occurred during faculty member retrieval");
                             }
 
                             //Avail the faculty member on session
-                            logger.log(Level.INFO, "Availing the faculty member on session");
+                            LOGGER.log(Level.INFO, "Availing the faculty member on session");
                             session.setAttribute("facultyMember", facultyMember);
 
                             //If the student is the member of a faculty
                             if (facultyMember.getFaculty() != null) {
 
                                 //Avail the faculty for which the student is a member in session
-                                logger.log(Level.INFO, "Availing the faculty for which the student is a member in session");
+                                LOGGER.log(Level.INFO, "Availing the faculty for which the student is a member in session");
                                 faculty = new FacultyDetails();
                                 try {
                                     faculty = facultyService.retrieveFaculty(facultyMember.getFaculty().getId());
                                     session.setAttribute("faculty", faculty);
                                 } catch (InvalidArgumentException | InvalidStateException ex) {
-                                    logger.log(Level.INFO, "An error occurred during faculty retrieval");
+                                    LOGGER.log(Level.INFO, "An error occurred during faculty retrieval");
                                 }
 
                                 //Set the path
@@ -333,7 +333,7 @@ public class AccessController extends Controller {
                                     session.setAttribute("home", "/facultyHome");
 
                                     //Retrieve records required at the faculty dashboard
-                                    logger.log(Level.INFO, "Retrieving the records required at the faculty dashboard");
+                                    LOGGER.log(Level.INFO, "Retrieving the records required at the faculty dashboard");
                                     availOtherRequiredRecords(session, response, faculty);
                                 }
 
@@ -341,13 +341,13 @@ public class AccessController extends Controller {
                             } else if (facultyMember.getDepartment() != null) {
 
                                 //Avail the department for which the student is a member in session
-                                logger.log(Level.INFO, "Availing the department for which the student is a member in session");
+                                LOGGER.log(Level.INFO, "Availing the department for which the student is a member in session");
                                 department = new DepartmentDetails();
                                 try {
                                     department = departmentService.retrieveDepartment(facultyMember.getDepartment().getId());
                                     session.setAttribute("department", department);
                                 } catch (InvalidArgumentException | InvalidStateException ex) {
-                                    logger.log(Level.INFO, "An error occurred during department retrieval");
+                                    LOGGER.log(Level.INFO, "An error occurred during department retrieval");
                                 }
 
                                 //Set the path
@@ -358,21 +358,21 @@ public class AccessController extends Controller {
                                     session.setAttribute("home", "/departmentHome");
 
                                     //Retrieve records required at the department dashboard
-                                    logger.log(Level.INFO, "Retrieving the records required at the department dashboard");
+                                    LOGGER.log(Level.INFO, "Retrieving the records required at the department dashboard");
                                     availOtherRequiredRecords(session, response, department);
                                 }
 
                             }
 
                             //Retrieve admission records and avail them on session
-                            logger.log(Level.INFO, "Retrieving admission records and availing them on session");
+                            LOGGER.log(Level.INFO, "Retrieving admission records and availing them on session");
                             try {
                                 session.setAttribute("admissions", admissionService.retrieveAdmissions());
                             } catch (Exception e) {
-                                logger.log(Level.INFO, "An error occurred during admissions retrieval");
+                                LOGGER.log(Level.INFO, "An error occurred during admissions retrieval");
                             }
 
-                            logger.log(Level.SEVERE, "Path is : {0}", path);
+                            LOGGER.log(Level.SEVERE, "Path is : {0}", path);
 
                         }
 
@@ -387,9 +387,9 @@ public class AccessController extends Controller {
 
             case "/home":
                 //Change path to appropriate homepage
-                logger.log(Level.INFO, "Directing user to home");
+                LOGGER.log(Level.INFO, "Directing user to home");
                 path = (String) session.getAttribute("home");
-                logger.log(Level.SEVERE, "Path is : {0}", path);
+                LOGGER.log(Level.SEVERE, "Path is : {0}", path);
 
                 break;
 
@@ -402,7 +402,7 @@ public class AccessController extends Controller {
 
                 //Change path to index page
                 path = "index.jsp";
-                logger.log(Level.SEVERE, "Path is : {0}", path);
+                LOGGER.log(Level.SEVERE, "Path is : {0}", path);
                 //Redirect user to the page
                 request.getRequestDispatcher(path).forward(request, response);
                 return;
@@ -411,7 +411,7 @@ public class AccessController extends Controller {
         //Use request dispatcher to foward request internally
         destination = "/WEB-INF/views" + path + ".jsp";
 
-        logger.log(Level.INFO,
+        LOGGER.log(Level.INFO,
                 "Request dispatch to forward to: {0}", destination);
         try {
             request.getRequestDispatcher(destination).forward(request, response);
@@ -419,40 +419,40 @@ public class AccessController extends Controller {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString("redirection_failed"));
-            logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+            LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
         }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Avail application attributes">
     private void availApplicationAttributes() {
         //Retrieve the list of countries
-        logger.log(Level.INFO, "Retrieving the list of countries");
+        LOGGER.log(Level.INFO, "Retrieving the list of countries");
         List<CountryDetails> countries;
         try {
             countries = countryService.retrieveCountries();
         } catch (InvalidArgumentException | InvalidStateException ex) {
-            logger.log(Level.SEVERE, "An error occurred during countries retrieval", ex);
+            LOGGER.log(Level.SEVERE, "An error occurred during countries retrieval", ex);
             return;
         }
 
         //Avail the countries in the application scope
-        logger.log(Level.INFO, "Avail the countries in the application scope");
+        LOGGER.log(Level.INFO, "Avail the countries in the application scope");
         if (countries != null) {
             getServletContext().setAttribute("countries", countries);
         }
 
         //Retrieve the institution
-        logger.log(Level.INFO, "Retrieving the institution");
+        LOGGER.log(Level.INFO, "Retrieving the institution");
         institution = new InstitutionDetails();
         try {
             institution = institutionService.retrieveInstitution();
         } catch (InvalidArgumentException | InvalidStateException ex) {
-            logger.log(Level.SEVERE, "An error occurred during instituion retrieval", ex);
+            LOGGER.log(Level.SEVERE, "An error occurred during instituion retrieval", ex);
             return;
         }
 
         //Avail the institution in the application scope
-        logger.log(Level.INFO, "Avail the institution in the application scope");
+        LOGGER.log(Level.INFO, "Avail the institution in the application scope");
         if (institution.getId() != null) {
             //session.setAttribute("institution", institution);
             getServletContext().setAttribute("institution", institution);
@@ -513,142 +513,142 @@ public class AccessController extends Controller {
         Map<QuestionCategoryDetails, List<QuestionDetails>> questionsInQuestionCategoryMap = new HashMap<>();
 
         //Determine the object's identity and cast it to the appropriate class then retrieve evaluation questions about it
-        logger.log(Level.INFO, "Determining object's identity");
+        LOGGER.log(Level.INFO, "Determining object's identity");
         if (object instanceof FacultyDetails) {
 
-            logger.log(Level.INFO, "Casting the object to FacultyDetails");
+            LOGGER.log(Level.INFO, "Casting the object to FacultyDetails");
             faculty = (FacultyDetails) object;
             try {
                 questions = questionService.retrieveQuestionsInFaculty(faculty.getId());
 
                 //Retrieve the map of questions of a faculty in question categories from the database
-                logger.log(Level.INFO, "Retrieving the map of questions of a faculty in question categories from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of questions of a faculty in question categories from the database");
                 questionsInQuestionCategoryMap = questionService.retrieveQuestionsOfFacultyByQuestionCategories(faculty);
 
             } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of questions in a faculty");
+                LOGGER.log(Level.INFO, "An error occurred while retrieving list of questions in a faculty");
             }
 
             try {
                 //Retrieve the map of degrees by faculty from the database
-                logger.log(Level.INFO, "Retrieving the map of degrees by faculty from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of degrees by faculty from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfFacultyByAdmission(faculty);
             } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of degrees in a faculty");
+                LOGGER.log(Level.INFO, "An error occurred while retrieving list of degrees in a faculty");
             }
 
         } else if (object instanceof DepartmentDetails) {
 
-            logger.log(Level.INFO, "Casting the object to DepartmentDetails");
+            LOGGER.log(Level.INFO, "Casting the object to DepartmentDetails");
             department = (DepartmentDetails) object;
             try {
                 questions = questionService.retrieveQuestionsInDepartment(department.getId());
 
                 //Retrieve the map of questions of a department in question categories from the database
-                logger.log(Level.INFO, "Retrieving the map of questions of a department in question categories from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of questions of a department in question categories from the database");
                 questionsInQuestionCategoryMap = questionService.retrieveQuestionsOfDepartmentByQuestionCategories(department);
             } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of questions in a department");
+                LOGGER.log(Level.INFO, "An error occurred while retrieving list of questions in a department");
             }
 
             try {
                 //Retrieve the map of degrees by department from the database
-                logger.log(Level.INFO, "Retrieving the map of degrees by department from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of degrees by department from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfDepartmentByAdmission(department);
             } catch (InvalidArgumentException | InvalidStateException ex) {
-                logger.log(Level.INFO, "An error occurred while retrieving list of degrees in a department");
+                LOGGER.log(Level.INFO, "An error occurred while retrieving list of degrees in a department");
             }
         }
 
         //Avail the map in session of questions in question categories
-        logger.log(Level.INFO, "Availing the map of questions in question categories in session");
+        LOGGER.log(Level.INFO, "Availing the map of questions in question categories in session");
         session.setAttribute("questionsInQuestionCategoryMap", questionsInQuestionCategoryMap);
 
         //Avail the map of degrees by admission in session
-        logger.log(Level.INFO, "Availing the map of degrees by admission in session");
+        LOGGER.log(Level.INFO, "Availing the map of degrees by admission in session");
         session.setAttribute("degreesByAdmissionMap", degreesByAdmissionMap);
 
         //Add the means of answering to the list
-        logger.log(Level.INFO, "Adding the means of answering to the list");
+        LOGGER.log(Level.INFO, "Adding the means of answering to the list");
         meansOfAnsweringList.add(MeansOfAnsweringDetail.BY_RATING);
         meansOfAnsweringList.add(MeansOfAnsweringDetail.BY_REASONING);
         meansOfAnsweringList.add(MeansOfAnsweringDetail.BY_LISTING_COMMENTS);
 
         //Avail the list of means of answering in the session 
-        logger.log(Level.INFO, "Availing the list of means of answering in the session");
+        LOGGER.log(Level.INFO, "Availing the list of means of answering in the session");
         session.setAttribute("meansOfAnsweringList", meansOfAnsweringList);
 
         //Retrieve the list of question category records from the database
-        logger.log(Level.INFO, "Retrieving the list of question category records from the database");
+        LOGGER.log(Level.INFO, "Retrieving the list of question category records from the database");
         try {
             questionCategories = questionCategoryService.retrieveQuestionCategories();
         } catch (InvalidArgumentException | InvalidStateException e) {
-            logger.log(Level.INFO, "An error occurred during question category record creation", e);
+            LOGGER.log(Level.INFO, "An error occurred during question category record creation", e);
         }
 
         //Avail the question categories in session
-        logger.log(Level.INFO, "Availing the question categories in session");
+        LOGGER.log(Level.INFO, "Availing the question categories in session");
         session.setAttribute("questionCategories", questionCategories);
 
         //Retrieve the list of admissions
-        logger.log(Level.INFO, "Retrieving the new list of admission records");
+        LOGGER.log(Level.INFO, "Retrieving the new list of admission records");
         try {
             admissions = admissionService.retrieveAdmissions();
         } catch (InvalidStateException e) {
-            logger.log(Level.SEVERE, "An error occurred during retrieval of admissions", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during retrieval of admissions", e);
         }
 
         //Avail the admissions in session
-        logger.log(Level.INFO, "Availing the admissions in session");
+        LOGGER.log(Level.INFO, "Availing the admissions in session");
         session.setAttribute("admissions", admissions);
 
         //Retrieve the list of rating records from the database
-        logger.log(Level.INFO, "Retrieving the list of rating records from the database");
+        LOGGER.log(Level.INFO, "Retrieving the list of rating records from the database");
         try {
             ratingTypeAndValuesMap = ratingService.retrieveRatings();
         } catch (InvalidStateException e) {
-            logger.log(Level.INFO, "An error occurred during rating record retrieval", e);
+            LOGGER.log(Level.INFO, "An error occurred during rating record retrieval", e);
         }
 
         //Avail the map of rating types and values in session
-        logger.log(Level.INFO, "Availing the map of rating types and values in session");
+        LOGGER.log(Level.INFO, "Availing the map of rating types and values in session");
         session.setAttribute("ratingTypeAndValuesMap", ratingTypeAndValuesMap);
 
         //Retrieve the map of rating types by question from the database
-        logger.log(Level.INFO, "Retrieving the map of rating types by question from the database");
+        LOGGER.log(Level.INFO, "Retrieving the map of rating types by question from the database");
         try {
             ratingTypesByQuestionMap = questionService.retrieveRatingTypesByQuestion(questions);
         } catch (InvalidArgumentException ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(ex.getCode()));
-            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(ex.getCode()));
             return;
         }
 
         //Avail the map in session
-        logger.log(Level.INFO, "Availing the map in session");
+        LOGGER.log(Level.INFO, "Availing the map in session");
         session.setAttribute("ratingTypesByQuestionMap", ratingTypesByQuestionMap);
 
         //Retrieve the map of means of answering by question from the database
-        logger.log(Level.INFO, "Retrieving the map of means of answering by question from the database");
+        LOGGER.log(Level.INFO, "Retrieving the map of means of answering by question from the database");
         try {
             meansOfAnsweringByQuestionMap = questionService.retrieveMeansOfAnsweringByQuestion(questions);
         } catch (InvalidArgumentException ex) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(ex.getCode()));
-            logger.log(Level.INFO, bundle.getString(ex.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(ex.getCode()));
             return;
         }
 
         //Avail the map in session
-        logger.log(Level.INFO, "Availing the map of means of answering by question in session");
+        LOGGER.log(Level.INFO, "Availing the map of means of answering by question in session");
         session.setAttribute("meansOfAnsweringByQuestionMap", meansOfAnsweringByQuestionMap);
 
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(AccessController.class
+    private static final Logger LOGGER = Logger.getLogger(AccessController.class
             .getSimpleName());
 }

@@ -52,8 +52,8 @@ public class QuestionCategoryController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Main admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Main admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
@@ -62,32 +62,32 @@ public class QuestionCategoryController extends Controller {
             try {
                 adminSession = (Boolean) session.getAttribute("subAdminSession");
             } catch (Exception e) {
-                logger.log(Level.INFO, "Sub admin session is null");
-                logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+                LOGGER.log(Level.INFO, "Sub admin session is null");
+                LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             String path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             String destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             String path = request.getServletPath();
             String destination;
@@ -97,35 +97,35 @@ public class QuestionCategoryController extends Controller {
                 case "/addQuestionCategory":
 
                     //Read in details for the question category
-                    logger.log(Level.INFO, "Reading in details for the question category");
+                    LOGGER.log(Level.INFO, "Reading in details for the question category");
                     questionCategory = new QuestionCategoryDetails();
                     questionCategory.setActive(true);
                     questionCategory.setCategory(request.getParameter("questionCategory"));
 
                     //Send the details to the entity manager for recording in the database
-                    logger.log(Level.INFO, "Sending the details to the entity manager for recording in the database");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager for recording in the database");
                     try {
                         questionCategoryService.addQuestionCategory(questionCategory);
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of question category records from the database
-                    logger.log(Level.INFO, "Retrieving the new list of question category records from the database");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of question category records from the database");
                     try {
                         questionCategories = questionCategoryService.retrieveQuestionCategories();
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the question categories session
-                    logger.log(Level.INFO, "Availing the question categories in session");
+                    LOGGER.log(Level.INFO, "Availing the question categories in session");
                     session.setAttribute("questionCategories", questionCategories);
 
                     //Display the new list of question category records
@@ -135,32 +135,32 @@ public class QuestionCategoryController extends Controller {
                 case "/editQuestionCategory":
 
                     //Read in details for the question category
-                    logger.log(Level.INFO, "Reading in details for the question category");
+                    LOGGER.log(Level.INFO, "Reading in details for the question category");
                     questionCategory = new QuestionCategoryDetails();
                     questionCategory.setActive(true);
                     questionCategory.setCategory(request.getParameter("questionCategory"));
                     questionCategory.setId(Short.parseShort(request.getParameter("questionCategoryId")));
 
                     //Send the details to the entity manager for recording in the database
-                    logger.log(Level.INFO, "Sending the details to the entity manager for record update in the database");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager for record update in the database");
                     try {
                         questionCategoryService.editQuestionCategory(questionCategory);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of question category records from the database
-                    logger.log(Level.INFO, "Retrieving the new list of question category records from the database");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of question category records from the database");
                     try {
                         questionCategories = questionCategoryService.retrieveQuestionCategories();
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Display the new list of question category records
@@ -171,25 +171,25 @@ public class QuestionCategoryController extends Controller {
                 case "/removeQuestionCategory":
 
                     //Send the details to the entity manager for record removal from the database
-                    logger.log(Level.INFO, "Sending the details to the entity manager for record removal from the database");
+                    LOGGER.log(Level.INFO, "Sending the details to the entity manager for record removal from the database");
                     try {
                         questionCategoryService.removeQuestionCategory(Short.parseShort(request.getParameter("questionCategoryId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of question category records from the database
-                    logger.log(Level.INFO, "Retrieving the new list of question category records from the database");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of question category records from the database");
                     try {
                         questionCategories = questionCategoryService.retrieveQuestionCategories();
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Display the new list of question category records
@@ -200,13 +200,13 @@ public class QuestionCategoryController extends Controller {
 
             destination = "WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -265,6 +265,6 @@ public class QuestionCategoryController extends Controller {
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(QuestionCategoryController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(QuestionCategoryController.class.getSimpleName());
 
 }

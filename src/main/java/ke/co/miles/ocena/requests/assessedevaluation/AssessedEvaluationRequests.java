@@ -40,36 +40,36 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
     @Override
     public AssessedEvaluation addAssessedEvaluation(AssessedEvaluationDetails details) throws InvalidArgumentException {
         //Method for adding an assessed evaluation record to the database
-        logger.log(Level.INFO, "Entered the method for adding an assessed evaluation record to the database");
+        LOGGER.log(Level.INFO, "Entered the method for adding an assessed evaluation record to the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_010_01");
         } else if (details.getEvaluatedQuestion() == null) {
-            logger.log(Level.INFO, "The evaluated question is null");
+            LOGGER.log(Level.INFO, "The evaluated question is null");
             throw new InvalidArgumentException("error_010_02");
         } else if (details.getEvaluationSession() == null) {
-            logger.log(Level.INFO, "The evaluation session is null");
+            LOGGER.log(Level.INFO, "The evaluation session is null");
             throw new InvalidArgumentException("error_010_03");
         } else if (details.getPercentageScore() != null) {
             if (details.getPercentageScore().trim().length() > 20) {
-                logger.log(Level.INFO, "The percentage score is longer than 20 characters");
+                LOGGER.log(Level.INFO, "The percentage score is longer than 20 characters");
                 throw new InvalidArgumentException("error_010_04");
             }
         } else if (details.getQuestionCategory() == null) {
-            logger.log(Level.INFO, "The question category is null");
+            LOGGER.log(Level.INFO, "The question category is null");
             throw new InvalidArgumentException("error_010_05");
         } else if (details.getQuestionDescription() != null) {
             if (details.getQuestionDescription().trim().length() > 300) {
-                logger.log(Level.INFO, "The question description is longer than 300 characters");
+                LOGGER.log(Level.INFO, "The question description is longer than 300 characters");
                 throw new InvalidArgumentException("error_010_06");
             }
         }
 
         //Creating a container to hold assessed evaluation record
-        logger.log(Level.INFO, "Creating a container to hold assessed evaluation record");
+        LOGGER.log(Level.INFO, "Creating a container to hold assessed evaluation record");
         assessedEvaluation = new AssessedEvaluation();
         assessedEvaluation.setActive(details.getActive());
         if (details.getRating() != null) {
@@ -94,16 +94,16 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         assessedEvaluation.setEvaluationSession(em.find(EvaluationSession.class, details.getEvaluationSession().getId()));
 
         //Adding an assessed evaluation record to the database
-        logger.log(Level.INFO, "Adding an assessed evaluation record to the database");
+        LOGGER.log(Level.INFO, "Adding an assessed evaluation record to the database");
         try {
             em.persist(assessedEvaluation);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record creation", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record creation", e);
             throw new EJBException("error_000_01");
         }
 
         //Returning details of the record created
-        logger.log(Level.INFO, "Returning details of the record created");
+        LOGGER.log(Level.INFO, "Returning details of the record created");
         return assessedEvaluation;
 
     }
@@ -113,65 +113,65 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
     @Override
     public List<AssessedEvaluationDetails> retrieveAssessedEvaluations(EvaluationSessionDetails evaluationSessionDetails) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving assessed evaluation of a faculty from the database
-        logger.log(Level.INFO, "Entered the method for retrieving assessed evaluation of a faculty from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving assessed evaluation of a faculty from the database");
 
         //Retrieving assessed evaluation records from the database
-        logger.log(Level.INFO, "Retrieving assessed evaluation records from the database");
+        LOGGER.log(Level.INFO, "Retrieving assessed evaluation records from the database");
         q = em.createNamedQuery("AssessedEvaluation.findByEvaluationSessionId");
         q.setParameter("evaluationSessionId", evaluationSessionDetails.getId());
         List<AssessedEvaluation> assessedEvaluations = new ArrayList<>();
         try {
             assessedEvaluations = q.getResultList();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Returning the details list of assessed evaluation records
-        logger.log(Level.INFO, "Returning the details list of assessed evaluation records");
+        LOGGER.log(Level.INFO, "Returning the details list of assessed evaluation records");
         return convertAssessedEvaluationsToAssessedEvaluationDetailsList(assessedEvaluations);
     }
 
     @Override
     public List<AssessedEvaluationDetails> retrieveAssessedEvaluationsByCourse(CourseOfSessionDetails courseOfSessionDetails) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving assessed evaluation from the database
-        logger.log(Level.INFO, "Entered the method for retrieving assessed evaluation from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving assessed evaluation from the database");
 
         //Retrieving assessed evaluation records from the database
-        logger.log(Level.INFO, "Retrieving assessed evaluation records from the database");
+        LOGGER.log(Level.INFO, "Retrieving assessed evaluation records from the database");
         q = em.createNamedQuery("AssessedEvaluation.findByCourseOfSessionId");
         q.setParameter("courseOfSessionId", courseOfSessionDetails.getId());
         List<AssessedEvaluation> assessedEvaluations = new ArrayList<>();
         try {
             assessedEvaluations = q.getResultList();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Returning the details list of assessed evaluation records
-        logger.log(Level.INFO, "Returning the details list of assessed evaluation records");
+        LOGGER.log(Level.INFO, "Returning the details list of assessed evaluation records");
         return convertAssessedEvaluationsToAssessedEvaluationDetailsList(assessedEvaluations);
     }
 
     @Override
     public Map<QuestionCategoryDetails, List<AssessedEvaluationDetails>> retrieveAssessedEvaluationsByCategory(EvaluationSessionDetails evaluationSessionDetails) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving assessed evaluation of a department from the database
-        logger.log(Level.INFO, "Entered the method for retrieving assessed evaluation of a department from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving assessed evaluation of a department from the database");
 
         //Retrieve question categories used in the evaluation session from the database
-        logger.log(Level.INFO, "Retrieving question categories used in the evaluation session from the database");
+        LOGGER.log(Level.INFO, "Retrieving question categories used in the evaluation session from the database");
         List<QuestionCategory> questionCategories;
         q = em.createNamedQuery("QuestionCategory.findAll");
         try {
             questionCategories = q.getResultList();
         } catch (Exception e) {
-            logger.log(Level.INFO, "An error occurred while retrieving question categories from the database", e);
+            LOGGER.log(Level.INFO, "An error occurred while retrieving question categories from the database", e);
             throw new InvalidStateException("error_000_01");
         }
 
         //Retrieving assessed evaluation records from the database
-        logger.log(Level.INFO, "Retrieving assessed evaluation records from the database");
+        LOGGER.log(Level.INFO, "Retrieving assessed evaluation records from the database");
         Map<QuestionCategoryDetails, List<AssessedEvaluationDetails>> assessedEvaluationsMap = new HashMap<>();
 
         q = em.createNamedQuery("AssessedEvaluation.findByEvaluationSessionIdAndQuestionCategoryId");
@@ -182,13 +182,13 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
                 assessedEvaluationsMap.put(questionCategoryService.convertQuestionCategoryToQuestionCategoryDetails(qc),
                         convertAssessedEvaluationsToAssessedEvaluationDetailsList(q.getResultList()));
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+                LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
                 throw new EJBException("error_000_01");
             }
         }
 
         //Returning the details list of assessed evaluation records
-        logger.log(Level.INFO, "Returning the details list of assessed evaluation records");
+        LOGGER.log(Level.INFO, "Returning the details list of assessed evaluation records");
         return assessedEvaluationsMap;
     }
 
@@ -197,36 +197,36 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
     @Override
     public void editAssessedEvaluation(AssessedEvaluationDetails details) throws InvalidArgumentException, InvalidStateException {
         //Method for editing an assessed evaluation record in the database
-        logger.log(Level.INFO, "Entered the method for editing an assessed evaluation record in the database");
+        LOGGER.log(Level.INFO, "Entered the method for editing an assessed evaluation record in the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_010_01");
         } else if (details.getEvaluatedQuestion() == null) {
-            logger.log(Level.INFO, "The evaluated question is null");
+            LOGGER.log(Level.INFO, "The evaluated question is null");
             throw new InvalidArgumentException("error_010_02");
         } else if (details.getEvaluationSession() == null) {
-            logger.log(Level.INFO, "The evaluation session is null");
+            LOGGER.log(Level.INFO, "The evaluation session is null");
             throw new InvalidArgumentException("error_010_03");
         } else if (details.getPercentageScore() != null) {
             if (details.getPercentageScore().trim().length() > 20) {
-                logger.log(Level.INFO, "The percentage score is longer than 20 characters");
+                LOGGER.log(Level.INFO, "The percentage score is longer than 20 characters");
                 throw new InvalidArgumentException("error_010_04");
             }
         } else if (details.getQuestionCategory() == null) {
-            logger.log(Level.INFO, "The question category is null");
+            LOGGER.log(Level.INFO, "The question category is null");
             throw new InvalidArgumentException("error_010_05");
         } else if (details.getQuestionDescription() != null) {
             if (details.getQuestionDescription().trim().length() > 300) {
-                logger.log(Level.INFO, "The question description is longer than 300 characters");
+                LOGGER.log(Level.INFO, "The question description is longer than 300 characters");
                 throw new InvalidArgumentException("error_010_06");
             }
         }
 
         //Creating a container to hold assessed evaluation record
-        logger.log(Level.INFO, "Creating a container to hold assessed evaluation record");
+        LOGGER.log(Level.INFO, "Creating a container to hold assessed evaluation record");
         assessedEvaluation = em.find(AssessedEvaluation.class, details.getId());
         assessedEvaluation.setId(details.getId());
         assessedEvaluation.setActive(details.getActive());
@@ -252,12 +252,12 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         assessedEvaluation.setEvaluationSession(em.find(EvaluationSession.class, details.getEvaluationSession().getId()));
 
         //Editing an assessed evaluation record in the database
-        logger.log(Level.INFO, "Editing an assessed evaluation record in the database");
+        LOGGER.log(Level.INFO, "Editing an assessed evaluation record in the database");
         try {
             em.merge(assessedEvaluation);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record update", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record update", e);
             throw new EJBException("error_000_01");
         }
 
@@ -268,22 +268,22 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
     @Override
     public void removeAssessedEvaluation(Integer id) throws InvalidArgumentException, InvalidStateException {
         //Method for removing an assessed evaluation record from the database
-        logger.log(Level.INFO, "Entered the method for removing an assessed evaluation record from the database");
+        LOGGER.log(Level.INFO, "Entered the method for removing an assessed evaluation record from the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
+            LOGGER.log(Level.INFO, "The unique identifier is null");
             throw new InvalidArgumentException("error_010_07");
         }
 
         //Removing an assessed evaluation record from the database
-        logger.log(Level.INFO, "Removing an assessed evaluation record from the database");
+        LOGGER.log(Level.INFO, "Removing an assessed evaluation record from the database");
         assessedEvaluation = em.find(AssessedEvaluation.class, id);
         try {
             em.remove(assessedEvaluation);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record removal", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
             throw new InvalidStateException("error_000_01");
         }
 
@@ -293,26 +293,26 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
 
     private List<AssessedEvaluationDetails> convertAssessedEvaluationsToAssessedEvaluationDetailsList(List<AssessedEvaluation> assessedEvaluations) {
         //Entered method for converting assessedEvaluations list to assessed evaluation details list
-        logger.log(Level.FINE, "Entered method for converting assessedEvaluations list to assessed evaluation details list");
+        LOGGER.log(Level.FINE, "Entered method for converting assessedEvaluations list to assessed evaluation details list");
 
         //Convert list of assessedEvaluations to assessed evaluation details list
-        logger.log(Level.FINE, "Convert list of assessedEvaluations to assessed evaluation details list");
+        LOGGER.log(Level.FINE, "Convert list of assessedEvaluations to assessed evaluation details list");
         List<AssessedEvaluationDetails> details = new ArrayList<>();
         for (AssessedEvaluation a : assessedEvaluations) {
             details.add(convertAssessedEvaluationToAssessedEvaluationDetails(a));
         }
 
         //Returning converted assessed evaluation details list
-        logger.log(Level.FINE, "Returning converted assessed evaluation details list");
+        LOGGER.log(Level.FINE, "Returning converted assessed evaluation details list");
         return details;
     }
 
     private AssessedEvaluationDetails convertAssessedEvaluationToAssessedEvaluationDetails(AssessedEvaluation assessedEvaluation) {
         //Entered method for converting assessed evaluation to assessed evaluation details
-        logger.log(Level.FINE, "Entered method for converting assessedEvaluations to assessed evaluation details");
+        LOGGER.log(Level.FINE, "Entered method for converting assessedEvaluations to assessed evaluation details");
 
         //Convert list of assessed evaluation to assessed evaluation details
-        logger.log(Level.FINE, "Convert list of assessed evaluation to assessed evaluation details");
+        LOGGER.log(Level.FINE, "Convert list of assessed evaluation to assessed evaluation details");
 
         questionCategoryDetails = new QuestionCategoryDetails();
         questionCategoryDetails.setId(assessedEvaluation.getQuestionCategory().getId());
@@ -337,12 +337,12 @@ public class AssessedEvaluationRequests extends EntityRequests implements Assess
         details.setQuestionDescription(assessedEvaluation.getQuestionDescription());
 
         //Returning converted assessed evaluation details
-        logger.log(Level.FINE, "Returning converted assessed evaluation details");
+        LOGGER.log(Level.FINE, "Returning converted assessed evaluation details");
         return details;
     }
 //</editor-fold>
 
     private final DecimalFormat formatter = new DecimalFormat("00.##");
-    private static final Logger logger = Logger.getLogger(AssessedEvaluationRequests.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(AssessedEvaluationRequests.class.getSimpleName());
 
 }

@@ -31,19 +31,19 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
     public Integer addOverallAdmin(OverallAdminDetails details) throws InvalidArgumentException {
 
         if (details == null) {
-            logger.log(Level.INFO, "Details are null");
+            LOGGER.log(Level.INFO, "Details are null");
             throw new InvalidArgumentException("error_006_01");
         } else if (details.getUsername() == null || details.getUsername().trim().length() == 0) {
-            logger.log(Level.INFO, "The username is null");
+            LOGGER.log(Level.INFO, "The username is null");
             throw new InvalidArgumentException("error_006_02");
         } else if (details.getUsername().length() > 45) {
-            logger.log(Level.INFO, "The username is longer than the permissible 45 characters");
+            LOGGER.log(Level.INFO, "The username is longer than the permissible 45 characters");
             throw new InvalidArgumentException("error_006_03");
         } else if (details.getPassword() == null || details.getPassword().trim().length() == 0) {
-            logger.log(Level.INFO, "The password is null");
+            LOGGER.log(Level.INFO, "The password is null");
             throw new InvalidArgumentException("error_006_04");
         } else if (details.getPassword().length() > 150) {
-            logger.log(Level.INFO, "The password is longer than the permissible 150 characters");
+            LOGGER.log(Level.INFO, "The password is longer than the permissible 150 characters");
             throw new InvalidArgumentException("error_006_05");
         }
 
@@ -57,7 +57,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         }
 
         if (overallAdmin != null) {
-            logger.log(Level.INFO, "An admin with this username already exists");
+            LOGGER.log(Level.INFO, "An admin with this username already exists");
             throw new InvalidArgumentException("error_006_06");
         }
 
@@ -66,16 +66,16 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         overallAdmin.setPassword(details.getPassword());
         overallAdmin.setUsername(details.getUsername());
 
-        logger.log(Level.INFO, "Add overall admin record to the database");
+        LOGGER.log(Level.INFO, "Add overall admin record to the database");
         try {
             em.persist(overallAdmin);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.INFO, "An error occurred during record creation");
+            LOGGER.log(Level.INFO, "An error occurred during record creation");
             throw new EJBException("error_000_01");
         }
 
-        logger.log(Level.INFO, "Returning a unique identifier of the new record created");
+        LOGGER.log(Level.INFO, "Returning a unique identifier of the new record created");
         return overallAdmin.getId();
     }
 //</editor-fold>
@@ -85,7 +85,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
     public OverallAdminDetails userExists(String username, String password) throws InvalidArgumentException, InvalidStateException, InvalidLoginException {
 
         if (username == null || password == null || username.trim().length() == 0 || password.trim().length() == 0) {
-            logger.log(Level.INFO, "Username and or password is not provided");
+            LOGGER.log(Level.INFO, "Username and or password is not provided");
             throw new InvalidArgumentException("error_000_01");
         }
 
@@ -93,7 +93,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException ex) {
-            logger.log(Level.INFO, "The hashing algorithm was not found");
+            LOGGER.log(Level.INFO, "The hashing algorithm was not found");
             throw new InvalidArgumentException("error_007_01");
         }
 
@@ -106,10 +106,10 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         try {
             overallAdmin = (OverallAdmin) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.INFO, "Invalid user login attempt");
+            LOGGER.log(Level.INFO, "Invalid user login attempt");
             throw new InvalidLoginException("error_006_08");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during login attempt", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during login attempt", e);
             throw new InvalidLoginException("error_000_01");
         }
 
@@ -122,22 +122,22 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
     public void editOverallAdmin(OverallAdminDetails details) throws InvalidArgumentException, InvalidStateException {
 
         if (details == null) {
-            logger.log(Level.INFO, "Details are null");
+            LOGGER.log(Level.INFO, "Details are null");
             throw new InvalidArgumentException("error_006_01");
         } else if (details.getId() == null) {
-            logger.log(Level.INFO, "The unique identifier of the overall admin is null");
+            LOGGER.log(Level.INFO, "The unique identifier of the overall admin is null");
             throw new InvalidArgumentException("error_006_07");
         } else if (details.getUsername() == null || details.getUsername().trim().length() == 0) {
-            logger.log(Level.INFO, "The username is null");
+            LOGGER.log(Level.INFO, "The username is null");
             throw new InvalidArgumentException("error_006_02");
         } else if (details.getUsername().length() > 45) {
-            logger.log(Level.INFO, "The username is null");
+            LOGGER.log(Level.INFO, "The username is null");
             throw new InvalidArgumentException("error_006_03");
         } else if (details.getPassword() == null || details.getPassword().trim().length() == 0) {
-            logger.log(Level.INFO, "The password is null");
+            LOGGER.log(Level.INFO, "The password is null");
             throw new InvalidArgumentException("error_006_04");
         } else if (details.getPassword().length() > 150) {
-            logger.log(Level.INFO, "The password is null");
+            LOGGER.log(Level.INFO, "The password is null");
             throw new InvalidArgumentException("error_006_05");
         }
 
@@ -152,18 +152,18 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
 
         if (overallAdmin != null) {
             if (!overallAdmin.getId().equals(details.getId())) {
-                logger.log(Level.INFO, "An admin with this username already exists");
+                LOGGER.log(Level.INFO, "An admin with this username already exists");
                 throw new InvalidArgumentException("error_006_06");
             }
         }
 
         MessageDigest messageDigest;
         //Create a message digest algorithm for SHA-256 hashing algorithm
-        logger.log(Level.INFO, "Creating a message digest hashing algorithm object");
+        LOGGER.log(Level.INFO, "Creating a message digest hashing algorithm object");
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            logger.log(Level.INFO, "An error occurred while finding the hashing algorithm");
+            LOGGER.log(Level.INFO, "An error occurred while finding the hashing algorithm");
             throw new InvalidArgumentException("error_007_01");
         }
 
@@ -173,12 +173,12 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         overallAdmin.setPassword(accessService.generateSHAPassword(messageDigest, details.getPassword()));
         overallAdmin.setUsername(details.getUsername());
 
-        logger.log(Level.INFO, "Edit overall admin record in the database");
+        LOGGER.log(Level.INFO, "Edit overall admin record in the database");
         try {
             em.merge(overallAdmin);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.INFO, "An error occurred during record editing");
+            LOGGER.log(Level.INFO, "An error occurred during record editing");
             throw new InvalidStateException("error_000_01");
         }
 
@@ -190,7 +190,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
     public void removeOverallAdmin(Integer id) throws InvalidArgumentException, InvalidStateException {
 
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier of the overall admin is required");
+            LOGGER.log(Level.INFO, "The unique identifier of the overall admin is required");
             throw new InvalidArgumentException("error_006_07");
         }
 
@@ -198,7 +198,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         try {
             em.remove(overallAdmin);
         } catch (Exception e) {
-            logger.log(Level.INFO, "An error occurred during record removal");
+            LOGGER.log(Level.INFO, "An error occurred during record removal");
             throw new InvalidStateException("error_000_01");
         }
     }
@@ -219,6 +219,6 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
     }
 //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(OverallAdminRequests.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(OverallAdminRequests.class.getSimpleName());
 
 }

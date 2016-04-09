@@ -79,8 +79,8 @@ public class DepartmentController extends Controller {
             urlPatterns.add("/saveEditedDepartment");
 
         } catch (Exception e) {
-            logger.log(Level.INFO, "Main admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Main admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
@@ -93,32 +93,32 @@ public class DepartmentController extends Controller {
                 urlPatterns.add("/departmentHome");
 
             } catch (Exception e) {
-                logger.log(Level.INFO, "Sub admin session is null");
-                logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+                LOGGER.log(Level.INFO, "Sub admin session is null");
+                LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             String path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             String destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             String path = request.getServletPath();
             String destination;
@@ -133,7 +133,7 @@ public class DepartmentController extends Controller {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
             if (urlPatterns.contains(path)) {
@@ -142,11 +142,11 @@ public class DepartmentController extends Controller {
                     case "/departmentHome":
                     case "/departmentDashboard":
                         //Read in the department's unique identifier
-                        logger.log(Level.INFO, "Retrieving the department's unique identifier");
+                        LOGGER.log(Level.INFO, "Retrieving the department's unique identifier");
                         departmentId = Integer.parseInt(request.getParameter("departmentId"));
 
                         //Retrieve the department record from the database
-                        logger.log(Level.INFO, "Retrieving the department details from the database");
+                        LOGGER.log(Level.INFO, "Retrieving the department details from the database");
                         department = new DepartmentDetails();
                         try {
                             department = departmentService.retrieveDepartment(departmentId);
@@ -154,26 +154,26 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Avail the department in the session 
-                        logger.log(Level.INFO, "Availing the department in the session");
+                        LOGGER.log(Level.INFO, "Availing the department in the session");
                         session.setAttribute("department", department);
 
                         //Avail other required records in the session
                         availOtherRequiredRecords(session, response, department);
 
-                        logger.log(Level.INFO, "Path is: {0}", path);
+                        LOGGER.log(Level.INFO, "Path is: {0}", path);
                         break;
 
                     case "/checkDepartment":
                         //Read in the faculty's unique identifier
-                        logger.log(Level.INFO, "Retrieving the faculty's unique identifier");
+                        LOGGER.log(Level.INFO, "Retrieving the faculty's unique identifier");
                         int facultyId = Integer.parseInt(request.getParameter("facultyId"));
 
                         //Retrieve the faculty record from the database
-                        logger.log(Level.INFO, "Retrieving the faculty details from the database");
+                        LOGGER.log(Level.INFO, "Retrieving the faculty details from the database");
                         faculty = new FacultyDetails();
                         try {
                             faculty = facultyService.retrieveFaculty(facultyId);
@@ -181,15 +181,15 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Avail the faculty in the session 
-                        logger.log(Level.INFO, "Availing the faculty in the session");
+                        LOGGER.log(Level.INFO, "Availing the faculty in the session");
                         session.setAttribute("faculty", faculty);
 
                         //Retrieve the faculty record from the database
-                        logger.log(Level.INFO, "Retrieving the faculty details from the database");
+                        LOGGER.log(Level.INFO, "Retrieving the faculty details from the database");
                         departments = new ArrayList<>();
                         try {
                             departments = departmentService.retrieveDepartments(faculty.getId());
@@ -197,7 +197,7 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Checking if there are departments in this faculty
@@ -207,26 +207,26 @@ public class DepartmentController extends Controller {
                             availOtherRequiredRecords(session, response, faculty);
 
                             path = "/facultyDashboard";
-                            logger.log(Level.INFO, "Path is {0}", path);
+                            LOGGER.log(Level.INFO, "Path is {0}", path);
                         } else {
                             //Retrieve the departments from the database
-                            logger.log(Level.INFO, "Retrieving departments in {0} from the database", faculty.getName());
+                            LOGGER.log(Level.INFO, "Retrieving departments in {0} from the database", faculty.getName());
                             try {
                                 departments = departmentService.retrieveDepartments(faculty.getId());
                             } catch (InvalidArgumentException | InvalidStateException e) {
                                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                                 response.setContentType("text/html;charset=UTF-8");
                                 response.getWriter().write(bundle.getString(e.getCode()));
-                                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                             }
 
                             //Avail the departments in the session
-                            logger.log(Level.INFO, "Availing the list of departments in the session");
+                            LOGGER.log(Level.INFO, "Availing the list of departments in the session");
                             session.setAttribute("departments", departments);
 
                             //Set the path to display the departments
                             path = "/viewDepartments";
-                            logger.log(Level.INFO, "Displaying the departments \nPath is: {0}", path);
+                            LOGGER.log(Level.INFO, "Displaying the departments \nPath is: {0}", path);
                         }
 
                         break;
@@ -266,7 +266,7 @@ public class DepartmentController extends Controller {
                         postalContact.setPostalCode(request.getParameter("postalCode"));
 
                         //Read in values for the department record to be made
-                        logger.log(Level.INFO, "Reading in values for the department record to be made");
+                        LOGGER.log(Level.INFO, "Reading in values for the department record to be made");
                         department = new DepartmentDetails();
                         department.setActive(true);
                         department.setFaculty(faculty);
@@ -281,25 +281,25 @@ public class DepartmentController extends Controller {
                         }
 
                         //Send the details to the entity manager
-                        logger.log(Level.INFO, "Sending the details to the entity manager");
+                        LOGGER.log(Level.INFO, "Sending the details to the entity manager");
                         try {
                             departmentService.addDepartment(department, emailContact, phoneContact, postalContact);
                         } catch (InvalidArgumentException e) {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Retrieve the new list of departments
-                        logger.log(Level.INFO, "Retrieving departments from the database");
+                        LOGGER.log(Level.INFO, "Retrieving departments from the database");
                         try {
                             departments = departmentService.retrieveDepartments(faculty.getId());
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Update table body
@@ -307,11 +307,11 @@ public class DepartmentController extends Controller {
                         return;
                     case "/editDepartment":
                         //Read in the department's unique identifier
-                        logger.log(Level.INFO, "Retrieving the department's unique identifier");
+                        LOGGER.log(Level.INFO, "Retrieving the department's unique identifier");
                         departmentId = Integer.parseInt(request.getParameter("departmentId"));
 
                         //Retrieve the department record from the database
-                        logger.log(Level.INFO, "Retrieving the department details from the database");
+                        LOGGER.log(Level.INFO, "Retrieving the department details from the database");
                         department = new DepartmentDetails();
                         try {
                             department = departmentService.retrieveDepartment(departmentId);
@@ -319,11 +319,11 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Retrieve the contact record from the database
-                        logger.log(Level.INFO, "Retrieving the contact details from the database");
+                        LOGGER.log(Level.INFO, "Retrieving the contact details from the database");
                         contact = new ContactDetails();
                         try {
                             contact = contactService.retrieveContact(department.getContact().getId());
@@ -331,11 +331,11 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Retrieve the email contact details
-                        logger.log(Level.INFO, "Retrieving the email contact details");
+                        LOGGER.log(Level.INFO, "Retrieving the email contact details");
                         emailContact = new EmailContactDetails();
                         try {
                             emailContact = emailContactService.retrieveEmailContact(contact.getId());
@@ -343,11 +343,11 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Retrieve the phone contact details
-                        logger.log(Level.INFO, "Retrieving the phone contact details");
+                        LOGGER.log(Level.INFO, "Retrieving the phone contact details");
                         phoneContact = new PhoneContactDetails();
                         try {
                             phoneContact = phoneContactService.retrievePhoneContact(contact.getId());
@@ -355,11 +355,11 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Retrieve the postal contact details
-                        logger.log(Level.INFO, "Retrieving the postal contact details");
+                        LOGGER.log(Level.INFO, "Retrieving the postal contact details");
                         postalContact = new PostalContactDetails();
                         try {
                             postalContact = postalContactService.retrievePostalContact(contact.getId());
@@ -367,11 +367,11 @@ public class DepartmentController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Avail the department and its contacts in the session
-                        logger.log(Level.INFO, "Availing the department and its contacts in the session");
+                        LOGGER.log(Level.INFO, "Availing the department and its contacts in the session");
                         session.setAttribute("department", department);
                         session.setAttribute("contact", contact);
                         session.setAttribute("postalContact", postalContact);
@@ -379,7 +379,7 @@ public class DepartmentController extends Controller {
                         session.setAttribute("emailContact", emailContact);
 
                         path = "/editDepartment";
-                        logger.log(Level.INFO, "Path is: {0}", path);
+                        LOGGER.log(Level.INFO, "Path is: {0}", path);
                         break;
 
                     case "/saveEditedDepartment":
@@ -390,7 +390,7 @@ public class DepartmentController extends Controller {
                         contact.setActive(true);
 
                         //Read in values for the department record to be made
-                        logger.log(Level.INFO, "Reading in values for the department record to be made");
+                        LOGGER.log(Level.INFO, "Reading in values for the department record to be made");
                         department = new DepartmentDetails();
                         department.setActive(true);
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
@@ -440,48 +440,48 @@ public class DepartmentController extends Controller {
                         postalContact.setId(Integer.parseInt(request.getParameter("postal-contact-id")));
 
                         //Send the details to the entity manager
-                        logger.log(Level.INFO, "Sending the details to the entity manager");
+                        LOGGER.log(Level.INFO, "Sending the details to the entity manager");
                         try {
                             departmentService.editDepartment(department, emailContact, phoneContact, postalContact);
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Retrieve the list of departments and set the path to where they'll be displayed
                         path = retrieveDepartments(faculty, departments, session, response);
-                        logger.log(Level.INFO, "Displaying the departments \nPath is: {0}", path);
+                        LOGGER.log(Level.INFO, "Displaying the departments \nPath is: {0}", path);
 
                         break;
 
                     case "/removeDepartment":
                         //Send the unique identifier of the department to be removed to the entity manager
-                        logger.log(Level.INFO, "Sending the unique identifier of the department to be removed to the entity manager");
+                        LOGGER.log(Level.INFO, "Sending the unique identifier of the department to be removed to the entity manager");
                         try {
                             departmentService.removeDepartment(Integer.parseInt(request.getParameter("id")));
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         } catch (NumberFormatException ex) {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("invalid_id"));
-                            logger.log(Level.INFO, bundle.getString("invalid_id"));
+                            LOGGER.log(Level.INFO, bundle.getString("invalid_id"));
                         }
 
                         //Retrieve the new list of departments
-                        logger.log(Level.INFO, "Retrieving departments from the database");
+                        LOGGER.log(Level.INFO, "Retrieving departments from the database");
                         try {
                             departments = departmentService.retrieveDepartments(faculty.getId());
                         } catch (InvalidArgumentException | InvalidStateException e) {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString(e.getCode()));
-                            logger.log(Level.INFO, bundle.getString(e.getCode()));
+                            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         }
 
                         //Update table body
@@ -495,13 +495,13 @@ public class DepartmentController extends Controller {
 
             destination = "WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -569,24 +569,24 @@ public class DepartmentController extends Controller {
     //<editor-fold defaultstate="collapsed" desc="Retrieve departments">
     private String retrieveDepartments(FacultyDetails f, List<DepartmentDetails> departments, HttpSession session, HttpServletResponse response) throws IOException {
         //Retrieve the departments from the database
-        logger.log(Level.INFO, "Retrieving departments in {0} from the database", f.getName());
+        LOGGER.log(Level.INFO, "Retrieving departments in {0} from the database", f.getName());
         try {
             departments = departmentService.retrieveDepartments(f.getId());
         } catch (InvalidArgumentException | InvalidStateException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the departments in the session
-        logger.log(Level.INFO, "Availing the list of departments in the session");
+        LOGGER.log(Level.INFO, "Availing the list of departments in the session");
         session.setAttribute("departments", departments);
         session.setAttribute("faculty", f);
 
         //Set the path to display the departments
         String path = "/viewDepartments";
-        logger.log(Level.INFO, "Displaying the departments \nPath is: {0}", path);
+        LOGGER.log(Level.INFO, "Displaying the departments \nPath is: {0}", path);
         return path;
     }
     //</editor-fold>
@@ -604,163 +604,163 @@ public class DepartmentController extends Controller {
         Map<QuestionCategoryDetails, List<QuestionDetails>> questionsInQuestionCategoryMap = new HashMap<>();
 
         //Determine the object's identity and cast it to the appropriate class then retrieve evaluation questions about it
-        logger.log(Level.INFO, "Determining object's identity");
+        LOGGER.log(Level.INFO, "Determining object's identity");
         if (object instanceof FacultyDetails) {
 
-            logger.log(Level.INFO, "Casting the object to FacultyDetails");
+            LOGGER.log(Level.INFO, "Casting the object to FacultyDetails");
             faculty = (FacultyDetails) object;
             try {
                 questions = questionService.retrieveQuestionsInFaculty(faculty.getId());
 
                 //Retrieve the map of questions of a faculty in question categories from the database
-                logger.log(Level.INFO, "Retrieving the map of questions of a faculty in question categories from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of questions of a faculty in question categories from the database");
                 questionsInQuestionCategoryMap = questionService.retrieveQuestionsOfFacultyByQuestionCategories(faculty);
 
             } catch (InvalidArgumentException | InvalidStateException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
             try {
                 //Retrieve the map of degrees by faculty from the database
-                logger.log(Level.INFO, "Retrieving the map of degrees by faculty from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of degrees by faculty from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfFacultyByAdmission(faculty);
             } catch (InvalidArgumentException | InvalidStateException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
         } else if (object instanceof DepartmentDetails) {
 
-            logger.log(Level.INFO, "Casting the object to DepartmentDetails");
+            LOGGER.log(Level.INFO, "Casting the object to DepartmentDetails");
             department = (DepartmentDetails) object;
             try {
                 questions = questionService.retrieveQuestionsInDepartment(department.getId());
 
                 //Retrieve the map of questions of a department in question categories from the database
-                logger.log(Level.INFO, "Retrieving the map of questions of a department in question categories from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of questions of a department in question categories from the database");
                 questionsInQuestionCategoryMap = questionService.retrieveQuestionsOfDepartmentByQuestionCategories(department);
             } catch (InvalidArgumentException | InvalidStateException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
 
             try {
                 //Retrieve the map of degrees by department from the database
-                logger.log(Level.INFO, "Retrieving the map of degrees by department from the database");
+                LOGGER.log(Level.INFO, "Retrieving the map of degrees by department from the database");
                 degreesByAdmissionMap = degreeService.retrieveDegreesOfDepartmentByAdmission(department);
             } catch (InvalidArgumentException | InvalidStateException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString(e.getCode()));
-                logger.log(Level.INFO, bundle.getString(e.getCode()));
+                LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             }
         }
 
         //Avail the map in session of questions in question categories
-        logger.log(Level.INFO, "Availing the map of questions in question categories in session");
+        LOGGER.log(Level.INFO, "Availing the map of questions in question categories in session");
         session.setAttribute("questionsInQuestionCategoryMap", questionsInQuestionCategoryMap);
 
         //Avail the map of degrees by admission in session
-        logger.log(Level.INFO, "Availing the map of degrees by admission in session");
+        LOGGER.log(Level.INFO, "Availing the map of degrees by admission in session");
         session.setAttribute("degreesByAdmissionMap", degreesByAdmissionMap);
 
         //Add the means of answering to the list
-        logger.log(Level.INFO, "Adding the means of answering to the list");
+        LOGGER.log(Level.INFO, "Adding the means of answering to the list");
         meansOfAnsweringList.add(MeansOfAnsweringDetail.BY_RATING);
         meansOfAnsweringList.add(MeansOfAnsweringDetail.BY_REASONING);
         meansOfAnsweringList.add(MeansOfAnsweringDetail.BY_LISTING_COMMENTS);
 
         //Avail the list of means of answering in the session 
-        logger.log(Level.INFO, "Availing the list of means of answering in the session");
+        LOGGER.log(Level.INFO, "Availing the list of means of answering in the session");
         session.setAttribute("meansOfAnsweringList", meansOfAnsweringList);
 
         //Retrieve the list of question category records from the database
-        logger.log(Level.INFO, "Retrieving the list of question category records from the database");
+        LOGGER.log(Level.INFO, "Retrieving the list of question category records from the database");
         try {
             questionCategories = questionCategoryService.retrieveQuestionCategories();
         } catch (InvalidArgumentException | InvalidStateException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the question categories in session
-        logger.log(Level.INFO, "Availing the question categories in session");
+        LOGGER.log(Level.INFO, "Availing the question categories in session");
         session.setAttribute("questionCategories", questionCategories);
 
         //Retrieve the list of admissions
-        logger.log(Level.INFO, "Retrieving the new list of admission records");
+        LOGGER.log(Level.INFO, "Retrieving the new list of admission records");
         try {
             admissions = admissionService.retrieveAdmissions();
         } catch (InvalidStateException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the admissions in session
-        logger.log(Level.INFO, "Availing the admissions in session");
+        LOGGER.log(Level.INFO, "Availing the admissions in session");
         session.setAttribute("admissions", admissions);
 
         //Retrieve the list of rating records from the database
-        logger.log(Level.INFO, "Retrieving the list of rating records from the database");
+        LOGGER.log(Level.INFO, "Retrieving the list of rating records from the database");
         try {
             ratingTypeAndValuesMap = ratingService.retrieveRatings();
         } catch (InvalidStateException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Avail the map of rating types and values in session
-        logger.log(Level.INFO, "Availing the map of rating types and values in session");
+        LOGGER.log(Level.INFO, "Availing the map of rating types and values in session");
         session.setAttribute("ratingTypeAndValuesMap", ratingTypeAndValuesMap);
 
         //Retrieve the map of rating types by question from the database
-        logger.log(Level.INFO, "Retrieving the map of rating types by question from the database");
+        LOGGER.log(Level.INFO, "Retrieving the map of rating types by question from the database");
         try {
             ratingTypesByQuestionMap = questionService.retrieveRatingTypesByQuestion(questions);
         } catch (InvalidArgumentException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             return;
         }
 
         //Avail the map in session
-        logger.log(Level.INFO, "Availing the map in session");
+        LOGGER.log(Level.INFO, "Availing the map in session");
         session.setAttribute("ratingTypesByQuestionMap", ratingTypesByQuestionMap);
 
         //Retrieve the map of means of answering by question from the database
-        logger.log(Level.INFO, "Retrieving the map of means of answering by question from the database");
+        LOGGER.log(Level.INFO, "Retrieving the map of means of answering by question from the database");
         try {
             meansOfAnsweringByQuestionMap = questionService.retrieveMeansOfAnsweringByQuestion(questions);
         } catch (InvalidArgumentException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
             return;
         }
 
         //Avail the map in session
-        logger.log(Level.INFO, "Availing the map of means of answering by question in session");
+        LOGGER.log(Level.INFO, "Availing the map of means of answering by question in session");
         session.setAttribute("meansOfAnsweringByQuestionMap", meansOfAnsweringByQuestionMap);
 
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(DepartmentController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(DepartmentController.class.getSimpleName());
 
 }

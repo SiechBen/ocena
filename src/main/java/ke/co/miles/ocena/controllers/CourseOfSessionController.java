@@ -62,31 +62,31 @@ public class CourseOfSessionController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("subAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             String path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             String destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             String path = request.getServletPath();
             String destination;
@@ -98,16 +98,16 @@ public class CourseOfSessionController extends Controller {
                 case "/retrieveCoursesOfSession":
 
                     //Read in the evaluation session unique identifier
-                    logger.log(Level.INFO, "Reading in the evaluation session unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the evaluation session unique identifier");
                     evaluationSession = new EvaluationSessionDetails();
                     evaluationSession.setId(Integer.parseInt(request.getParameter("evaluationSessionId")));
 
                     //Avail the evaluation session in the session
-                    logger.log(Level.INFO, "Avail the evaluation session in the session");
+                    LOGGER.log(Level.INFO, "Avail the evaluation session in the session");
                     session.setAttribute("evaluationSession", evaluationSession);
 
                     //Retrieve the courses of session
-                    logger.log(Level.INFO, "Retrieving the courses of session");
+                    LOGGER.log(Level.INFO, "Retrieving the courses of session");
                     coursesOfSession = new ArrayList<>();
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
@@ -115,15 +115,15 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the courses of evaluation session in the session
-                    logger.log(Level.INFO, "Avail the courses of evaluation session in the session");
+                    LOGGER.log(Level.INFO, "Avail the courses of evaluation session in the session");
                     session.setAttribute("coursesOfSession", coursesOfSession);
 
                     //Retrieve the map of people by courses of session
-                    logger.log(Level.INFO, "Retrieving the map of people by courses of session");
+                    LOGGER.log(Level.INFO, "Retrieving the map of people by courses of session");
                     Map<CourseOfSessionDetails, PersonDetails> personByCourseOfSessionMap = new HashMap<>();
                     try {
                         personByCourseOfSessionMap = courseOfSessionService.retrievePersonByCourseOfSession(coursesOfSession);
@@ -131,35 +131,35 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the map of people by faculty in the session
-                    logger.log(Level.INFO, "Avail the map of people by faculty in the session");
+                    LOGGER.log(Level.INFO, "Avail the map of people by faculty in the session");
                     session.setAttribute("personByCourseOfSessionMap", personByCourseOfSessionMap);
 
                     //Retrieve the faculty unique identifier if any
-                    logger.log(Level.INFO, "Retrieving the faculty unique identifier if any");
+                    LOGGER.log(Level.INFO, "Retrieving the faculty unique identifier if any");
                     faculty = new FacultyDetails();
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
                     } catch (NumberFormatException e) {
                         faculty = null;
-                        logger.log(Level.INFO, "Faculty unique identifier is not provided");
+                        LOGGER.log(Level.INFO, "Faculty unique identifier is not provided");
                     }
 
                     //Retrieve the department unique identifier if any
-                    logger.log(Level.INFO, "Retrieving the department unique identifier if any");
+                    LOGGER.log(Level.INFO, "Retrieving the department unique identifier if any");
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("departmentId")));
                     } catch (NumberFormatException e) {
                         department = null;
-                        logger.log(Level.INFO, "Department unique identifier is not provided");
+                        LOGGER.log(Level.INFO, "Department unique identifier is not provided");
                     }
 
                     //Retrieve the faculty members who are not students
-                    logger.log(Level.INFO, "Retrieving the faculty members who are not students");
+                    LOGGER.log(Level.INFO, "Retrieving the faculty members who are not students");
                     List<FacultyMemberDetails> facultyMembers = new ArrayList<>();
                     try {
                         if (faculty != null) {
@@ -171,15 +171,15 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the non-student faculty members in the session
-                    logger.log(Level.INFO, "Avail the non-student faculty members in the session");
+                    LOGGER.log(Level.INFO, "Avail the non-student faculty members in the session");
                     session.setAttribute("facultyMembers", facultyMembers);
 
                     //Retrieve the map of people by faculty member
-                    logger.log(Level.INFO, "Retrieving the map of people by faculty member");
+                    LOGGER.log(Level.INFO, "Retrieving the map of people by faculty member");
                     Map<FacultyMemberDetails, PersonDetails> personByFacultyMemberMap = new HashMap<>();
                     try {
                         personByFacultyMemberMap = courseOfSessionService.retrievePersonByFacultyMember(facultyMembers);
@@ -187,20 +187,20 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the map of people by faculty in the session
-                    logger.log(Level.INFO, "Avail the map of people by faculty in the session");
+                    LOGGER.log(Level.INFO, "Avail the map of people by faculty in the session");
                     session.setAttribute("personByFacultyMemberMap", personByFacultyMemberMap);
 
                     //Read in the evaluation session unique identifier
-                    logger.log(Level.INFO, "Reading in the evaluation session unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the evaluation session unique identifier");
                     degree = new DegreeDetails();
                     degree.setId(Integer.parseInt(request.getParameter("degreeId")));
 
                     //Retrieve the list of courses from the database
-                    logger.log(Level.INFO, "Retrieving the list of courses from the database");
+                    LOGGER.log(Level.INFO, "Retrieving the list of courses from the database");
                     List<CourseDetails> courses = new ArrayList<>();
                     try {
                         courses = courseService.retrieveCoursesOfDegree(degree.getId());
@@ -208,37 +208,37 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the courses in the session
-                    logger.log(Level.INFO, "Availing the courses in session");
+                    LOGGER.log(Level.INFO, "Availing the courses in session");
                     session.setAttribute("courses", courses);
 
                     path = "/viewCoursesOfSession";
-                    logger.log(Level.SEVERE, "Path is: {0}", path);
+                    LOGGER.log(Level.SEVERE, "Path is: {0}", path);
 
                     break;
 
                 case "/addCourseOfSession":
 
                     //Read in the evaluation session unique identifier
-                    logger.log(Level.INFO, "Reading in the evaluation session unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the evaluation session unique identifier");
                     evaluationSession = new EvaluationSessionDetails();
                     evaluationSession.setId(Integer.parseInt(request.getParameter("evaluationSessionId")));
 
                     //Read in the course unique identifier
-                    logger.log(Level.INFO, "Reading in the course unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the course unique identifier");
                     course = new CourseDetails();
                     course.setId(Integer.parseInt(request.getParameter("courseId")));
 
                     //Read in the faculty member unique identifier
-                    logger.log(Level.INFO, "Reading in the faculty member unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the faculty member unique identifier");
                     facultyMember = new FacultyMemberDetails();
                     facultyMember.setId(Integer.parseInt(request.getParameter("facultyMemberId")));
 
                     //Read in posted values and filling them in a course of session details container
-                    logger.log(Level.INFO, "Reading in posted values and filling them in a course of session details container");
+                    LOGGER.log(Level.INFO, "Reading in posted values and filling them in a course of session details container");
                     courseOfSession = new CourseOfSessionDetails();
                     courseOfSession.setActive(true);
                     courseOfSession.setCourse(course);
@@ -246,18 +246,18 @@ public class CourseOfSessionController extends Controller {
                     courseOfSession.setEvaluationSession(evaluationSession);
 
                     //Send the course of session details to the entity manager
-                    logger.log(Level.INFO, "Sending the course of session details to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the course of session details to the entity manager");
                     try {
                         courseOfSessionService.addCourseOfSession(courseOfSession);
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of courses of session
-                    logger.log(Level.INFO, "Retrieving the new list of course of session records");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of course of session records");
                     coursesOfSession = new ArrayList<>();
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
@@ -265,11 +265,11 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the course of session records table
-                    logger.log(Level.INFO, "Updating the course of session records table");
+                    LOGGER.log(Level.INFO, "Updating the course of session records table");
                     generateTableBody(coursesOfSession, response, request);
 
                     return;
@@ -277,22 +277,22 @@ public class CourseOfSessionController extends Controller {
                 case "/editCourseOfSession":
 
                     //Read in the evaluation session unique identifier
-                    logger.log(Level.INFO, "Reading in the evaluation session unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the evaluation session unique identifier");
                     evaluationSession = new EvaluationSessionDetails();
                     evaluationSession.setId(Integer.parseInt(request.getParameter("evaluationSessionId")));
 
                     //Read in the course unique identifier
-                    logger.log(Level.INFO, "Reading in the course unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the course unique identifier");
                     course = new CourseDetails();
                     course.setId(Integer.parseInt(request.getParameter("courseId")));
 
                     //Read in the faculty member unique identifier
-                    logger.log(Level.INFO, "Reading in the faculty member unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the faculty member unique identifier");
                     facultyMember = new FacultyMemberDetails();
                     facultyMember.setId(Integer.parseInt(request.getParameter("facultyMemberId")));
 
                     //Read in posted values and filling them in a course of session details container
-                    logger.log(Level.INFO, "Reading in posted values and filling them in a course of session details container");
+                    LOGGER.log(Level.INFO, "Reading in posted values and filling them in a course of session details container");
                     courseOfSession = new CourseOfSessionDetails();
                     courseOfSession.setActive(true);
                     courseOfSession.setCourse(course);
@@ -301,18 +301,18 @@ public class CourseOfSessionController extends Controller {
                     courseOfSession.setId(Integer.parseInt(request.getParameter("courseOfSessionId")));
 
                     //Send the course of session details to the entity manager
-                    logger.log(Level.INFO, "Sending the course of session details to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the course of session details to the entity manager");
                     try {
                         courseOfSessionService.editCourseOfSession(courseOfSession);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of courses of session
-                    logger.log(Level.INFO, "Retrieving the new list of course of session records");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of course of session records");
                     coursesOfSession = new ArrayList<>();
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
@@ -320,11 +320,11 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the course of session records table
-                    logger.log(Level.INFO, "Updating the course of session records table");
+                    LOGGER.log(Level.INFO, "Updating the course of session records table");
                     generateTableBody(coursesOfSession, response, request);
 
                     return;
@@ -332,18 +332,18 @@ public class CourseOfSessionController extends Controller {
                 case "/removeCourseOfSession":
 
                     //Send the unique identifier to the entity manager for the courses of session to be removed
-                    logger.log(Level.INFO, "Sending the unique identifier to the entity manager for the courses of session to be removed");
+                    LOGGER.log(Level.INFO, "Sending the unique identifier to the entity manager for the courses of session to be removed");
                     try {
                         courseOfSessionService.removeCourseOfSession(Integer.parseInt(request.getParameter("courseOfSessionId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of courses of session
-                    logger.log(Level.INFO, "Retrieving the new list of course of session records");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of course of session records");
                     coursesOfSession = new ArrayList<>();
                     try {
                         coursesOfSession = courseOfSessionService.retrieveCoursesOfSession(evaluationSession);
@@ -351,11 +351,11 @@ public class CourseOfSessionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the course of session records table
-                    logger.log(Level.INFO, "Updating the course of session records table");
+                    LOGGER.log(Level.INFO, "Updating the course of session records table");
                     generateTableBody(coursesOfSession, response, request);
 
                     return;
@@ -363,14 +363,14 @@ public class CourseOfSessionController extends Controller {
             }
 
             destination = "/WEB-INF/views" + path + ".jsp";
-            logger.log(Level.INFO, "Requesting dispatch to forward to: {0}", destination);
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: {0}", destination);
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -420,7 +420,7 @@ public class CourseOfSessionController extends Controller {
         short index = 0;
 
         //Retrieve the faculty unique identifier if any
-        logger.log(Level.INFO, "Retrieving the faculty unique identifier if any");
+        LOGGER.log(Level.INFO, "Retrieving the faculty unique identifier if any");
         faculty = new FacultyDetails();
         try {
             faculty.setId(Integer.parseInt(request.getParameter("facultyId")));
@@ -429,7 +429,7 @@ public class CourseOfSessionController extends Controller {
         }
 
         //Retrieve the department unique identifier if any
-        logger.log(Level.INFO, "Retrieving the department unique identifier if any");
+        LOGGER.log(Level.INFO, "Retrieving the department unique identifier if any");
         department = new DepartmentDetails();
         try {
             department.setId(Integer.parseInt(request.getParameter("departmentId")));
@@ -438,7 +438,7 @@ public class CourseOfSessionController extends Controller {
         }
 
         //Retrieve the map of people by courses of session
-        logger.log(Level.INFO, "Retrieving the map of people by courses of session");
+        LOGGER.log(Level.INFO, "Retrieving the map of people by courses of session");
         Map<CourseOfSessionDetails, PersonDetails> personByCourseOfSessionMap = new HashMap<>();
         try {
             personByCourseOfSessionMap = courseOfSessionService.retrievePersonByCourseOfSession(coursesOfSession);
@@ -446,7 +446,7 @@ public class CourseOfSessionController extends Controller {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         for (CourseOfSessionDetails c : coursesOfSession) {
@@ -465,6 +465,6 @@ public class CourseOfSessionController extends Controller {
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(CourseOfSessionController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(CourseOfSessionController.class.getSimpleName());
 
 }

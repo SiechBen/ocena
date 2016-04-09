@@ -49,19 +49,19 @@ public class ExceptionController extends Controller {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("test_success"));
-                logger.log(Level.INFO, bundle.getString("test_success"));
+                LOGGER.log(Level.INFO, bundle.getString("test_success"));
                 return;
         }
 
         destination = "/WEB-INF/views" + path + ".jsp";
-        logger.log(Level.INFO, "Request dispatch to forward to: {0}", destination);
+        LOGGER.log(Level.INFO, "Request dispatch to forward to: {0}", destination);
         try {
             request.getRequestDispatcher(destination).forward(request, response);
         } catch (ServletException | IOException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString("redirection_failed"));
-            logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+            LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
         }
 
         //Analyze the servlet error by getting the error details
@@ -136,5 +136,5 @@ public class ExceptionController extends Controller {
         return "Short description";
     }// </editor-fold>
 
-    private static final Logger logger = Logger.getLogger(ExceptionController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(ExceptionController.class.getSimpleName());
 }

@@ -52,31 +52,31 @@ public class CollegeController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             String path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             String destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             String path = request.getServletPath();
             String destination;
@@ -89,7 +89,7 @@ public class CollegeController extends Controller {
                 case "/addCollege":
 
                     //Read in posted values and filling them in a college details container
-                    logger.log(Level.INFO, "Reading in posted values and filling them in a college details container");
+                    LOGGER.log(Level.INFO, "Reading in posted values and filling them in a college details container");
                     college = new CollegeDetails();
                     college.setActive(true);
                     college.setInstitution(institution);
@@ -97,18 +97,18 @@ public class CollegeController extends Controller {
                     college.setAbbreviation(request.getParameter("abbreviation"));
 
                     //Send the college details to the entity manager
-                    logger.log(Level.INFO, "Sending the college details to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the college details to the entity manager");
                     try {
                         collegeService.addCollege(college);
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of colleges
-                    logger.log(Level.INFO, "Retrieving the new list of college records");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of college records");
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
@@ -116,17 +116,17 @@ public class CollegeController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the college records table
-                    logger.log(Level.INFO, "Updating the college records table");
+                    LOGGER.log(Level.INFO, "Updating the college records table");
                     generateTableBody(colleges, response);
                     return;
 
                 case "/retrieveColleges":
                     //Avail the colleges in the session
-                    logger.log(Level.INFO, "Avail the colleges in the session");
+                    LOGGER.log(Level.INFO, "Avail the colleges in the session");
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
@@ -134,19 +134,19 @@ public class CollegeController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     session.setAttribute("colleges", colleges);
                     path = "/viewColleges";
-                    logger.log(Level.SEVERE, "Path is: {0}", path);
+                    LOGGER.log(Level.SEVERE, "Path is: {0}", path);
 
                     break;
 
                 case "/editCollege":
 
                     //Read in posted values and filling them in a college details container
-                    logger.log(Level.INFO, "Reading in posted values and filling them in a college details container");
+                    LOGGER.log(Level.INFO, "Reading in posted values and filling them in a college details container");
                     college = new CollegeDetails();
                     college.setActive(true);
                     college.setInstitution(institution);
@@ -155,18 +155,18 @@ public class CollegeController extends Controller {
                     college.setAbbreviation(request.getParameter("abbreviation"));
 
                     //Send the college details to the entity manager
-                    logger.log(Level.INFO, "Sending the college details to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the college details to the entity manager");
                     try {
                         collegeService.editCollege(college);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of colleges
-                    logger.log(Level.INFO, "Retrieving the new list of college records");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of college records");
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
@@ -174,29 +174,29 @@ public class CollegeController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the college records table
-                    logger.log(Level.INFO, "Updating the college records table");
+                    LOGGER.log(Level.INFO, "Updating the college records table");
                     generateTableBody(colleges, response);
                     return;
 
                 case "/removeCollege":
 
                     //Send the unique identifier to the entity manager for the college to be removed
-                    logger.log(Level.INFO, "Sending the unique identifier to the entity manager for the college to be removed");
+                    LOGGER.log(Level.INFO, "Sending the unique identifier to the entity manager for the college to be removed");
                     try {
                         collegeService.removeCollege(Integer.parseInt(request.getParameter("id")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new list of colleges
-                    logger.log(Level.INFO, "Retrieving the new list of college records");
+                    LOGGER.log(Level.INFO, "Retrieving the new list of college records");
                     colleges = new ArrayList<>();
                     try {
                         colleges = collegeService.retrieveColleges();
@@ -204,25 +204,25 @@ public class CollegeController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the college records table
-                    logger.log(Level.INFO, "Updating the college records table");
+                    LOGGER.log(Level.INFO, "Updating the college records table");
                     generateTableBody(colleges, response);
                     return;
 
             }
 
             destination = "/WEB-INF/views" + path + ".jsp";
-            logger.log(Level.INFO, "Requesting dispatch to forward to: {0}", destination);
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: {0}", destination);
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -286,6 +286,6 @@ public class CollegeController extends Controller {
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(CollegeController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(CollegeController.class.getSimpleName());
 
 }

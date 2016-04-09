@@ -51,8 +51,8 @@ public class AdmissionController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Main admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Main admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
@@ -61,32 +61,32 @@ public class AdmissionController extends Controller {
             try {
                 adminSession = (Boolean) session.getAttribute("subAdminSession");
             } catch (Exception e) {
-                logger.log(Level.INFO, "Sub admin session is null");
-                logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+                LOGGER.log(Level.INFO, "Sub admin session is null");
+                LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             String path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             String destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             String path = request.getServletPath();
             String destination;
@@ -96,31 +96,31 @@ public class AdmissionController extends Controller {
                 case "/addAdmission":
 
                     //Read in posted values and filling them in an admission details container
-                    logger.log(Level.INFO, "Reading in posted values and filling them in an admission details container");
+                    LOGGER.log(Level.INFO, "Reading in posted values and filling them in an admission details container");
                     admission = new AdmissionDetails();
                     admission.setActive(true);
                     admission.setAdmission(request.getParameter("admission"));
 
                     //Send the admission details to the entity manager for record creation
-                    logger.log(Level.INFO, "Sending the admission details to the entity manager for record creation");
+                    LOGGER.log(Level.INFO, "Sending the admission details to the entity manager for record creation");
                     try {
                         admissionService.addAdmission(admission);
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the admission records table
-                    logger.log(Level.INFO, "Updating the admission records table");
+                    LOGGER.log(Level.INFO, "Updating the admission records table");
                     generateTableBody(response);
 
                     return;
 
                 case "/retrieveAdmissions":
                     //Retrieve a list admissions from the database
-                    logger.log(Level.INFO, "Retrieving a list admissions from the database");
+                    LOGGER.log(Level.INFO, "Retrieving a list admissions from the database");
                     List admissions = new ArrayList<>();
                     try {
                         admissions = admissionService.retrieveAdmissions();
@@ -128,71 +128,71 @@ public class AdmissionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Avail the admissions in the session
-                    logger.log(Level.INFO, "Avail the admissions in the session");
+                    LOGGER.log(Level.INFO, "Avail the admissions in the session");
                     session.setAttribute("admissions", admissions);
                     path = "/viewAdmissions";
-                    logger.log(Level.SEVERE, "Path is: {0}", path);
+                    LOGGER.log(Level.SEVERE, "Path is: {0}", path);
 
                     break;
 
                 case "/editAdmission":
 
                     //Read in posted values and filling them in an admission details container
-                    logger.log(Level.INFO, "Reading in posted values and filling them in an admission details container");
+                    LOGGER.log(Level.INFO, "Reading in posted values and filling them in an admission details container");
                     admission = new AdmissionDetails();
                     admission.setActive(true);
                     admission.setAdmission(request.getParameter("admission"));
                     admission.setId(Integer.parseInt(request.getParameter("admissionId")));
 
                     //Send the admission details to the entity manager for record update
-                    logger.log(Level.INFO, "Sending the admission details to the entity manager for record update");
+                    LOGGER.log(Level.INFO, "Sending the admission details to the entity manager for record update");
                     try {
                         admissionService.editAdmission(admission);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the admission records table
-                    logger.log(Level.INFO, "Updating the admission records table");
+                    LOGGER.log(Level.INFO, "Updating the admission records table");
                     generateTableBody(response);
                     return;
 
                 case "/removeAdmission":
 
                     //Send the unique identifier to the entity manager for the admission to be removed
-                    logger.log(Level.INFO, "Sending the unique identifier to the entity manager for the admission to be removed");
+                    LOGGER.log(Level.INFO, "Sending the unique identifier to the entity manager for the admission to be removed");
                     try {
                         admissionService.removeAdmission(Integer.parseInt(request.getParameter("admissionId")));
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the admission records table
-                    logger.log(Level.INFO, "Updating the admission records table");
+                    LOGGER.log(Level.INFO, "Updating the admission records table");
                     generateTableBody(response);
                     return;
 
             }
 
             destination = "/WEB-INF/views" + path + ".jsp";
-            logger.log(Level.INFO, "Requesting dispatch to forward to: {0}", destination);
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: {0}", destination);
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -243,18 +243,18 @@ public class AdmissionController extends Controller {
         List<AdmissionDetails> admissions = new ArrayList<>();
 
         //Retrieve the list of admissions
-        logger.log(Level.INFO, "Retrieving the new list of admission records");
+        LOGGER.log(Level.INFO, "Retrieving the new list of admission records");
         try {
             admissions = admissionService.retrieveAdmissions();
         } catch (InvalidStateException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.setContentType("text/html;charset=UTF-8");
             response.getWriter().write(bundle.getString(e.getCode()));
-            logger.log(Level.INFO, bundle.getString(e.getCode()));
+            LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
         }
 
         //Generate table body
-        logger.log(Level.INFO, "Returning the table body in the response");
+        LOGGER.log(Level.INFO, "Returning the table body in the response");
         for (AdmissionDetails a : admissions) {
             out.write("<tr>");
             out.write("<td>" + ++index + "</td>");
@@ -266,6 +266,6 @@ public class AdmissionController extends Controller {
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(AdmissionController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(AdmissionController.class.getSimpleName());
 
 }

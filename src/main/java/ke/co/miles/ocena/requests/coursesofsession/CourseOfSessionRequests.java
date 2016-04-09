@@ -40,21 +40,21 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
     @Override
     public Integer addCourseOfSession(CourseOfSessionDetails details) throws InvalidArgumentException {
         //Method for adding a course-of-session record to the database
-        logger.log(Level.INFO, "Entered the method for adding a course-of-session record to the database");
+        LOGGER.log(Level.INFO, "Entered the method for adding a course-of-session record to the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_021_01");
         } else if (details.getCourse() == null) {
-            logger.log(Level.INFO, "The course is null");
+            LOGGER.log(Level.INFO, "The course is null");
             throw new InvalidArgumentException("error_021_02");
         } else if (details.getEvaluationSession() == null) {
-            logger.log(Level.INFO, "The evaluation session is null");
+            LOGGER.log(Level.INFO, "The evaluation session is null");
             throw new InvalidArgumentException("error_021_03");
         } else if (details.getFacultyMember() == null) {
-            logger.log(Level.INFO, "The faculty member is null");
+            LOGGER.log(Level.INFO, "The faculty member is null");
             throw new InvalidArgumentException("error_021_04");
         }
 
@@ -65,20 +65,20 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
         try {
             courseOfSession = (CourseOfSession) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.INFO, "The course of session is unique");
+            LOGGER.log(Level.INFO, "The course of session is unique");
             courseOfSession = null;
         } catch (Exception e) {
-            logger.log(Level.INFO, "An error occurred while checking if the course of sesison provided is unique to the evaluation session");
+            LOGGER.log(Level.INFO, "An error occurred while checking if the course of sesison provided is unique to the evaluation session");
             throw new EJBException("error_000_01");
         }
 
         if (courseOfSession != null) {
-            logger.log(Level.INFO, "The course of session is already set");
+            LOGGER.log(Level.INFO, "The course of session is already set");
             throw new InvalidArgumentException("error_021_05");
         }
 
         //Creating a container to hold the courses of session record
-        logger.log(Level.INFO, "Creating a container to hold the courses of session record");
+        LOGGER.log(Level.INFO, "Creating a container to hold the courses of session record");
         courseOfSession = new CourseOfSession();
         courseOfSession.setActive(details.getActive());
         courseOfSession.setCourse(em.find(Course.class, details.getCourse().getId()));
@@ -86,17 +86,17 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
         courseOfSession.setEvaluationSession(em.find(EvaluationSession.class, details.getEvaluationSession().getId()));
 
         //Adding a course-of-session record to the database
-        logger.log(Level.INFO, "Adding a course-of-session record to the database");
+        LOGGER.log(Level.INFO, "Adding a course-of-session record to the database");
         try {
             em.persist(courseOfSession);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record creation", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record creation", e);
             throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
-        logger.log(Level.INFO, "Returning the unique identifier of the new record added");
+        LOGGER.log(Level.INFO, "Returning the unique identifier of the new record added");
         return courseOfSession.getId();
 
     }
@@ -106,45 +106,45 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
     @Override
     public List<CourseOfSessionDetails> retrieveCoursesOfSession(EvaluationSessionDetails evaluationSessionDetails) throws InvalidArgumentException, InvalidStateException {
         //Method retrieving the list of course-of-session details
-        logger.log(Level.INFO, "Entered the method for retrieving the list of course-of-session details");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving the list of course-of-session details");
 
         //Check validity of the evaluation session details passed in
-        logger.log(Level.INFO, "Check validity of the evaluation session details passed in");
+        LOGGER.log(Level.INFO, "Check validity of the evaluation session details passed in");
         if (evaluationSessionDetails == null) {
-            logger.log(Level.INFO, "The evaluation session to which the course of session belongs is null");
+            LOGGER.log(Level.INFO, "The evaluation session to which the course of session belongs is null");
             throw new InvalidArgumentException("error_021_06");
         }
 
         //Retrieve the list of course-of-session details
-        logger.log(Level.INFO, "Retrieving the list of course-of-session details");
+        LOGGER.log(Level.INFO, "Retrieving the list of course-of-session details");
         q = em.createNamedQuery("CourseOfSession.findByEvaluationSessionId");
         q.setParameter("evaluationSessionId", evaluationSessionDetails.getId());
         List<CourseOfSession> listOfCourseOfSession = new ArrayList<>();
         try {
             listOfCourseOfSession = q.getResultList();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Return the list of course-of-session details
-        logger.log(Level.INFO, "Returning the list of course-of-session details");
+        LOGGER.log(Level.INFO, "Returning the list of course-of-session details");
         return convertCourseOfSessionsToCourseOfSessionDetailsList(listOfCourseOfSession);
     }
 
     @Override
     public Map<CourseOfSessionDetails, PersonDetails> retrievePersonByCourseOfSession(List<CourseOfSessionDetails> coursesOfSession) throws InvalidArgumentException {
         //Method retrieving map of person by course
-        logger.log(Level.INFO, "Entered the method for retrieving the map of person by course");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving the map of person by course");
 
         //Check validity of the courses of session passed in
-        logger.log(Level.INFO, "Check validity of the courses of session passed in");
+        LOGGER.log(Level.INFO, "Check validity of the courses of session passed in");
         if (coursesOfSession.isEmpty()) {
-            logger.log(Level.INFO, "The courses of session are not provided");
+            LOGGER.log(Level.INFO, "The courses of session are not provided");
         }
 
         //Retrieve the matching people and populate the map
-        logger.log(Level.INFO, "Retrieving the people matching and populating the map");
+        LOGGER.log(Level.INFO, "Retrieving the people matching and populating the map");
         q = em.createNamedQuery("FacultyMember.findById");
         Query q2 = em.createNamedQuery("Person.findById");
         Map<CourseOfSessionDetails, PersonDetails> personByCourseOfSessionMap = new HashMap<>();
@@ -155,14 +155,14 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
                 q2.setParameter("id", facultyMember.getPerson().getId());
                 personByCourseOfSessionMap.put(c, personService.convertPersonToPersonDetails((Person) q2.getSingleResult()));
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+                LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
                 throw new EJBException("error_000_01");
             }
 
         }
 
         //Return the map
-        logger.log(Level.INFO, "Returning the map");
+        LOGGER.log(Level.INFO, "Returning the map");
         return personByCourseOfSessionMap;
 
     }
@@ -170,17 +170,17 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
     @Override
     public Map<FacultyMemberDetails, PersonDetails> retrievePersonByFacultyMember(List<FacultyMemberDetails> facultyMembers) throws InvalidArgumentException {
         //Method retrieving map of faculty members
-        logger.log(Level.INFO, "Entered the method for retrieving the map of faculty members");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving the map of faculty members");
 
         //Check validity of the faculty members passed in
-        logger.log(Level.INFO, "Check validity of the faculty members passed in");
+        LOGGER.log(Level.INFO, "Check validity of the faculty members passed in");
         if (facultyMembers.isEmpty()) {
-            logger.log(Level.INFO, "The faculty members are not provided");
+            LOGGER.log(Level.INFO, "The faculty members are not provided");
             throw new InvalidArgumentException("error_021_07");
         }
 
         //Retrieve the matching people and populate the map
-        logger.log(Level.INFO, "Retrieving the people matching and populating the map");
+        LOGGER.log(Level.INFO, "Retrieving the people matching and populating the map");
         q = em.createNamedQuery("Person.findById");
         Map<FacultyMemberDetails, PersonDetails> personByFacultyMemberMap = new HashMap<>();
         for (FacultyMemberDetails f : facultyMembers) {
@@ -188,13 +188,13 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
                 q.setParameter("id", f.getPerson().getId());
                 personByFacultyMemberMap.put(f, personService.convertPersonToPersonDetails((Person) q.getSingleResult()));
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+                LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
                 throw new EJBException("error_000_01");
             }
         }
 
         //Return the map
-        logger.log(Level.INFO, "Returning the map");
+        LOGGER.log(Level.INFO, "Returning the map");
         return personByFacultyMemberMap;
 
     }
@@ -202,29 +202,29 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
     @Override
     public CourseOfSessionDetails retrieveCourseOfSession(Integer id) throws InvalidArgumentException {
         //Method for retrieving course-of-session details
-        logger.log(Level.INFO, "Entered the method for retrieving course-of-session details");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving course-of-session details");
 
         //Check validity of the unique identifier passed in
-        logger.log(Level.INFO, "Check validity of the unique identifier passed in");
+        LOGGER.log(Level.INFO, "Check validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
+            LOGGER.log(Level.INFO, "The unique identifier is null");
             throw new InvalidArgumentException("error_021_08");
         }
 
         //Retrieve the course-of-session
-        logger.log(Level.INFO, "Retrieving the course-of-session");
+        LOGGER.log(Level.INFO, "Retrieving the course-of-session");
         q = em.createNamedQuery("CourseOfSession.findById");
         q.setParameter("id", id);
         courseOfSession = new CourseOfSession();
         try {
             courseOfSession = (CourseOfSession) q.getSingleResult();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Return the list of course-of-session details
-        logger.log(Level.INFO, "Returning the list of course-of-session details");
+        LOGGER.log(Level.INFO, "Returning the list of course-of-session details");
         return convertCourseOfSessionToCourseOfSessionDetails(courseOfSession);
     }
 
@@ -233,29 +233,29 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
     @Override
     public void editCourseOfSession(CourseOfSessionDetails details) throws InvalidArgumentException, InvalidStateException {
         //Method for editing a course-of-session record in the database
-        logger.log(Level.INFO, "Entered the method for editing a course-of-session record in the database");
+        LOGGER.log(Level.INFO, "Entered the method for editing a course-of-session record in the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_021_01");
         } else if (details.getId() == null) {
-            logger.log(Level.INFO, "The course-of-session's unique identifier is null");
+            LOGGER.log(Level.INFO, "The course-of-session's unique identifier is null");
             throw new InvalidArgumentException("error_021_08");
         } else if (details.getCourse() == null) {
-            logger.log(Level.INFO, "The course is null");
+            LOGGER.log(Level.INFO, "The course is null");
             throw new InvalidArgumentException("error_021_02");
         } else if (details.getEvaluationSession() == null) {
-            logger.log(Level.INFO, "The evaluation session is null");
+            LOGGER.log(Level.INFO, "The evaluation session is null");
             throw new InvalidArgumentException("error_021_03");
         } else if (details.getFacultyMember() == null) {
-            logger.log(Level.INFO, "The faculty member is null");
+            LOGGER.log(Level.INFO, "The faculty member is null");
             throw new InvalidArgumentException("error_021_04");
         }
 
         //Creating a container to hold the courses of session record
-        logger.log(Level.INFO, "Creating a container to hold the courses of session record");
+        LOGGER.log(Level.INFO, "Creating a container to hold the courses of session record");
         courseOfSession = new CourseOfSession();
         courseOfSession.setId(details.getId());
         courseOfSession.setActive(details.getActive());
@@ -264,12 +264,12 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
         courseOfSession.setEvaluationSession(em.find(EvaluationSession.class, details.getEvaluationSession().getId()));
 
         //Editing a course-of-session record in the database
-        logger.log(Level.INFO, "Editing a course-of-session record in the database");
+        LOGGER.log(Level.INFO, "Editing a course-of-session record in the database");
         try {
             em.merge(courseOfSession);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record update", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record update", e);
             throw new InvalidStateException("error_000_01");
         }
 
@@ -280,22 +280,22 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
     @Override
     public void removeCourseOfSession(Integer id) throws InvalidArgumentException, InvalidStateException {
         //Method for removing a course-of-session record from the database
-        logger.log(Level.INFO, "Entered the method for removing a course-of-session record from the database");
+        LOGGER.log(Level.INFO, "Entered the method for removing a course-of-session record from the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
+            LOGGER.log(Level.INFO, "The unique identifier is null");
             throw new InvalidArgumentException("error_021_08");
         }
 
         //Removing a course-of-session record from the database
-        logger.log(Level.INFO, "Removing a course-of-session record from the database");
+        LOGGER.log(Level.INFO, "Removing a course-of-session record from the database");
         courseOfSession = em.find(CourseOfSession.class, id);
         try {
             em.remove(courseOfSession);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record removal", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
             throw new InvalidStateException("error_000_01");
         }
 
@@ -305,26 +305,26 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
 
     private List<CourseOfSessionDetails> convertCourseOfSessionsToCourseOfSessionDetailsList(List<CourseOfSession> listOfCourseOfSession) {
         //Entered method for converting listOfCourseOfSession list to course-of-session details list
-        logger.log(Level.FINE, "Entered method for converting listOfCourseOfSession list to course-of-session details list");
+        LOGGER.log(Level.FINE, "Entered method for converting listOfCourseOfSession list to course-of-session details list");
 
         //Convert list  course-of-session  to course-of-session details list
-        logger.log(Level.FINE, "Convert list  course-of-session  to course-of-session details list");
+        LOGGER.log(Level.FINE, "Convert list  course-of-session  to course-of-session details list");
         List<CourseOfSessionDetails> details = new ArrayList<>();
         for (CourseOfSession d : listOfCourseOfSession) {
             details.add(convertCourseOfSessionToCourseOfSessionDetails(d));
         }
 
         //Returning converted course-of-session details list
-        logger.log(Level.FINE, "Returning converted course-of-session details list");
+        LOGGER.log(Level.FINE, "Returning converted course-of-session details list");
         return details;
     }
 
     private CourseOfSessionDetails convertCourseOfSessionToCourseOfSessionDetails(CourseOfSession courseOfSession) {
         //Entered method for converting course-of-session to course-of-session details
-        logger.log(Level.FINE, "Entered method for converting listOfCourseOfSession to course-of-session details");
+        LOGGER.log(Level.FINE, "Entered method for converting listOfCourseOfSession to course-of-session details");
 
         //Convert list of course-of-session to course-of-session details
-        logger.log(Level.FINE, "Convert list of course-of-session to course-of-session details");
+        LOGGER.log(Level.FINE, "Convert list of course-of-session to course-of-session details");
 
         personDetails = new PersonDetails();
         personDetails.setId(Integer.SIZE);
@@ -354,11 +354,11 @@ public class CourseOfSessionRequests extends EntityRequests implements CourseOfS
         details.setCourse(courseDetails);
 
         //Returning converted course-of-session details
-        logger.log(Level.FINE, "Returning converted course-of-session details");
+        LOGGER.log(Level.FINE, "Returning converted course-of-session details");
         return details;
     }
 //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(CourseOfSessionRequests.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(CourseOfSessionRequests.class.getSimpleName());
 
 }

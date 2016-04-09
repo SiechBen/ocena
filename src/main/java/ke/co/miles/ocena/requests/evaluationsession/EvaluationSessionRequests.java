@@ -34,41 +34,41 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
     @Override
     public Integer addEvaluationSession(EvaluationSessionDetails details) throws InvalidArgumentException, DuplicateStateException {
         //Method for adding an evaluation session record to the database
-        logger.log(Level.INFO, "Entered the method for adding an evaluation session record to the database");
+        LOGGER.log(Level.INFO, "Entered the method for adding an evaluation session record to the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_024_01");
         } else if (details.getStartDate() == null) {
-            logger.log(Level.INFO, "The evaluation session start date is null");
+            LOGGER.log(Level.INFO, "The evaluation session start date is null");
             throw new InvalidArgumentException("error_024_02");
         } else if (details.getEndDate() == null) {
-            logger.log(Level.INFO, "The evaluation session end date is null");
+            LOGGER.log(Level.INFO, "The evaluation session end date is null");
             throw new InvalidArgumentException("error_024_03");
         } else if (details.getAcademicYear() == null || details.getAcademicYear().trim().length() == 0) {
-            logger.log(Level.INFO, "The academic year is null");
+            LOGGER.log(Level.INFO, "The academic year is null");
             throw new InvalidArgumentException("error_024_04");
         } else if (details.getAcademicYear().trim().length() > 45) {
-            logger.log(Level.INFO, "The academic year is longer than 45 characters");
+            LOGGER.log(Level.INFO, "The academic year is longer than 45 characters");
             throw new InvalidArgumentException("error_024_05");
         } else if (details.getDegree() == null) {
-            logger.log(Level.INFO, "The degree is null");
+            LOGGER.log(Level.INFO, "The degree is null");
             throw new InvalidArgumentException("error_024_06");
         } else if (details.getSemester() == null || details.getSemester().trim().length() == 0) {
-            logger.log(Level.INFO, "The semester is null");
+            LOGGER.log(Level.INFO, "The semester is null");
             throw new InvalidArgumentException("error_024_07");
         } else if (details.getSemester().trim().length() > 45) {
-            logger.log(Level.INFO, "The semester is longer than 45 characters");
+            LOGGER.log(Level.INFO, "The semester is longer than 45 characters");
             throw new InvalidArgumentException("error_024_08");
         } else if (details.getAdmissionYear() == null) {
-            logger.log(Level.INFO, "The admission year is null");
+            LOGGER.log(Level.INFO, "The admission year is null");
             throw new InvalidArgumentException("error_024_09");
         }
 
         //Check against any active evaluation session
-        logger.log(Level.INFO, "Checking against any active evaluation session");
+        LOGGER.log(Level.INFO, "Checking against any active evaluation session");
         q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAdmissionYear");
         evaluationSession = new EvaluationSession();
         q.setParameter("active", Boolean.TRUE);
@@ -78,17 +78,17 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
         try {
             evaluationSession = (EvaluationSession) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.SEVERE, "No other active evaluation session");
+            LOGGER.log(Level.SEVERE, "No other active evaluation session");
             evaluationSession = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Creating a container to hold evaluation session record
-        logger.log(Level.INFO, "Creating a container to hold evaluation session record");
+        LOGGER.log(Level.INFO, "Creating a container to hold evaluation session record");
         if (evaluationSession != null) {
-            logger.log(Level.SEVERE, "Another active evaluation session exists hence a new one cannot be created");
+            LOGGER.log(Level.SEVERE, "Another active evaluation session exists hence a new one cannot be created");
             throw new DuplicateStateException("18-099");
         }
 
@@ -102,17 +102,17 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
         evaluationSession.setDegree(em.find(Degree.class, details.getDegree().getId()));
 
         //Adding an evaluation session record to the database
-        logger.log(Level.INFO, "Adding an evaluation session record to the database");
+        LOGGER.log(Level.INFO, "Adding an evaluation session record to the database");
         try {
             em.persist(evaluationSession);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record creation", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record creation", e);
             throw new EJBException("error_000_01");
         }
 
         //Returning the unique identifier of the new record added
-        logger.log(Level.INFO, "Returning the unique identifier of the new record added");
+        LOGGER.log(Level.INFO, "Returning the unique identifier of the new record added");
         return evaluationSession.getId();
     }
 //</editor-fold>
@@ -121,20 +121,20 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
     @Override
     public List<EvaluationSessionDetails> retrieveEvaluationSessions(List<DegreeDetails> degrees) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving evaluation sessions from the database
-        logger.log(Level.INFO, "Entered the method for retrieving evaluation sessions from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving evaluation sessions from the database");
 
         //Check validity of the list of degrees 
-        logger.log(Level.INFO, "Checking validity of the list of degrees ");
+        LOGGER.log(Level.INFO, "Checking validity of the list of degrees ");
         if (degrees == null) {
-            logger.log(Level.INFO, "The degrees are not provided");
+            LOGGER.log(Level.INFO, "The degrees are not provided");
             throw new InvalidArgumentException("error_024_11");
         } else if (degrees.isEmpty()) {
-            logger.log(Level.INFO, "The degrees are not provided");
+            LOGGER.log(Level.INFO, "The degrees are not provided");
             throw new InvalidArgumentException("error_024_11");
         }
 
         //Retrieving active evaluation session records from the database
-        logger.log(Level.INFO, "Retrieving active evaluation session records from the database");
+        LOGGER.log(Level.INFO, "Retrieving active evaluation session records from the database");
         q = em.createNamedQuery("EvaluationSession.findByDegreeIdWhereActive");
         List<EvaluationSession> evaluationSessions = new ArrayList<>();
         List<EvaluationSession> holder;
@@ -147,35 +147,35 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
                     evaluationSessions.add(es);
                 }
             } catch (NoResultException e) {
-                logger.log(Level.SEVERE, "No evaluation session record found");
+                LOGGER.log(Level.SEVERE, "No evaluation session record found");
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+                LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
                 throw new EJBException("error_000_01");
             }
         }
 
         //Returning the details of evaluation session records
-        logger.log(Level.INFO, "Returning the details of evaluation session records");
+        LOGGER.log(Level.INFO, "Returning the details of evaluation session records");
         return convertEvaluationSessionsToEvaluationSessionDetailsList(evaluationSessions);
     }
 
     @Override
     public EvaluationSessionDetails retrieveEvaluationSessionByDegree(Integer degreeId, Date admissionYear) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving evaluation sessions from the database
-        logger.log(Level.INFO, "Entered the method for retrieving evaluation sessions from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving evaluation sessions from the database");
 
         //Check validity of the degree unique identifier
-        logger.log(Level.INFO, "Checking validity of the degree unique identifier");
+        LOGGER.log(Level.INFO, "Checking validity of the degree unique identifier");
         if (degreeId == null) {
-            logger.log(Level.INFO, "The degree unique identifier is not provided");
+            LOGGER.log(Level.INFO, "The degree unique identifier is not provided");
             throw new InvalidArgumentException("error_024_12");
         } else if (admissionYear == null) {
-            logger.log(Level.INFO, "The admission year is not provided");
+            LOGGER.log(Level.INFO, "The admission year is not provided");
             throw new InvalidArgumentException("error_024_04");
         }
 
         //Retrieving active evaluation session record from the database
-        logger.log(Level.INFO, "Retrieving active evaluation session record from the database");
+        LOGGER.log(Level.INFO, "Retrieving active evaluation session record from the database");
         q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAdmissionYear");
         evaluationSession = new EvaluationSession();
         q.setParameter("admissionYear", admissionYear);
@@ -185,43 +185,43 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
         try {
             evaluationSession = (EvaluationSession) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.SEVERE, "No evaluation session record found");
+            LOGGER.log(Level.SEVERE, "No evaluation session record found");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Returning the details of evaluation session record
-        logger.log(Level.INFO, "Returning the details of evaluation session record");
+        LOGGER.log(Level.INFO, "Returning the details of evaluation session record");
         return convertEvaluationSessionToEvaluationSessionDetails(evaluationSession);
     }
 
     @Override
     public EvaluationSessionDetails retrieveEvaluationSession(Integer evaluationSessionId) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving evaluation session the database
-        logger.log(Level.INFO, "Entered the method for retrieving evaluation session from the database");
+        LOGGER.log(Level.INFO, "Entered the method for retrieving evaluation session from the database");
 
         //Check validity of the evaluation session unique identifier
-        logger.log(Level.INFO, "Checking validity of the evaluation session unique identifier");
+        LOGGER.log(Level.INFO, "Checking validity of the evaluation session unique identifier");
         if (evaluationSessionId == null) {
-            logger.log(Level.INFO, "The evaluation session unique identifier is null");
+            LOGGER.log(Level.INFO, "The evaluation session unique identifier is null");
             throw new InvalidArgumentException("error_024_10");
         }
 
         //Retrieving evaluation session record from the database
-        logger.log(Level.INFO, "Retrieving evaluation session record from the database");
+        LOGGER.log(Level.INFO, "Retrieving evaluation session record from the database");
         q = em.createNamedQuery("EvaluationSession.findById");
         q.setParameter("id", evaluationSessionId);
         evaluationSession = new EvaluationSession();
         try {
             evaluationSession = (EvaluationSession) q.getSingleResult();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_024_02");
         }
 
         //Returning the details of evaluation session records
-        logger.log(Level.INFO, "Returning the details of evaluation session records");
+        LOGGER.log(Level.INFO, "Returning the details of evaluation session records");
         return convertEvaluationSessionToEvaluationSessionDetails(evaluationSession);
     }
 
@@ -230,44 +230,44 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
     @Override
     public void editEvaluationSession(EvaluationSessionDetails details) throws InvalidArgumentException, InvalidStateException, DuplicateStateException {
         //Method for editing an evaluation session record in the database
-        logger.log(Level.INFO, "Entered the method for editing an evaluation session record in the database");
+        LOGGER.log(Level.INFO, "Entered the method for editing an evaluation session record in the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the details passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the details passed in");
         if (details == null) {
-            logger.log(Level.INFO, "The details are null");
+            LOGGER.log(Level.INFO, "The details are null");
             throw new InvalidArgumentException("error_024_01");
         } else if (details.getId() == null) {
-            logger.log(Level.INFO, "The evaluation session's unique identifier is null");
+            LOGGER.log(Level.INFO, "The evaluation session's unique identifier is null");
             throw new InvalidArgumentException("error_024_10");
         } else if (details.getStartDate() == null) {
-            logger.log(Level.INFO, "The evaluation session start date is null");
+            LOGGER.log(Level.INFO, "The evaluation session start date is null");
             throw new InvalidArgumentException("error_024_02");
         } else if (details.getEndDate() == null) {
-            logger.log(Level.INFO, "The evaluation session end date is null");
+            LOGGER.log(Level.INFO, "The evaluation session end date is null");
             throw new InvalidArgumentException("error_024_03");
         } else if (details.getAcademicYear() == null || details.getAcademicYear().trim().length() == 0) {
-            logger.log(Level.INFO, "The academic year is null");
+            LOGGER.log(Level.INFO, "The academic year is null");
             throw new InvalidArgumentException("error_024_04");
         } else if (details.getAcademicYear().trim().length() > 45) {
-            logger.log(Level.INFO, "The academic year is longer than 45 characters");
+            LOGGER.log(Level.INFO, "The academic year is longer than 45 characters");
             throw new InvalidArgumentException("error_024_05");
         } else if (details.getDegree() == null) {
-            logger.log(Level.INFO, "The degree is null");
+            LOGGER.log(Level.INFO, "The degree is null");
             throw new InvalidArgumentException("error_024_06");
         } else if (details.getSemester() == null || details.getSemester().trim().length() == 0) {
-            logger.log(Level.INFO, "The semester is null");
+            LOGGER.log(Level.INFO, "The semester is null");
             throw new InvalidArgumentException("error_024_07");
         } else if (details.getSemester().trim().length() > 45) {
-            logger.log(Level.INFO, "The semester is longer than 45 characters");
+            LOGGER.log(Level.INFO, "The semester is longer than 45 characters");
             throw new InvalidArgumentException("error_024_08");
         } else if (details.getAdmissionYear() == null) {
-            logger.log(Level.INFO, "The admission year is null");
+            LOGGER.log(Level.INFO, "The admission year is null");
             throw new InvalidArgumentException("error_024_09");
         }
 
         //Check against any active evaluation session
-        logger.log(Level.INFO, "Checking against any active evaluation session");
+        LOGGER.log(Level.INFO, "Checking against any active evaluation session");
         q = em.createNamedQuery("EvaluationSession.findActiveByDegreeIdAndAdmissionYear");
         evaluationSession = new EvaluationSession();
         q.setParameter("active", Boolean.TRUE);
@@ -277,18 +277,18 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
         try {
             evaluationSession = (EvaluationSession) q.getSingleResult();
         } catch (NoResultException e) {
-            logger.log(Level.SEVERE, "No other active evaluation session");
+            LOGGER.log(Level.SEVERE, "No other active evaluation session");
             evaluationSession = null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
 
         //Creating a container to hold evaluation session record
-        logger.log(Level.INFO, "Creating a container to hold evaluation session record");
+        LOGGER.log(Level.INFO, "Creating a container to hold evaluation session record");
         if (evaluationSession != null) {
             if (!evaluationSession.getId().equals(details.getId())) {
-                logger.log(Level.SEVERE, "Another active evaluation session exists hence a new one cannot be created");
+                LOGGER.log(Level.SEVERE, "Another active evaluation session exists hence a new one cannot be created");
                 throw new DuplicateStateException("error_024_10");
             }
         }
@@ -302,12 +302,12 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
         evaluationSession.setDegree(em.find(Degree.class, details.getDegree().getId()));
 
         //Editing an evaluation session record in the database
-        logger.log(Level.INFO, "Editing an evaluation session record in the database");
+        LOGGER.log(Level.INFO, "Editing an evaluation session record in the database");
         try {
             em.merge(evaluationSession);
             em.flush();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record update", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record update", e);
             throw new EJBException("error_000_01");
         }
 
@@ -318,22 +318,22 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
     @Override
     public void removeEvaluationSession(Integer id) throws InvalidArgumentException, InvalidStateException {
         //Method for removing an evaluation session record from the database
-        logger.log(Level.INFO, "Entered the method for removing an evaluation session record from the database");
+        LOGGER.log(Level.INFO, "Entered the method for removing an evaluation session record from the database");
 
         //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the unique identifier passed in");
+        LOGGER.log(Level.INFO, "Checking validity of the unique identifier passed in");
         if (id == null) {
-            logger.log(Level.INFO, "The unique identifier is null");
+            LOGGER.log(Level.INFO, "The unique identifier is null");
             throw new InvalidArgumentException("error_024_10");
         }
 
         //Removing an evaluation session record from the database
-        logger.log(Level.INFO, "Removing an evaluation session record from the database");
+        LOGGER.log(Level.INFO, "Removing an evaluation session record from the database");
         evaluationSession = em.find(EvaluationSession.class, id);
         try {
             em.remove(evaluationSession);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "An error occurred during record removal", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
             throw new InvalidStateException("error_024_04");
         }
 
@@ -343,26 +343,26 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
 
     private List<EvaluationSessionDetails> convertEvaluationSessionsToEvaluationSessionDetailsList(List<EvaluationSession> evaluationSessions) {
         //Entered method for converting questions list to evaluation session details list
-        logger.log(Level.FINE, "Entered method for converting questions list to evaluation session details list");
+        LOGGER.log(Level.FINE, "Entered method for converting questions list to evaluation session details list");
 
         //Convert list of questions to evaluation session details list
-        logger.log(Level.FINE, "Convert list of questions to evaluation session details list");
+        LOGGER.log(Level.FINE, "Convert list of questions to evaluation session details list");
         List<EvaluationSessionDetails> details = new ArrayList<>();
         for (EvaluationSession e : evaluationSessions) {
             details.add(convertEvaluationSessionToEvaluationSessionDetails(e));
         }
 
         //Returning converted evaluation session details list
-        logger.log(Level.FINE, "Returning converted evaluation session details list");
+        LOGGER.log(Level.FINE, "Returning converted evaluation session details list");
         return details;
     }
 
     private EvaluationSessionDetails convertEvaluationSessionToEvaluationSessionDetails(EvaluationSession evaluationSession) {
         //Entered method for converting evaluation session to evaluation session details
-        logger.log(Level.FINE, "Entered method for converting questions to evaluation session details");
+        LOGGER.log(Level.FINE, "Entered method for converting questions to evaluation session details");
 
         //Convert list of evaluation session to evaluation session details
-        logger.log(Level.FINE, "Convert list of evaluation session to evaluation session details");
+        LOGGER.log(Level.FINE, "Convert list of evaluation session to evaluation session details");
 
         admissionDetails = new AdmissionDetails();
         admissionDetails.setId(evaluationSession.getDegree().getAdmission().getId());
@@ -374,7 +374,7 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
             degreeDetails.setName(evaluationSession.getDegree().getName());
             degreeDetails.setAdmission(admissionDetails);
         } catch (Exception e) {
-            logger.log(Level.FINE, "This evaluation session does not belong to a degree");
+            LOGGER.log(Level.FINE, "This evaluation session does not belong to a degree");
         }
 
         EvaluationSessionDetails details = new EvaluationSessionDetails();
@@ -389,11 +389,11 @@ public class EvaluationSessionRequests extends EntityRequests implements Evaluat
         details.setAdmissionYear(evaluationSession.getAdmissionYear());
 
         //Returning converted evaluation session details
-        logger.log(Level.FINE, "Returning converted evaluation session details");
+        LOGGER.log(Level.FINE, "Returning converted evaluation session details");
         return details;
     }
 //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(EvaluationSessionRequests.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(EvaluationSessionRequests.class.getSimpleName());
 
 }

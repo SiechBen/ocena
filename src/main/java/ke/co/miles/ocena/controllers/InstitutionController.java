@@ -51,31 +51,31 @@ public class InstitutionController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == false) {
             //Admin session not established
-            logger.log(Level.INFO, "Admin session not established hence not responding to the request");
+            LOGGER.log(Level.INFO, "Admin session not established hence not responding to the request");
 
             String path = (String) session.getAttribute("home");
-            logger.log(Level.INFO, "Path is: {0}", path);
+            LOGGER.log(Level.INFO, "Path is: {0}", path);
             String destination = "/WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
-                logger.log(Level.INFO, "Request dispatch failed");
+                LOGGER.log(Level.INFO, "Request dispatch failed");
             }
 
         } else if (adminSession == true) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             String path = request.getServletPath();
             String destination;
@@ -83,15 +83,15 @@ public class InstitutionController extends Controller {
             switch (path) {
                 case "/institution":
                     //Retrieve the institution
-                    logger.log(Level.INFO, "Retrieving the institution");
+                    LOGGER.log(Level.INFO, "Retrieving the institution");
                     institution = (InstitutionDetails) getServletContext().getAttribute("institution");
 
                     //View the institution
-                    logger.log(Level.INFO, "View the institution");
+                    LOGGER.log(Level.INFO, "View the institution");
 
                     if (institution != null) {
                         path = "/viewInstitution";
-                        logger.log(Level.INFO, "Path is: {0}", path);
+                        LOGGER.log(Level.INFO, "Path is: {0}", path);
                         break;
                     }
 
@@ -100,7 +100,7 @@ public class InstitutionController extends Controller {
                 case "/addInstitution":
 
                     //Read in and set institution details 
-                    logger.log(Level.INFO, "Reading in and setting the institution details");
+                    LOGGER.log(Level.INFO, "Reading in and setting the institution details");
                     country = new CountryDetails();
                     country.setId(Integer.parseInt(request.getParameter("country")));
 
@@ -115,7 +115,7 @@ public class InstitutionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
                     try {
@@ -125,7 +125,7 @@ public class InstitutionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -136,7 +136,7 @@ public class InstitutionController extends Controller {
                 case "/editInstitution":
 
                     //Read in posted values and filling them in a institution details container
-                    logger.log(Level.INFO, "Reading in posted values and filling them in a institution details container");
+                    LOGGER.log(Level.INFO, "Reading in posted values and filling them in a institution details container");
                     country = new CountryDetails();
                     country.setId(Integer.parseInt(request.getParameter("country")));
 
@@ -150,18 +150,18 @@ public class InstitutionController extends Controller {
                     institution.setAbbreviation(request.getParameter("abbreviation"));
 
                     //Send the institution details to the entity manager
-                    logger.log(Level.INFO, "Sending the institution details to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the institution details to the entity manager");
                     try {
                         institutionService.editInstitution(institution);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new institution details
-                    logger.log(Level.INFO, "Retrieving the new institution details");
+                    LOGGER.log(Level.INFO, "Retrieving the new institution details");
                     institution = new InstitutionDetails();
                     try {
                         institution = institutionService.retrieveInstitution();
@@ -170,39 +170,39 @@ public class InstitutionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the institution table
-                    logger.log(Level.INFO, "Updating the institution table");
+                    LOGGER.log(Level.INFO, "Updating the institution table");
                     generateTableBody(institution, response);
                     return;
 
                 case "/removeInstitution":
                     //Read in the institution record to be deleted
-                    logger.log(Level.INFO, "Reading in the institution record to be deleted");
+                    LOGGER.log(Level.INFO, "Reading in the institution record to be deleted");
                     institution = new InstitutionDetails();
                     institution = (InstitutionDetails) getServletContext().getAttribute("institution");
 
                     //Send the unique identifier to the entity manager
-                    logger.log(Level.INFO, "Sending the unique identifier to the entity manager");
+                    LOGGER.log(Level.INFO, "Sending the unique identifier to the entity manager");
                     try {
                         institutionService.removeInstitution(institution.getId());
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Retrieve the new institution details
-                    logger.log(Level.INFO, "Retrieving the new institution details");
+                    LOGGER.log(Level.INFO, "Retrieving the new institution details");
                     institution = new InstitutionDetails();
                     try {
                         institution = institutionService.retrieveInstitution();
                         if (institution.getId() == null) {
                             path = "/addInstitution";
-                            logger.log(Level.INFO, "No institution record hence adding one.\nPath is: {0}", path);
+                            LOGGER.log(Level.INFO, "No institution record hence adding one.\nPath is: {0}", path);
                             break;
                         }
                         getServletContext().setAttribute("institution", institution);
@@ -210,24 +210,24 @@ public class InstitutionController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     //Update the institution table
-                    logger.log(Level.INFO, "Updating the institution table");
+                    LOGGER.log(Level.INFO, "Updating the institution table");
                     generateTableBody(institution, response);
                     return;
             }
 
             destination = "/WEB-INF/views" + path + ".jsp";
-            logger.log(Level.INFO, "Request dispatch to forward to: {0}", destination);
+            LOGGER.log(Level.INFO, "Request dispatch to forward to: {0}", destination);
             try {
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -309,5 +309,5 @@ public class InstitutionController extends Controller {
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(InstitutionController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(InstitutionController.class.getSimpleName());
 }
