@@ -23,6 +23,11 @@ public enum FacultyMemberRoleDetail implements Serializable {
         this.facultyMemberRole = facultyMemberRole;
     }
 
+    @Override
+    public String toString() {
+        return facultyMemberRole;
+    }
+
     public static FacultyMemberRoleDetail getFacultyMemberRoleDetail(Short id) {
         switch (id) {
             case 1:

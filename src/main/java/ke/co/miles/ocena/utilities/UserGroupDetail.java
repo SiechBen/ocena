@@ -85,7 +85,7 @@ public enum UserGroupDetail implements Serializable {
 
     @Override
     public String toString() {
-        return "ke.co.miles.ocena.entities.Rating[ usergroup=" + getUserGroup() + " ]";
+        return userGroup;
     }
 
     private final Short id;

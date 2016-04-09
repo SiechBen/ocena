@@ -5,7 +5,8 @@
  */
 package ke.co.miles.ocena.requests.person;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.Local;
 import ke.co.miles.ocena.entities.Person;
@@ -15,6 +16,7 @@ import ke.co.miles.ocena.exceptions.InvalidStateException;
 import ke.co.miles.ocena.exceptions.MilesException;
 import ke.co.miles.ocena.utilities.EmailContactDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberDetails;
+import ke.co.miles.ocena.utilities.FacultyMemberRoleDetail;
 import ke.co.miles.ocena.utilities.PersonDetails;
 import ke.co.miles.ocena.utilities.PhoneContactDetails;
 import ke.co.miles.ocena.utilities.PostalContactDetails;
@@ -48,7 +50,7 @@ public interface PersonRequestsLocal {
      * @throws InvalidArgumentException
      * @throws InvalidStateException
      */
-    public List<PersonDetails> retrievePersons() throws InvalidArgumentException, InvalidStateException;
+    public HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> retrievePersons() throws InvalidArgumentException, InvalidStateException;
 
     /**
      *

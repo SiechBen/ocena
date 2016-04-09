@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -40,7 +41,6 @@ import ke.co.miles.ocena.utilities.PostalContactDetails;
 import ke.co.miles.ocena.utilities.FacultyDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberRoleDetail;
-import ke.co.miles.ocena.utilities.InstitutionDetails;
 import ke.co.miles.ocena.utilities.UserAccountDetails;
 import ke.co.miles.ocena.utilities.UserGroupDetail;
 
@@ -1107,10 +1107,10 @@ public class PersonController extends Controller {
                 case "/retrieveUsers":
 
                     LOGGER.log(Level.INFO, "Retrieving all users");
-                    List<PersonDetails> people;
+                    HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> usersMap;
                     
                     try {
-                        people = personService.retrievePersons();
+                        usersMap = personService.retrievePersons();
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
@@ -1119,7 +1119,7 @@ public class PersonController extends Controller {
                         return;
                     }
 
-                    session.setAttribute("users", people);
+                    session.setAttribute("usersMap", usersMap);
                     
                     path = "/viewUsers";
                     LOGGER.log(Level.INFO, "Path is : {0}", path);
@@ -1233,7 +1233,7 @@ public class PersonController extends Controller {
         out.write("<td> <input type='text' id='upgrade-full-name' value='" + person.getFirstName() + " " + person.getLastName() + "' readonly=\"true\"> </td>");
         out.write("</tr>");
         out.write("<tr>");
-        out.write("<td> Number: </td>");
+        out.write("<td> Ref/reg Number: </td>");
         out.write("<td> <input type='text' id='user-number' value='" + person.getReferenceNumber() + "' readonly=\"true\"> </td>");
         out.write("</tr>");
         out.write("<tr>");
