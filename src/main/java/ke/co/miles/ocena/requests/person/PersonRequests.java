@@ -232,21 +232,13 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
     }
 
     @Override
-    public List<PersonDetails> retrievePersons(Integer institutionId) throws InvalidArgumentException, InvalidStateException {
+    public List<PersonDetails> retrievePersons() throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving person records from the database
         logger.log(Level.INFO, "Entered the method for retrieving person records from the database");
 
-        //Checking validity of details
-        logger.log(Level.INFO, "Checking validity of the institution unique identifier passed in");
-        if (institutionId == null) {
-            logger.log(Level.INFO, "The institution to which the person is associated is null");
-            throw new InvalidArgumentException("error_029_16");
-        }
-
-        //Retrieving person records from the database
+         //Retrieving person records from the database
         logger.log(Level.INFO, "Retrieving person records from the database");
-        q = em.createNamedQuery("Person.findByInstitutionId");
-        q.setParameter("institutionId", institutionId);
+        q = em.createNamedQuery("Person.findAll");
         List<Person> people = new ArrayList<>();
         try {
             people = q.getResultList();

@@ -44,12 +44,11 @@ public interface PersonRequestsLocal {
 
     /**
      *
-     * @param institutionId
      * @return
      * @throws InvalidArgumentException
      * @throws InvalidStateException
      */
-    public List<PersonDetails> retrievePersons(Integer institutionId) throws InvalidArgumentException, InvalidStateException;
+    public List<PersonDetails> retrievePersons() throws InvalidArgumentException, InvalidStateException;
 
     /**
      *

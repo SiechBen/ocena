@@ -43,6 +43,7 @@
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/createAccountAtMainAdmin">Add user</a></li>
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/adminUserView">Upgrade user</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/retrieveUsers">View users</a></li>
             </ul>
         </li>
         <li class="dropdown">

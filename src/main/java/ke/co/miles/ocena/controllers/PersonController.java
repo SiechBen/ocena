@@ -40,6 +40,7 @@ import ke.co.miles.ocena.utilities.PostalContactDetails;
 import ke.co.miles.ocena.utilities.FacultyDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberDetails;
 import ke.co.miles.ocena.utilities.FacultyMemberRoleDetail;
+import ke.co.miles.ocena.utilities.InstitutionDetails;
 import ke.co.miles.ocena.utilities.UserAccountDetails;
 import ke.co.miles.ocena.utilities.UserGroupDetail;
 
@@ -76,8 +77,8 @@ public class PersonController extends Controller {
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
         } catch (Exception e) {
-            logger.log(Level.INFO, "Main admin session is null");
-            logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+            LOGGER.log(Level.INFO, "Main admin session is null");
+            LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
             return;
         }
@@ -86,44 +87,44 @@ public class PersonController extends Controller {
             try {
                 adminSession = (Boolean) session.getAttribute("subAdminSession");
             } catch (Exception e) {
-                logger.log(Level.INFO, "Sub admin session is null");
-                logger.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+                LOGGER.log(Level.INFO, "Sub admin session is null");
+                LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
                 request.getRequestDispatcher("index.jsp").forward(request, response);
                 return;
             }
         }
 
         //Check session type
-        logger.log(Level.INFO, "Checking session type");
+        LOGGER.log(Level.INFO, "Checking session type");
         if (adminSession == true || adminSession == false) {
             //Admin session established
-            logger.log(Level.INFO, "Admin session established hence responding to the request");
+            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
 
             switch (path) {
 
                 case "/createAccountAtMainAdmin":
 
                     //Retrieve and avail the list countries in application scope
-                    logger.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
+                    LOGGER.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
                     try {
                         getServletContext().setAttribute("countries", countryService.retrieveCountries());
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve and avail the list colleges in session scope
-                    logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
+                    LOGGER.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
                     } catch (InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -132,32 +133,32 @@ public class PersonController extends Controller {
 
                     session.setAttribute("facultyMemberRoles", memberRoles);
                     path = "/addUserAtMainAdmin";
-                    logger.log(Level.INFO, "Path is : {0}", path);
+                    LOGGER.log(Level.INFO, "Path is : {0}", path);
                     break;
 
                 case "/createAccountAtSubAdmin":
 
                     //Retrieve and avail the list countries in application scope
-                    logger.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
+                    LOGGER.log(Level.INFO, "Retrieving and availing the list of countries in application scope");
                     try {
                         getServletContext().setAttribute("countries", countryService.retrieveCountries());
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve and avail the list colleges in session scope
-                    logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
+                    LOGGER.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
                     } catch (InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -166,13 +167,13 @@ public class PersonController extends Controller {
 
                     session.setAttribute("facultyMemberRoles", memberRoles);
                     path = "/addUserAtSubAdmin";
-                    logger.log(Level.INFO, "Path is : {0}", path);
+                    LOGGER.log(Level.INFO, "Path is : {0}", path);
                     break;
 
                 case "/addUser":
 
                     //Retrieve and set person details 
-                    logger.log(Level.INFO, "Retrieving the person details");
+                    LOGGER.log(Level.INFO, "Retrieving the person details");
                     country = new CountryDetails();
                     country.setId(Integer.parseInt(request.getParameter("country")));
 
@@ -205,7 +206,7 @@ public class PersonController extends Controller {
                     try {
                         faculty.setId(Integer.parseInt(request.getParameter("campus-faculty")));
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The person is not a member of a faculty");
+                        LOGGER.log(Level.INFO, "The person is not a member of a faculty");
                     }
 
                     department = new DepartmentDetails();
@@ -213,7 +214,7 @@ public class PersonController extends Controller {
                         department.setId(Integer.parseInt(request.getParameter("campus-department")));
                         faculty = new FacultyDetails();
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "The person is not a member of a department");
+                        LOGGER.log(Level.INFO, "The person is not a member of a department");
                     }
 
                     Date admissionYear;
@@ -228,7 +229,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("admission_year_parse_error"));
-                        logger.log(Level.INFO, bundle.getString("admission_year_parse_error"));
+                        LOGGER.log(Level.INFO, bundle.getString("admission_year_parse_error"));
 
                         admissionYear = null;
                     }
@@ -249,7 +250,7 @@ public class PersonController extends Controller {
                     FacultyMemberRoleDetail memberRole;
                     try {
                         memberRole = FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("faculty-member-role")));
-                        
+
                         switch (memberRole) {
                             case LECTURER:
                                 userAccount.setUserGroup(UserGroupDetail.LECTURER);
@@ -284,26 +285,26 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     } catch (InvalidArgumentException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     path = (String) session.getAttribute("home");
-                    logger.log(Level.INFO, "Path is : {0}", path);
+                    LOGGER.log(Level.INFO, "Path is : {0}", path);
 
                     break;
 
                 case "/updateFaculties":
                     //Read in the college unique identifier
-                    logger.log(Level.INFO, "Reading in the college unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the college unique identifier");
                     Integer collegeId = Integer.parseInt(request.getParameter("collegeId"));
 
                     //Retrieve the faculties in the college and availing them on session
-                    logger.log(Level.INFO, "Retrieving the faculties in the college and availing them on session");
+                    LOGGER.log(Level.INFO, "Retrieving the faculties in the college and availing them on session");
                     List<FacultyDetails> faculties;
                     try {
                         faculties = facultyService.retrieveFaculties(collegeId);
@@ -312,7 +313,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -332,11 +333,11 @@ public class PersonController extends Controller {
 
                 case "/updateDepartments":
                     //Read in the faculty unique identifier
-                    logger.log(Level.INFO, "Reading in the faculty unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the faculty unique identifier");
                     Integer facultyId = Integer.parseInt(request.getParameter("facultyId"));
 
                     //Retrieve the departments in the faculty and availing them on session
-                    logger.log(Level.INFO, "Retrieving the departments in the faculty and availing them on session");
+                    LOGGER.log(Level.INFO, "Retrieving the departments in the faculty and availing them on session");
                     List<DepartmentDetails> departments;
                     try {
                         departments = departmentService.retrieveDepartments(facultyId);
@@ -345,7 +346,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -365,11 +366,11 @@ public class PersonController extends Controller {
 
                 case "/updateEditFaculties":
                     //Read in the college unique identifier
-                    logger.log(Level.INFO, "Reading in the college unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the college unique identifier");
                     collegeId = Integer.parseInt(request.getParameter("collegeId"));
 
                     //Retrieve the faculties in the college and availing them on session
-                    logger.log(Level.INFO, "Retrieving the faculties in the college and availing them on session");
+                    LOGGER.log(Level.INFO, "Retrieving the faculties in the college and availing them on session");
                     try {
                         faculties = facultyService.retrieveFaculties(collegeId);
                         session.setAttribute("faculties", faculties);
@@ -377,7 +378,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -397,11 +398,11 @@ public class PersonController extends Controller {
 
                 case "/updateEditDepartments":
                     //Read in the faculty unique identifier
-                    logger.log(Level.INFO, "Reading in the faculty unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the faculty unique identifier");
                     facultyId = Integer.parseInt(request.getParameter("facultyId"));
 
                     //Retrieve the departments in the faculty and availing them on session
-                    logger.log(Level.INFO, "Retrieving the departments in the faculty and availing them on session");
+                    LOGGER.log(Level.INFO, "Retrieving the departments in the faculty and availing them on session");
                     try {
                         departments = departmentService.retrieveDepartments(facultyId);
                         session.setAttribute("departments", departments);
@@ -409,7 +410,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -429,11 +430,11 @@ public class PersonController extends Controller {
 
                 case "/updateAdminFaculties":
                     //Read in the college unique identifier
-                    logger.log(Level.INFO, "Reading in the college unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the college unique identifier");
                     collegeId = Integer.parseInt(request.getParameter("collegeId"));
 
                     //Retrieve the faculties in the college and availing them on session
-                    logger.log(Level.INFO, "Retrieving the faculties in the college and availing them on session");
+                    LOGGER.log(Level.INFO, "Retrieving the faculties in the college and availing them on session");
                     try {
                         faculties = facultyService.retrieveFaculties(collegeId);
                         session.setAttribute("faculties", faculties);
@@ -441,7 +442,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -461,11 +462,11 @@ public class PersonController extends Controller {
 
                 case "/updateAdminDepartments":
                     //Read in the faculty unique identifier
-                    logger.log(Level.INFO, "Reading in the faculty unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the faculty unique identifier");
                     facultyId = Integer.parseInt(request.getParameter("facultyId"));
 
                     //Retrieve the departments in the faculty and availing them on session
-                    logger.log(Level.INFO, "Retrieving the departments in the faculty and availing them on session");
+                    LOGGER.log(Level.INFO, "Retrieving the departments in the faculty and availing them on session");
                     try {
                         departments = departmentService.retrieveDepartments(facultyId);
                         session.setAttribute("departments", departments);
@@ -473,7 +474,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -493,14 +494,14 @@ public class PersonController extends Controller {
 
                 case "/viewUser":
                     //Retrieve and avail the list colleges in session scope
-                    logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
+                    LOGGER.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
                     } catch (InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -509,14 +510,14 @@ public class PersonController extends Controller {
 
                 case "/adminUserView":
                     //Retrieve and avail the list colleges in session scope
-                    logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
+                    LOGGER.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
                     } catch (InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
                     //Proceed to the page
@@ -524,11 +525,11 @@ public class PersonController extends Controller {
 
                 case "/retrieveUser":
                     //Read in the user's reference number
-                    logger.log(Level.INFO, "Reading in the user's reference number");
+                    LOGGER.log(Level.INFO, "Reading in the user's reference number");
                     String referenceNumber = request.getParameter("referenceNumber");
 
                     //Retrieve the matching person
-                    logger.log(Level.INFO, "Retrieving the matching person");
+                    LOGGER.log(Level.INFO, "Retrieving the matching person");
                     person = new PersonDetails();
                     try {
                         person = personService.retrievePerson(referenceNumber);
@@ -536,12 +537,12 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve the person's user account
-                    logger.log(Level.INFO, "Retrieving the person's user account");
+                    LOGGER.log(Level.INFO, "Retrieving the person's user account");
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccount(referenceNumber);
@@ -549,12 +550,12 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve the corresponding faculty member
-                    logger.log(Level.INFO, "Retrieving the corresponding faculty member");
+                    LOGGER.log(Level.INFO, "Retrieving the corresponding faculty member");
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
@@ -562,12 +563,12 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Display the user details
-                    logger.log(Level.INFO, "Displaying the user details");
+                    LOGGER.log(Level.INFO, "Displaying the user details");
                     displayUserDetails(response, facultyMember, userAccount, person);
 
                     return;
@@ -575,7 +576,7 @@ public class PersonController extends Controller {
                 case "/upgradeUser":
 
                     //Retrieve the matching person
-                    logger.log(Level.INFO, "Retrieving the matching person");
+                    LOGGER.log(Level.INFO, "Retrieving the matching person");
                     person = new PersonDetails();
                     try {
                         person = personService.retrievePerson(Integer.parseInt(request.getParameter("personId")));
@@ -583,12 +584,12 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve the person's user account
-                    logger.log(Level.INFO, "Retrieving the person's user account");
+                    LOGGER.log(Level.INFO, "Retrieving the person's user account");
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccount(person.getReferenceNumber());
@@ -596,16 +597,16 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Hold the current user account details
-                    logger.log(Level.INFO, "Holding the current user account details");
+                    LOGGER.log(Level.INFO, "Holding the current user account details");
                     UserAccountDetails userAccountHolder = userAccount;
 
                     //Upgrade the person's user group
-                    logger.log(Level.INFO, "Upgrading the person's user group");
+                    LOGGER.log(Level.INFO, "Upgrading the person's user group");
                     userAccount.setUserGroup(UserGroupDetail.getUserGroupDetail(Short.parseShort(request.getParameter("userGroup"))));
                     try {
                         userAccountService.editUserAccount(userAccount);
@@ -613,12 +614,12 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Retrieve the corresponding faculty member
-                    logger.log(Level.INFO, "Retrieving the corresponding faculty member");
+                    LOGGER.log(Level.INFO, "Retrieving the corresponding faculty member");
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
@@ -626,12 +627,12 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Upgrade the person's member role
-                    logger.log(Level.INFO, "Upgrading the person's member role");
+                    LOGGER.log(Level.INFO, "Upgrading the person's member role");
                     facultyMember.setFacultyMemberRole(FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("memberRole"))));
                     try {
                         facultyMemberService.editFacultyMember(facultyMember);
@@ -639,12 +640,12 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Display the user details
-                    logger.log(Level.INFO, "Displaying the user details");
+                    LOGGER.log(Level.INFO, "Displaying the user details");
                     displayUserDetails(response, facultyMember, userAccount, person);
 
                     return;
@@ -653,11 +654,11 @@ public class PersonController extends Controller {
                 case "/viewAdminProfile":
 
                     //Read in the person's unique identifier
-                    logger.log(Level.INFO, "Reading in the person's unique identifier");
+                    LOGGER.log(Level.INFO, "Reading in the person's unique identifier");
                     Integer personId = ((PersonDetails) session.getAttribute("person")).getId();
 
                     //Retrieve the person
-                    logger.log(Level.INFO, "Retrieving the person");
+                    LOGGER.log(Level.INFO, "Retrieving the person");
                     person = new PersonDetails();
                     try {
                         person = personService.retrievePerson(personId);
@@ -665,16 +666,16 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Avail the person in session
-                    logger.log(Level.INFO, "Availing the person in session");
+                    LOGGER.log(Level.INFO, "Availing the person in session");
                     session.setAttribute("person", person);
 
                     //Retrieve the person's user account
-                    logger.log(Level.INFO, "Retrieving the person's user account");
+                    LOGGER.log(Level.INFO, "Retrieving the person's user account");
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccount(person.getReferenceNumber());
@@ -682,16 +683,16 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Avail the user account in session
-                    logger.log(Level.INFO, "Availing the user account in session");
+                    LOGGER.log(Level.INFO, "Availing the user account in session");
                     session.setAttribute("userAccount", userAccount);
 
                     //Retrieve the corresponding faculty member
-                    logger.log(Level.INFO, "Retrieving the corresponding faculty member");
+                    LOGGER.log(Level.INFO, "Retrieving the corresponding faculty member");
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
@@ -699,16 +700,16 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Avail the faculty member in session
-                    logger.log(Level.INFO, "Availing the faculty member in session");
+                    LOGGER.log(Level.INFO, "Availing the faculty member in session");
                     session.setAttribute("facultyMember", facultyMember);
 
                     //Retrieve the person's contact
-                    logger.log(Level.INFO, "Retrieving the person's contact");
+                    LOGGER.log(Level.INFO, "Retrieving the person's contact");
                     contact = new ContactDetails();
                     try {
                         contact = contactService.retrieveContact(person.getContact().getId());
@@ -716,16 +717,16 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Avail the contact in session
-                    logger.log(Level.INFO, "Availing the contact in session");
+                    LOGGER.log(Level.INFO, "Availing the contact in session");
                     session.setAttribute("contact", contact);
 
                     //Retrieve the person's email contact
-                    logger.log(Level.INFO, "Retrieving the person's contact");
+                    LOGGER.log(Level.INFO, "Retrieving the person's contact");
                     emailContact = new EmailContactDetails();
                     try {
                         emailContact = emailContactService.retrieveEmailContact(contact.getId());
@@ -733,16 +734,16 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Avail the email contact in session
-                    logger.log(Level.INFO, "Availing the email contact in session");
+                    LOGGER.log(Level.INFO, "Availing the email contact in session");
                     session.setAttribute("emailContact", emailContact);
 
                     //Retrieve the person's phone contact
-                    logger.log(Level.INFO, "Retrieving the person's phone contact");
+                    LOGGER.log(Level.INFO, "Retrieving the person's phone contact");
                     phoneContact = new PhoneContactDetails();
                     try {
                         phoneContact = phoneContactService.retrievePhoneContact(contact.getId());
@@ -750,16 +751,16 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Avail the phone contact in session
-                    logger.log(Level.INFO, "Availing the phone contact in session");
+                    LOGGER.log(Level.INFO, "Availing the phone contact in session");
                     session.setAttribute("phoneContact", phoneContact);
 
                     //Retrieve the person's postal contact
-                    logger.log(Level.INFO, "Retrieving the person's postal contact");
+                    LOGGER.log(Level.INFO, "Retrieving the person's postal contact");
                     postalContact = new PostalContactDetails();
                     try {
                         postalContact = postalContactService.retrievePostalContact(contact.getId());
@@ -767,23 +768,23 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Avail the postal contact in session
-                    logger.log(Level.INFO, "Availing the postal contact in session");
+                    LOGGER.log(Level.INFO, "Availing the postal contact in session");
                     session.setAttribute("postalContact", postalContact);
 
                     //Retrieve and avail the list of colleges in session scope
-                    logger.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
+                    LOGGER.log(Level.INFO, "Retrieving and availing the list of colleges in session scope");
                     try {
                         session.setAttribute("colleges", collegeService.retrieveColleges());
                     } catch (InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -797,7 +798,7 @@ public class PersonController extends Controller {
                     contact.setActive(true);
 
                     //Read in and set person details 
-                    logger.log(Level.INFO, "Reading in the person details");
+                    LOGGER.log(Level.INFO, "Reading in the person details");
                     person = new PersonDetails();
                     person.setActive(true);
                     person.setContact(contact);
@@ -808,7 +809,7 @@ public class PersonController extends Controller {
                     person.setNationalIdOrPassport(request.getParameter("national-id-or-passport"));
 
                     //Read in the email contact details
-                    logger.log(Level.INFO, "Reading in the person's email contact details");
+                    LOGGER.log(Level.INFO, "Reading in the person's email contact details");
                     emailContact = new EmailContactDetails();
                     emailContact.setContact(contact);
                     emailContact.setActive(true);
@@ -816,7 +817,7 @@ public class PersonController extends Controller {
                     emailContact.setId(Integer.parseInt(request.getParameter("email-contact-id")));
 
                     //Read in the phone contact details
-                    logger.log(Level.INFO, "Reading in the person's phone contact details");
+                    LOGGER.log(Level.INFO, "Reading in the person's phone contact details");
                     phoneContact = new PhoneContactDetails();
                     phoneContact.setContact(contact);
                     phoneContact.setActive(true);
@@ -825,7 +826,7 @@ public class PersonController extends Controller {
                     phoneContact.setFixedNumber(request.getParameter("fixed-number"));
 
                     //Read in the country details
-                    logger.log(Level.INFO, "Reading in the country details");
+                    LOGGER.log(Level.INFO, "Reading in the country details");
                     country = new CountryDetails();
                     try {
                         country.setId(Integer.parseInt(request.getParameter("country")));
@@ -834,7 +835,7 @@ public class PersonController extends Controller {
                     }
 
                     //Read in the postal contact details
-                    logger.log(Level.INFO, "Reading in the person's postal contact details");
+                    LOGGER.log(Level.INFO, "Reading in the person's postal contact details");
                     postalContact = new PostalContactDetails();
                     postalContact.setActive(true);
                     postalContact.setCountry(country);
@@ -845,7 +846,7 @@ public class PersonController extends Controller {
                     postalContact.setId(Integer.parseInt(request.getParameter("postal-contact-id")));
 
                     //Retrieve the corresponding faculty member
-                    logger.log(Level.INFO, "Retrieving the corresponding faculty member");
+                    LOGGER.log(Level.INFO, "Retrieving the corresponding faculty member");
                     facultyMember = new FacultyMemberDetails();
                     try {
                         facultyMember = facultyMemberService.retrieveFacultyMemberByPerson(person.getId());
@@ -853,35 +854,35 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Read in the department
-                    logger.log(Level.INFO, "Read in the department details");
+                    LOGGER.log(Level.INFO, "Read in the department details");
                     department = new DepartmentDetails();
                     try {
                         department.setId(Integer.parseInt(request.getParameter("campus-department")));
-                        logger.log(Level.INFO, "Department details are provided");
+                        LOGGER.log(Level.INFO, "Department details are provided");
                         faculty = null;
                     } catch (NumberFormatException e) {
-                        logger.log(Level.INFO, "Department details are not provided");
+                        LOGGER.log(Level.INFO, "Department details are not provided");
 
                         //Read in the faculty
-                        logger.log(Level.INFO, "Read in the faculty details");
+                        LOGGER.log(Level.INFO, "Read in the faculty details");
                         faculty = new FacultyDetails();
                         try {
                             faculty.setId(Integer.parseInt(request.getParameter("campus-faculty")));
-                            logger.log(Level.INFO, "Faculty details are provided");
+                            LOGGER.log(Level.INFO, "Faculty details are provided");
                             department = null;
                         } catch (Exception ex) {
-                            logger.log(Level.INFO, "Faculty details are not provided");
+                            LOGGER.log(Level.INFO, "Faculty details are not provided");
                             try {
                                 if (facultyMember.getFaculty().getId() != null) {
                                     faculty.setId(facultyMember.getFaculty().getId());
                                 }
                             } catch (Exception exc) {
-                                logger.log(Level.INFO, "Faculty details did not exist before");
+                                LOGGER.log(Level.INFO, "Faculty details did not exist before");
                             }
 
                             try {
@@ -889,7 +890,7 @@ public class PersonController extends Controller {
                                     department.setId(facultyMember.getDepartment().getId());
                                 }
                             } catch (Exception exc) {
-                                logger.log(Level.INFO, "Department details did not exist before");
+                                LOGGER.log(Level.INFO, "Department details did not exist before");
                             }
                         }
 
@@ -901,15 +902,15 @@ public class PersonController extends Controller {
                                 if (department.getId() != null) {
                                     if (facultyMember.getDepartment().getId() != null) {
                                         department.setId(null);
-                                        logger.log(Level.INFO, "Department details cleared");
+                                        LOGGER.log(Level.INFO, "Department details cleared");
                                     }
                                 }
                             } catch (NullPointerException e) {
-                                logger.log(Level.INFO, "Department details are not provided, first check abandoned");
+                                LOGGER.log(Level.INFO, "Department details are not provided, first check abandoned");
                             }
                         }
                     } catch (NullPointerException e) {
-                        logger.log(Level.INFO, "Faculty details are not provided, first check abandoned");
+                        LOGGER.log(Level.INFO, "Faculty details are not provided, first check abandoned");
                     }
 
                     try {
@@ -918,19 +919,19 @@ public class PersonController extends Controller {
                                 if (faculty.getId() != null) {
                                     if (facultyMember.getFaculty().getId() != null) {
                                         faculty.setId(null);
-                                        logger.log(Level.INFO, "Faculty details cleared");
+                                        LOGGER.log(Level.INFO, "Faculty details cleared");
                                     }
                                 }
                             } catch (NullPointerException e) {
-                                logger.log(Level.INFO, "Faculty details are not provided, second check abandoned");
+                                LOGGER.log(Level.INFO, "Faculty details are not provided, second check abandoned");
                             }
                         }
                     } catch (NullPointerException e) {
-                        logger.log(Level.INFO, "Department details are not provided, second check abandoned");
+                        LOGGER.log(Level.INFO, "Department details are not provided, second check abandoned");
                     }
 
                     //Retrieve the person's user account
-                    logger.log(Level.INFO, "Retrieving the person's user account");
+                    LOGGER.log(Level.INFO, "Retrieving the person's user account");
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccountByPersonId(Integer.parseInt(request.getParameter("person-id")));
@@ -938,7 +939,7 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
@@ -949,7 +950,7 @@ public class PersonController extends Controller {
                             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                             response.setContentType("text/html;charset=UTF-8");
                             response.getWriter().write(bundle.getString("admission_year_parse_error"));
-                            logger.log(Level.INFO, bundle.getString("admission_year_parse_error"));
+                            LOGGER.log(Level.INFO, bundle.getString("admission_year_parse_error"));
 
                             return;
                         }
@@ -973,7 +974,7 @@ public class PersonController extends Controller {
                     facultyMember.setAdmissionYear(admissionYear);
 
                     //Create a message digest algorithm for SHA-256 hashing algorithm
-                    logger.log(Level.INFO, "Creating a message digest hashing algorithm object");
+                    LOGGER.log(Level.INFO, "Creating a message digest hashing algorithm object");
                     MessageDigest messageDigest;
                     try {
                         messageDigest = MessageDigest.getInstance("SHA-256");
@@ -982,19 +983,19 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("error_007_01"));
-                        logger.log(Level.INFO, bundle.getString("error_007_01"));
+                        LOGGER.log(Level.INFO, bundle.getString("error_007_01"));
                         break;
                     }
 
                     //Read in the old entered password
-                    logger.log(Level.INFO, "Reading in the old entered password");
+                    LOGGER.log(Level.INFO, "Reading in the old entered password");
                     String oldPassword = accessService.generateSHAPassword(messageDigest, request.getParameter("old-password"));
 
                     //Check validity of the entered old password
-                    logger.log(Level.INFO, "Checking validity of the entered old password");
+                    LOGGER.log(Level.INFO, "Checking validity of the entered old password");
                     if (oldPassword.equals(userAccount.getPassword())) {
                         //Password is valid
-                        logger.log(Level.INFO, "Old password is valid");
+                        LOGGER.log(Level.INFO, "Old password is valid");
                         String newPassword = request.getParameter("new-password");
                         String confirmationPassword = request.getParameter("confirm-password");
                         if (newPassword != null && newPassword.trim().length() > 0) {
@@ -1002,41 +1003,41 @@ public class PersonController extends Controller {
                                 userAccount.setPassword(newPassword);
                             } else {
                                 //Password is invalid
-                                logger.log(Level.INFO, "Passwords do not match");
+                                LOGGER.log(Level.INFO, "Passwords do not match");
                             }
                         } else {
                             //Password is invalid
-                            logger.log(Level.INFO, "Old password is unchanged");
+                            LOGGER.log(Level.INFO, "Old password is unchanged");
                         }
                     } else {
                         //Password is invalid
-                        logger.log(Level.INFO, "Old password is invalid");
+                        LOGGER.log(Level.INFO, "Old password is invalid");
                     }
 
                     //Edit the person details
-                    logger.log(Level.INFO, "Editing the person details");
+                    LOGGER.log(Level.INFO, "Editing the person details");
                     try {
                         personService.editPerson(person, userAccount, facultyMember, emailContact, phoneContact, postalContact);
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     } catch (AlgorithmException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                     }
 
                     path = (String) session.getAttribute("home");
-                    logger.log(Level.INFO, "Path is : {0}", path);
+                    LOGGER.log(Level.INFO, "Path is : {0}", path);
 
                     break;
 
                 case "/validatePassword":
                     //Retrieve the person's user account
-                    logger.log(Level.INFO, "Retrieving the person's user account");
+                    LOGGER.log(Level.INFO, "Retrieving the person's user account");
                     userAccount = new UserAccountDetails();
                     try {
                         userAccount = userAccountService.retrieveUserAccountByPersonId(Integer.parseInt(request.getParameter("personId")));
@@ -1044,35 +1045,35 @@ public class PersonController extends Controller {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString(e.getCode()));
-                        logger.log(Level.INFO, bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
                         return;
                     }
 
                     //Create a message digest algorithm for SHA-256 hashing algorithm
-                    logger.log(Level.INFO, "Creating a message digest hashing algorithm object");
+                    LOGGER.log(Level.INFO, "Creating a message digest hashing algorithm object");
                     try {
                         messageDigest = MessageDigest.getInstance("SHA-256");
                     } catch (NoSuchAlgorithmException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("error_007_01"));
-                        logger.log(Level.INFO, bundle.getString("error_007_01"));
+                        LOGGER.log(Level.INFO, bundle.getString("error_007_01"));
                         break;
                     }
 
                     //Read in the entered password
-                    logger.log(Level.INFO, "Reading in the entered password");
+                    LOGGER.log(Level.INFO, "Reading in the entered password");
                     oldPassword = accessService.generateSHAPassword(messageDigest, request.getParameter("password"));
 
                     //Check validity of the entered password
-                    logger.log(Level.INFO, "Checking validity of the entered password");
+                    LOGGER.log(Level.INFO, "Checking validity of the entered password");
                     if (oldPassword.equals(userAccount.getPassword())) {
                         //Password is valid
-                        logger.log(Level.INFO, "Old password is valid");
+                        LOGGER.log(Level.INFO, "Old password is valid");
                         out.write("");
                     } else {
                         //Password is invalid
-                        logger.log(Level.INFO, "Old password is invalid");
+                        LOGGER.log(Level.INFO, "Old password is invalid");
                         out.write("<span class=\"btn btn-warning\">Wrong password entered!</span>");
                     }
 
@@ -1080,40 +1081,61 @@ public class PersonController extends Controller {
 
                 case "/checkFacultyMemberRole":
 
-                    logger.log(Level.INFO, "Checking faculty member role");
+                    LOGGER.log(Level.INFO, "Checking faculty member role");
                     try {
                         memberRole = FacultyMemberRoleDetail.getFacultyMemberRoleDetail(Short.parseShort(request.getParameter("memberRole")));
                     } catch (NumberFormatException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
                         response.getWriter().write(bundle.getString("invalid_id"));
-                        logger.log(Level.INFO, bundle.getString("invalid_id"));
+                        LOGGER.log(Level.INFO, bundle.getString("invalid_id"));
                         return;
                     }
 
-                    logger.log(Level.INFO, "Checking if student");
+                    LOGGER.log(Level.INFO, "Checking if student");
                     if (memberRole.equals(FacultyMemberRoleDetail.STUDENT)) {
-                        logger.log(Level.INFO, "Faculty member role is student");
+                        LOGGER.log(Level.INFO, "Faculty member role is student");
                         out.write("<label for=\"admission-year\">Admission month & year</label>");
                         out.write("<input type=\"date\" name=\"admission-year\" id=\"admission-year\" required=\"true\"/>");
                     } else {
-                        logger.log(Level.INFO, "Faculty member role is not student");
+                        LOGGER.log(Level.INFO, "Faculty member role is not student");
                     }
 
-                    logger.log(Level.INFO, "Returning from the method");
+                    LOGGER.log(Level.INFO, "Returning from the method");
                     return;
+
+                case "/retrieveUsers":
+
+                    LOGGER.log(Level.INFO, "Retrieving all users");
+                    List<PersonDetails> people;
+                    
+                    try {
+                        people = personService.retrievePersons();
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
+                        return;
+                    }
+
+                    session.setAttribute("users", people);
+                    
+                    path = "/viewUsers";
+                    LOGGER.log(Level.INFO, "Path is : {0}", path);
+                    break;
 
             }
 
             destination = "WEB-INF/views" + path + ".jsp";
             try {
-                logger.log(Level.INFO, "Dispatching request to: {0}", destination);
+                LOGGER.log(Level.INFO, "Dispatching request to: {0}", destination);
                 request.getRequestDispatcher(destination).forward(request, response);
             } catch (ServletException | IOException e) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 response.setContentType("text/html;charset=UTF-8");
                 response.getWriter().write(bundle.getString("redirection_failed"));
-                logger.log(Level.INFO, bundle.getString("redirection_failed"), e);
+                LOGGER.log(Level.INFO, bundle.getString("redirection_failed"), e);
             }
         }
     }
@@ -1161,33 +1183,33 @@ public class PersonController extends Controller {
     private void displayUserDetails(HttpServletResponse response, FacultyMemberDetails facultyMember, UserAccountDetails userAccount, PersonDetails person) throws IOException {
 
         //Retrieve the faculty to which the faculty member belongs if any
-        logger.log(Level.INFO, "Retrieving the faculty to which the faculty member belongs if any");
+        LOGGER.log(Level.INFO, "Retrieving the faculty to which the faculty member belongs if any");
         faculty = new FacultyDetails();
         try {
             if (facultyMember.getFaculty() != null) {
                 faculty = facultyService.retrieveFaculty(facultyMember.getFaculty().getId());
             } else {
-                logger.log(Level.INFO, "The person does not belong to a faculty");
+                LOGGER.log(Level.INFO, "The person does not belong to a faculty");
                 faculty = null;
             }
         } catch (InvalidArgumentException | InvalidStateException e) {
-            logger.log(Level.INFO, "The person does not belong to a faculty");
+            LOGGER.log(Level.INFO, "The person does not belong to a faculty");
             faculty = null;
         }
 
         //Retrieve the department to which the faculty member belongs if any
-        logger.log(Level.INFO, "Retrieving the department to which the faculty member belongs if any");
+        LOGGER.log(Level.INFO, "Retrieving the department to which the faculty member belongs if any");
         department = new DepartmentDetails();
         try {
             if (facultyMember.getDepartment() != null) {
                 department = departmentService.retrieveDepartment(facultyMember.getDepartment().getId());
 
             } else {
-                logger.log(Level.INFO, "The person does not belong to a faculty");
+                LOGGER.log(Level.INFO, "The person does not belong to a faculty");
                 department = null;
             }
         } catch (InvalidArgumentException | InvalidStateException e) {
-            logger.log(Level.INFO, "The person does not belong to a department");
+            LOGGER.log(Level.INFO, "The person does not belong to a department");
             department = null;
         }
 
@@ -1259,6 +1281,6 @@ public class PersonController extends Controller {
     }
     //</editor-fold>
 
-    private static final Logger logger = Logger.getLogger(PersonController.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(PersonController.class.getSimpleName());
 
 }
