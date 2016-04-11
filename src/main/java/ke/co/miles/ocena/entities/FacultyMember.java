@@ -36,6 +36,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "FacultyMember.findNonStudentsByFacultyId", query = "SELECT f FROM FacultyMember f WHERE f.faculty.id = :facultyId AND NOT f.facultyMemberRole.id = :facultyMemberRoleId"),
     @NamedQuery(name = "FacultyMember.findNonStudentsByDepartmentId", query = "SELECT f FROM FacultyMember f WHERE f.department.id = :departmentId AND NOT f.facultyMemberRole.id = :facultyMemberRoleId"),
+    @NamedQuery(name = "FacultyMember.findActiveByFacultyId", query = "SELECT f FROM FacultyMember f WHERE f.active = :active AND f.faculty.id = :facultyId"),
+    @NamedQuery(name = "FacultyMember.findActiveByDepartmentId", query = "SELECT f FROM FacultyMember f WHERE f.active = :active AND f.department.id = :departmentId"),
     @NamedQuery(name = "FacultyMember.findByPersonId", query = "SELECT f FROM FacultyMember f WHERE f.person.id = :personId"),
     @NamedQuery(name = "FacultyMember.findAll", query = "SELECT f FROM FacultyMember f"),
     @NamedQuery(name = "FacultyMember.findById", query = "SELECT f FROM FacultyMember f WHERE f.id = :id"),
@@ -43,6 +45,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "FacultyMember.findByActive", query = "SELECT f FROM FacultyMember f WHERE f.active = :active"),
     @NamedQuery(name = "FacultyMember.findByVersion", query = "SELECT f FROM FacultyMember f WHERE f.version = :version")})
 public class FacultyMember implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -183,5 +186,5 @@ public class FacultyMember implements Serializable {
     public String toString() {
         return "ke.co.miles.ocena.entities.FacultyMember[ id=" + id + " ]";
     }
-    
+
 }

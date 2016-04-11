@@ -34,7 +34,7 @@
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/createAccountAtSubAdmin">Add user</a></li>
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/viewUser">Upgrade user</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/retrieveUsers">View users</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/retrieveFacultyUsers">View users</a></li>
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="/Ocena/viewAdminProfile">Edit my profile</a></li>
             </ul>
         </li>

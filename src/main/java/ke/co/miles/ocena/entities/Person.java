@@ -40,8 +40,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Person.findByReferenceNumber", query = "SELECT p FROM Person p WHERE p.referenceNumber = :referenceNumber"),
     @NamedQuery(name = "Person.findByNationalIdOrPassport", query = "SELECT p FROM Person p WHERE p.nationalIdOrPassport = :nationalIdOrPassport"),
     @NamedQuery(name = "Person.findByActive", query = "SELECT p FROM Person p WHERE p.active = :active"),
+    @NamedQuery(name = "Person.findActiveById", query = "SELECT p FROM Person p WHERE p.id = :id AND p.active = :active"),
     @NamedQuery(name = "Person.findByVersion", query = "SELECT p FROM Person p WHERE p.version = :version")})
 public class Person implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -198,5 +200,5 @@ public class Person implements Serializable {
     public String toString() {
         return "ke.co.miles.ocena.entities.Person[ id=" + id + " ]";
     }
-    
+
 }

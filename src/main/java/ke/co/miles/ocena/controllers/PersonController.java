@@ -48,7 +48,7 @@ import ke.co.miles.ocena.utilities.UserGroupDetail;
  *
  * @author Ben Siech
  */
-@WebServlet(name = "PersonController", urlPatterns = {"/createAccountAtMainAdmin", "/createAccountAtSubAdmin", "/addUser", "/adminUserView", "/viewUser", "/retrieveUsers", "/editUser", "/removeUser", "/updateFaculties", "/updateDepartments", "/upgradeUser", "/retrieveUser", "/viewAdminProfile", "/viewUserProfile", "/editUserProfile", "/updateEditFaculties", "/updateEditDepartments", "/updateAdminFaculties", "/updateAdminDepartments", "/validatePassword", "/checkFacultyMemberRole"})
+@WebServlet(name = "PersonController", urlPatterns = {"/createAccountAtMainAdmin", "/createAccountAtSubAdmin", "/addUser", "/adminUserView", "/viewUser", "/retrieveUsers", "/retrieveFacultyUsers", "/editUser", "/removeUser", "/updateFaculties", "/updateDepartments", "/upgradeUser", "/retrieveUser", "/viewAdminProfile", "/viewUserProfile", "/editUserProfile", "/updateEditFaculties", "/updateEditDepartments", "/updateAdminFaculties", "/updateAdminDepartments", "/validatePassword", "/checkFacultyMemberRole"})
 public class PersonController extends Controller {
 
     /**
@@ -63,19 +63,39 @@ public class PersonController extends Controller {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
         String path = request.getServletPath();
-        PrintWriter out = response.getWriter();
         String destination;
+        PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
+        ArrayList<String> urlPatterns = new ArrayList<>();
         DateFormat userDateFormat = new SimpleDateFormat("MMM yyyy");
 
         //Get the user's locale and the associated resource bundle
         Locale locale = request.getLocale();
         bundle = ResourceBundle.getBundle("text", locale);
 
-        boolean adminSession;
+        boolean adminSession, evaluatorSession = false;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
+
+            urlPatterns.clear();
+            urlPatterns.add("/addUser");
+            urlPatterns.add("/viewUser");
+            urlPatterns.add("/editUser");
+            urlPatterns.add("/removeUser");
+            urlPatterns.add("/upgradeUser");
+            urlPatterns.add("/retrieveUser");
+            urlPatterns.add("/adminUserView");
+            urlPatterns.add("/retrieveUsers");
+            urlPatterns.add("/validatePassword");
+            urlPatterns.add("/viewAdminProfile");
+            urlPatterns.add("/updateEditFaculties");
+            urlPatterns.add("/updateAdminFaculties");
+            urlPatterns.add("/updateEditDepartments");
+            urlPatterns.add("/updateAdminDepartments");
+            urlPatterns.add("/checkFacultyMemberRole");
+            urlPatterns.add("/createAccountAtMainAdmin");
+
         } catch (Exception e) {
             LOGGER.log(Level.INFO, "Main admin session is null");
             LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
@@ -86,6 +106,29 @@ public class PersonController extends Controller {
         if (adminSession == false) {
             try {
                 adminSession = (Boolean) session.getAttribute("subAdminSession");
+
+                urlPatterns.clear();
+                urlPatterns.add("/addUser");
+                urlPatterns.add("/viewUser");
+                urlPatterns.add("/editUser");
+                urlPatterns.add("/removeUser");
+                urlPatterns.add("/upgradeUser");
+                urlPatterns.add("/retrieveUser");
+                urlPatterns.add("/adminUserView");
+                urlPatterns.add("/viewAdminProfile");
+                urlPatterns.add("/validatePassword");
+                urlPatterns.add("/removeFacultyUser");
+                urlPatterns.add("/updateEditFaculties");
+                urlPatterns.add("/retrieveFacultyUsers");
+                urlPatterns.add("/updateAdminFaculties");
+                urlPatterns.add("/updateEditDepartments");
+                urlPatterns.add("/updateAdminDepartments");
+                urlPatterns.add("/checkFacultyMemberRole");
+                urlPatterns.add("/createAccountAtSubAdmin");
+                if (path.equals("/removeUser")) {
+                    path = "/removeFacultyUser";
+                }
+
             } catch (Exception e) {
                 LOGGER.log(Level.INFO, "Sub admin session is null");
                 LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
@@ -94,11 +137,52 @@ public class PersonController extends Controller {
             }
         }
 
-        //Check session type
-        LOGGER.log(Level.INFO, "Checking session type");
-        if (adminSession == true || adminSession == false) {
-            //Admin session established
-            LOGGER.log(Level.INFO, "Admin session established hence responding to the request");
+        if (adminSession == false) {
+
+            try {
+                evaluatorSession = (Boolean) session.getAttribute("evaluatorSession");
+
+                urlPatterns.clear();
+                urlPatterns.add("/editUser");
+                urlPatterns.add("/retrieveUser");
+                urlPatterns.add("/viewUserProfile");
+                urlPatterns.add("/editUserProfile");
+                urlPatterns.add("/updateFaculties");
+                urlPatterns.add("/validatePassword");
+                urlPatterns.add("/updateDepartments");
+                urlPatterns.add("/updateEditFaculties");
+                urlPatterns.add("/updateEditDepartments");
+                urlPatterns.add("/checkFacultyMemberRole");
+
+            } catch (Exception e) {
+                LOGGER.log(Level.INFO, "Evaluator session is null");
+                LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+                return;
+            }
+        }
+
+        if (evaluatorSession) {
+
+            urlPatterns.clear();
+            urlPatterns.add("/viewUser");
+            urlPatterns.add("/editUser");
+            urlPatterns.add("/retrieveUser");
+            urlPatterns.add("/viewUserProfile");
+            urlPatterns.add("/editUserProfile");
+            urlPatterns.add("/updateFaculties");
+            urlPatterns.add("/validatePassword");
+            urlPatterns.add("/updateDepartments");
+            urlPatterns.add("/updateEditFaculties");
+            urlPatterns.add("/updateEditDepartments");
+            urlPatterns.add("/checkFacultyMemberRole");
+
+        }
+
+        //Session established
+        LOGGER.log(Level.INFO, "Session established hence responding to the request");
+
+        if (urlPatterns.contains(path)) {
 
             switch (path) {
 
@@ -1111,6 +1195,36 @@ public class PersonController extends Controller {
 
                     try {
                         usersMap = personService.retrievePersons();
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
+                        return;
+                    }
+
+                    session.setAttribute("usersMap", usersMap);
+
+                    path = "/viewUsers";
+                    LOGGER.log(Level.INFO, "Path is : {0}", path);
+
+                    break;
+
+                case "/retrieveFacultyUsers":
+
+                    LOGGER.log(Level.INFO, "Retrieving all active users of a faculty");
+
+                    department = (DepartmentDetails) session.getAttribute("department");
+                    faculty = (FacultyDetails) session.getAttribute("faculty");
+
+                    try {
+                        if (faculty != null && faculty.getId() != null) {
+                            usersMap = personService.retrieveFacultyPersons(faculty);
+                        } else if (department != null && department.getId() != null) {
+                            usersMap = personService.retrieveFacultyPersons(department);
+                        } else {
+                            usersMap = null;
+                        }
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
@@ -1141,6 +1255,46 @@ public class PersonController extends Controller {
                     LOGGER.log(Level.INFO, "Retrieving all active users");
                     try {
                         usersMap = personService.retrievePersons();
+                    } catch (InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
+                        return;
+                    }
+
+                    LOGGER.log(Level.INFO, "Update users table");
+                    updateUsersTable(response, usersMap);
+
+                    session.setAttribute("usersMap", usersMap);
+
+                    return;
+
+                case "/removeFacultyUser":
+
+                    LOGGER.log(Level.INFO, "Removing user");
+                    personId = Integer.parseInt(request.getParameter("personId"));
+                    try {
+                        personService.removePerson(personId);
+                    } catch (InvalidArgumentException | InvalidStateException e) {
+                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                        response.setContentType("text/html;charset=UTF-8");
+                        response.getWriter().write(bundle.getString(e.getCode()));
+                        LOGGER.log(Level.INFO, bundle.getString(e.getCode()));
+                    }
+
+                    LOGGER.log(Level.INFO, "Retrieving all active users of a faculty");
+                    department = (DepartmentDetails) session.getAttribute("department");
+                    faculty = (FacultyDetails) session.getAttribute("faculty");
+
+                    try {
+                        if (faculty != null && faculty.getId() != null) {
+                            usersMap = personService.retrieveFacultyPersons(faculty);
+                        } else if (department != null && department.getId() != null) {
+                            usersMap = personService.retrieveFacultyPersons(department);
+                        } else {
+                            usersMap = null;
+                        }
                     } catch (InvalidArgumentException | InvalidStateException e) {
                         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                         response.setContentType("text/html;charset=UTF-8");
@@ -1323,7 +1477,7 @@ public class PersonController extends Controller {
             } else {
                 out.write("<tr>");
             }
-            out.write("<td>"+ i + "</td>");
+            out.write("<td>" + i + "</td>");
             out.write("<td>" + personDetails.getFirstName() + " " + personDetails.getLastName() + "</td>");
             out.write("<td>" + personDetails.getReferenceNumber() + "</td>");
             out.write("<td>" + personDetails.getNationalIdOrPassport() + "</td>");

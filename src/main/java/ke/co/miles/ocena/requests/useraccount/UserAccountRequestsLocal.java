@@ -45,11 +45,11 @@ public interface UserAccountRequestsLocal {
 
     /**
      *
-     * @param id
+     * @param personId
      * @throws InvalidArgumentException
      * @throws InvalidStateException
      */
-    public void removeUserAccount(Integer id) throws InvalidArgumentException, InvalidStateException;
+    public void removeUserAccount(Integer personId) throws InvalidArgumentException, InvalidStateException;
 
     /**
      *

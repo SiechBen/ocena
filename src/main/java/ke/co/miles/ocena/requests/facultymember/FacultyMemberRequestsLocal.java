@@ -57,11 +57,11 @@ public interface FacultyMemberRequestsLocal {
 
     /**
      *
-     * @param id
+     * @param personId
      * @throws InvalidArgumentException
      * @throws InvalidStateException
      */
-    public void removeFacultyMember(Integer id) throws InvalidArgumentException, InvalidStateException;
+    public void removeFacultyMember(Integer personId) throws InvalidArgumentException, InvalidStateException;
 
     /**
      *

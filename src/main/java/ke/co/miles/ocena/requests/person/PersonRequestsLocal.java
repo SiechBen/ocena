@@ -5,7 +5,6 @@
  */
 package ke.co.miles.ocena.requests.person;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.ejb.Local;
@@ -47,10 +46,9 @@ public interface PersonRequestsLocal {
     /**
      *
      * @return
-     * @throws InvalidArgumentException
      * @throws InvalidStateException
      */
-    public HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> retrievePersons() throws InvalidArgumentException, InvalidStateException;
+    public HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> retrievePersons() throws InvalidStateException;
 
     /**
      *
@@ -108,5 +106,14 @@ public interface PersonRequestsLocal {
      * @throws AlgorithmException
      */
     public void editPerson(PersonDetails personDetails, UserAccountDetails userAccountDetails, FacultyMemberDetails facultyMemberDetails, EmailContactDetails emailContactDetails, PhoneContactDetails phoneContactDetails, PostalContactDetails postalContactDetails) throws InvalidArgumentException, InvalidStateException, AlgorithmException;
+
+    /**
+     * 
+     * @param object
+     * @return 
+     * @throws InvalidArgumentException 
+     * @throws InvalidStateException 
+     */
+    public HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> retrieveFacultyPersons(Object object) throws InvalidArgumentException, InvalidStateException;
 
 }

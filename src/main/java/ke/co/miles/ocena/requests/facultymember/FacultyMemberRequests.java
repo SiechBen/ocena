@@ -267,27 +267,48 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Delete">
     @Override
-    public void removeFacultyMember(Integer id) throws InvalidArgumentException, InvalidStateException {
+    public void removeFacultyMember(Integer personId) throws InvalidArgumentException, InvalidStateException {
         //Method for removing a faculty member record from the database
         LOGGER.log(Level.INFO, "Entered the method for removing a faculty member record from the database");
 
         //Checking validity of details
         LOGGER.log(Level.INFO, "Checking validity of the unique identifier passed in");
-        if (id == null) {
-            LOGGER.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("error_028_07");
+        if (personId == null) {
+            LOGGER.log(Level.INFO, "The unique identifier of the person is null");
+            throw new InvalidArgumentException("error_028_06");
         }
 
-        //Removing a faculty member record from the database
-        LOGGER.log(Level.INFO, "Removing a faculty member record from the database");
-        facultyMember = em.find(FacultyMember.class, id);
+        //Get the faculty member record to be removed
+        LOGGER.log(Level.INFO, "Getting the faculty member record to be removed");
+        q = em.createNamedQuery("FacultyMember.findByPersonId");
+        q.setParameter("personId", personId);
         try {
-            em.remove(facultyMember);
+            facultyMember = (FacultyMember) q.getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new InvalidStateException("error_000_01");
+        }
+
+        //Deactivate the faculty member record in the database
+        LOGGER.log(Level.INFO, "Deactivating the faculty member record in the database");
+        facultyMember.setActive(Boolean.FALSE);
+
+        try {
+            em.merge(facultyMember);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
             throw new InvalidStateException("error_000_01");
         }
 
+//        //Removing a faculty member record from the database
+//        LOGGER.log(Level.INFO, "Removing a faculty member record from the database");
+//        facultyMember = em.find(FacultyMember.class, id);
+//        try {
+//            em.remove(facultyMember);
+//        } catch (Exception e) {
+//            LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
+//            throw new InvalidStateException("error_000_01");
+//        }
     }
     //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Convert">

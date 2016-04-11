@@ -13,6 +13,7 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import ke.co.miles.ocena.defaults.EntityRequests;
+import ke.co.miles.ocena.entities.FacultyMember;
 import ke.co.miles.ocena.entities.Person;
 import ke.co.miles.ocena.entities.UserAccount;
 import ke.co.miles.ocena.entities.UserGroup;
@@ -312,27 +313,48 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Delete">
     @Override
-    public void removeUserAccount(Integer id) throws InvalidArgumentException, InvalidStateException {
+    public void removeUserAccount(Integer personId) throws InvalidArgumentException, InvalidStateException {
         //Method for removing a faculty record from the database
         LOGGER.log(Level.INFO, "Entered the method for removing a faculty record from the database");
 
         //Checking validity of details
         LOGGER.log(Level.INFO, "Checking validity of the unique identifier passed in");
-        if (id == null) {
-            LOGGER.log(Level.INFO, "The unique identifier is null");
-            throw new InvalidArgumentException("error_001_15");
+        if (personId == null) {
+            LOGGER.log(Level.INFO, "The unique identifier of the person is null");
+            throw new InvalidArgumentException("error_001_13");
         }
 
-        //Removing a faculty record from the database
-        LOGGER.log(Level.INFO, "Removing a faculty record from the database");
-        userAccount = em.find(UserAccount.class, id);
+        //Get the user account record to be removed
+        LOGGER.log(Level.INFO, "Getting the user account record to be removed");
+        q = em.createNamedQuery("UserAccount.findByPersonId");
+        q.setParameter("personId", personId);
         try {
-            em.remove(userAccount);
+            userAccount = (UserAccount) q.getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
+            throw new InvalidStateException("error_000_01");
+        }
+
+        //Deactivate the user account record in the database
+        LOGGER.log(Level.INFO, "Deactivating the user account record in the database");
+        userAccount.setActive(Boolean.FALSE);
+
+        try {
+            em.merge(userAccount);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
             throw new InvalidStateException("error_000_01");
         }
 
+//        //Removing a faculty record from the database
+//        LOGGER.log(Level.INFO, "Removing a faculty record from the database");
+//        userAccount = em.find(UserAccount.class, id);
+//        try {
+//            em.remove(userAccount);
+//        } catch (Exception e) {
+//            LOGGER.log(Level.SEVERE, "An error occurred during record removal", e);
+//            throw new InvalidStateException("error_000_01");
+//        }
     }
     //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Convert">
