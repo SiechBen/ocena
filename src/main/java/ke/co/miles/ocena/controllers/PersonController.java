@@ -74,7 +74,7 @@ public class PersonController extends Controller {
         Locale locale = request.getLocale();
         bundle = ResourceBundle.getBundle("text", locale);
 
-        boolean adminSession, evaluatorSession = false;
+        boolean adminSession;
         try {
             adminSession = (Boolean) session.getAttribute("mainAdminSession");
 
@@ -118,6 +118,7 @@ public class PersonController extends Controller {
                 urlPatterns.add("/retrieveUser");
                 urlPatterns.add("/adminUserView");
                 urlPatterns.add("/updateFaculties");
+                urlPatterns.add("/editUserProfile");
                 urlPatterns.add("/validatePassword");
                 urlPatterns.add("/viewAdminProfile");
                 urlPatterns.add("/updateDepartments");
@@ -129,8 +130,8 @@ public class PersonController extends Controller {
                 urlPatterns.add("/updateAdminDepartments");
                 urlPatterns.add("/checkFacultyMemberRole");
                 urlPatterns.add("/createAccountAtSubAdmin");
-                if (path.equals("/removeUser")) {
-                    path = "/removeFacultyUser";
+                if (path.equals("/viewUserProfile")) {
+                    path = "/viewProfile";
                 }
 
             } catch (Exception e) {
@@ -141,46 +142,43 @@ public class PersonController extends Controller {
             }
         }
 
-        if (adminSession == false) {
+        Boolean evaluatorSession;
+        urlPatterns.clear();
+        urlPatterns.add("/editUser");
+        urlPatterns.add("/retrieveUser");
+        urlPatterns.add("/viewUserProfile");
+        urlPatterns.add("/editUserProfile");
+        urlPatterns.add("/updateFaculties");
+        urlPatterns.add("/validatePassword");
+        urlPatterns.add("/updateDepartments");
+        urlPatterns.add("/updateEditFaculties");
+        urlPatterns.add("/updateEditDepartments");
+        urlPatterns.add("/checkFacultyMemberRole");
 
+        if (adminSession) {
             try {
                 evaluatorSession = (Boolean) session.getAttribute("evaluatorSession");
 
-                urlPatterns.clear();
-                urlPatterns.add("/editUser");
-                urlPatterns.add("/retrieveUser");
-                urlPatterns.add("/viewUserProfile");
-                urlPatterns.add("/editUserProfile");
-                urlPatterns.add("/updateFaculties");
-                urlPatterns.add("/validatePassword");
-                urlPatterns.add("/updateDepartments");
-                urlPatterns.add("/updateEditFaculties");
-                urlPatterns.add("/updateEditDepartments");
-                urlPatterns.add("/checkFacultyMemberRole");
+                if (evaluatorSession == false) {
+                    urlPatterns.add("/viewUser");
+                    urlPatterns.add("/viewProfile");
+                    urlPatterns.remove("/viewUserProfile");
+                    if (path.equals("/viewUserProfile")) {
+                        path = "/viewProfile";
+                    }
+                }
 
             } catch (Exception e) {
                 LOGGER.log(Level.INFO, "Evaluator session is null");
-                LOGGER.log(Level.INFO, "Requesting dispatch to forward to: index.jsp");
-                request.getRequestDispatcher("index.jsp").forward(request, response);
-                return;
             }
-        }
+        } else {
 
-        if (evaluatorSession) {
-
-            urlPatterns.clear();
             urlPatterns.add("/viewUser");
-            urlPatterns.add("/editUser");
-            urlPatterns.add("/retrieveUser");
-            urlPatterns.add("/viewUserProfile");
-            urlPatterns.add("/editUserProfile");
-            urlPatterns.add("/updateFaculties");
-            urlPatterns.add("/validatePassword");
-            urlPatterns.add("/updateDepartments");
-            urlPatterns.add("/updateEditFaculties");
-            urlPatterns.add("/updateEditDepartments");
-            urlPatterns.add("/checkFacultyMemberRole");
-
+            urlPatterns.add("/viewProfile");
+            urlPatterns.remove("/viewUserProfile");
+            if (path.equals("/viewUserProfile")) {
+                path = "/viewProfile";
+            }
         }
 
         //Session established
@@ -738,6 +736,7 @@ public class PersonController extends Controller {
 
                     return;
 
+                case "/viewProfile":
                 case "/viewUserProfile":
                 case "/viewAdminProfile":
 
@@ -1239,7 +1238,7 @@ public class PersonController extends Controller {
 
                     session.setAttribute("usersMap", usersMap);
 
-                    path = "/viewUsers";
+                    path = "/viewFacultyUsers";
                     LOGGER.log(Level.INFO, "Path is : {0}", path);
                     break;
 

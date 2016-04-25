@@ -28,7 +28,7 @@
                 </button>
             </li>
             <li class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow()">
+                <button class="btn btn-default dropdown-toggle" type="button" id="evaluation-dropdown" data-toggle="dropdown" aria-expanded="true" onclick="loadWindow('/Ocena/viewUserProfile')">
                     Profile
                 </button>
             </li>

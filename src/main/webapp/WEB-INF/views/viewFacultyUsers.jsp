@@ -1,6 +1,6 @@
 <%-- 
-    Document   : viewUsers
-    Created on : Apr 9, 2016, 10:14:51 AM
+    Document   : viewFacultyUsers
+    Created on : Apr 25, 2016, 4:02:06 PM
     Author     : siech
 --%>
 
@@ -9,7 +9,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="ocena" tagdir="/WEB-INF/tags/" %>
 
-<ocena:system-admin>
+<ocena:faculty-admin>
 
     <jsp:attribute name="title"> Ocena - view persons </jsp:attribute>
     <jsp:attribute name="content">
@@ -54,7 +54,7 @@
                     </tbody>
                 </table>
                 <div class="pull-right">
-                    <button class="btn btn-default" onclick="loadWindow('/Ocena/createAccountAtMainAdmin')"> Add person </button>
+                    <button class="btn btn-default" onclick="loadWindow('/Ocena/createAccountAtSubAdmin')"> Add person </button>
                 </div>
                 <div class="dialog" id="person-dialog">
                     <table>
@@ -79,4 +79,4 @@
         </div>
     </jsp:attribute>
 
-</ocena:system-admin>
+</ocena:faculty-admin>
