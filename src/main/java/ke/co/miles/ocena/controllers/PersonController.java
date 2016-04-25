@@ -142,24 +142,23 @@ public class PersonController extends Controller {
             }
         }
 
-        Boolean evaluatorSession;
-        urlPatterns.clear();
-        urlPatterns.add("/editUser");
-        urlPatterns.add("/retrieveUser");
-        urlPatterns.add("/viewUserProfile");
-        urlPatterns.add("/editUserProfile");
-        urlPatterns.add("/updateFaculties");
-        urlPatterns.add("/validatePassword");
-        urlPatterns.add("/updateDepartments");
-        urlPatterns.add("/updateEditFaculties");
-        urlPatterns.add("/updateEditDepartments");
-        urlPatterns.add("/checkFacultyMemberRole");
-
         if (adminSession) {
             try {
-                evaluatorSession = (Boolean) session.getAttribute("evaluatorSession");
+                boolean evaluatorSession = (Boolean) session.getAttribute("evaluatorSession");
+                String home = (String) session.getAttribute("home");
 
-                if (evaluatorSession == false) {
+                if (evaluatorSession == false && home.equals("/managementDashboard")) {
+                    urlPatterns.clear();
+                    urlPatterns.add("/editUser");
+                    urlPatterns.add("/retrieveUser");
+                    urlPatterns.add("/viewUserProfile");
+                    urlPatterns.add("/editUserProfile");
+                    urlPatterns.add("/updateFaculties");
+                    urlPatterns.add("/validatePassword");
+                    urlPatterns.add("/updateDepartments");
+                    urlPatterns.add("/updateEditFaculties");
+                    urlPatterns.add("/updateEditDepartments");
+                    urlPatterns.add("/checkFacultyMemberRole");
                     urlPatterns.add("/viewUser");
                     urlPatterns.add("/viewProfile");
                     urlPatterns.remove("/viewUserProfile");
@@ -171,13 +170,31 @@ public class PersonController extends Controller {
             } catch (Exception e) {
                 LOGGER.log(Level.INFO, "Evaluator session is null");
             }
-        } else {
 
-            urlPatterns.add("/viewUser");
-            urlPatterns.add("/viewProfile");
-            urlPatterns.remove("/viewUserProfile");
-            if (path.equals("/viewUserProfile")) {
-                path = "/viewProfile";
+        } else {
+            try {
+                boolean evaluatorSession = (Boolean) session.getAttribute("evaluatorSession");
+
+                urlPatterns.clear();
+                urlPatterns.add("/editUser");
+                urlPatterns.add("/retrieveUser");
+                urlPatterns.add("/viewUserProfile");
+                urlPatterns.add("/editUserProfile");
+                urlPatterns.add("/updateFaculties");
+                urlPatterns.add("/validatePassword");
+                urlPatterns.add("/updateDepartments");
+                urlPatterns.add("/updateEditFaculties");
+                urlPatterns.add("/updateEditDepartments");
+                urlPatterns.add("/checkFacultyMemberRole");
+
+                urlPatterns.add("/viewUser");
+                urlPatterns.add("/viewProfile");
+                urlPatterns.remove("/viewUserProfile");
+                if (path.equals("/viewUserProfile")) {
+                    path = "/viewProfile";
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.INFO, "Evaluator session is null");
             }
         }
 
