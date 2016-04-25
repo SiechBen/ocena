@@ -123,6 +123,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         if (facultyDetails != null) {
             q = em.createNamedQuery("FacultyMember.findNonStudentsByFacultyId");
             q.setParameter("facultyMemberRoleId", FacultyMemberRoleDetail.STUDENT.getId());
+            q.setParameter("active", Boolean.TRUE);
             q.setParameter("facultyId", facultyDetails.getId());
             try {
                 facultyMembers = q.getResultList();
@@ -132,6 +133,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         } else if (departmentDetails != null) {
             q = em.createNamedQuery("FacultyMember.findNonStudentsByDepartmentId");
             q.setParameter("facultyMemberRoleId", FacultyMemberRoleDetail.STUDENT.getId());
+            q.setParameter("active", Boolean.TRUE);
             q.setParameter("departmentId", departmentDetails.getId());
             try {
                 facultyMembers = q.getResultList();
@@ -161,6 +163,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         //Retrieve faculty member record from the database
         LOGGER.log(Level.INFO, "Retrieving faculty member record from the database");
         q = em.createNamedQuery("FacultyMember.findByPersonId");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("personId", personId);
         try {
             facultyMember = (FacultyMember) q.getSingleResult();
@@ -189,6 +192,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         //Retrieve faculty member record from the database
         LOGGER.log(Level.INFO, "Retrieving faculty member record from the database");
         q = em.createNamedQuery("FacultyMember.findById");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("id", id);
         try {
             facultyMember = (FacultyMember) q.getSingleResult();
@@ -281,6 +285,7 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
         //Get the faculty member record to be removed
         LOGGER.log(Level.INFO, "Getting the faculty member record to be removed");
         q = em.createNamedQuery("FacultyMember.findByPersonId");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("personId", personId);
         try {
             facultyMember = (FacultyMember) q.getSingleResult();
@@ -302,7 +307,8 @@ public class FacultyMemberRequests extends EntityRequests implements FacultyMemb
 
 //        //Removing a faculty member record from the database
 //        LOGGER.log(Level.INFO, "Removing a faculty member record from the database");
-//        facultyMember = em.find(FacultyMember.class, id);
+//          q.setParameter("active", Boolean.TRUE);
+//          facultyMember = em.find(FacultyMember.class, id);
 //        try {
 //            em.remove(facultyMember);
 //        } catch (Exception e) {

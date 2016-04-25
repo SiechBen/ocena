@@ -34,16 +34,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "faculty_member", catalog = "ocena", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "FacultyMember.findNonStudentsByFacultyId", query = "SELECT f FROM FacultyMember f WHERE f.faculty.id = :facultyId AND NOT f.facultyMemberRole.id = :facultyMemberRoleId"),
-    @NamedQuery(name = "FacultyMember.findNonStudentsByDepartmentId", query = "SELECT f FROM FacultyMember f WHERE f.department.id = :departmentId AND NOT f.facultyMemberRole.id = :facultyMemberRoleId"),
+    @NamedQuery(name = "FacultyMember.findNonStudentsByFacultyId", query = "SELECT f FROM FacultyMember f WHERE f.faculty.id = :facultyId AND NOT f.facultyMemberRole.id = :facultyMemberRoleId AND f.active = :active"),
+    @NamedQuery(name = "FacultyMember.findNonStudentsByDepartmentId", query = "SELECT f FROM FacultyMember f WHERE f.department.id = :departmentId AND NOT f.facultyMemberRole.id = :facultyMemberRoleId AND f.active = :active"),
     @NamedQuery(name = "FacultyMember.findActiveByFacultyId", query = "SELECT f FROM FacultyMember f WHERE f.active = :active AND f.faculty.id = :facultyId"),
     @NamedQuery(name = "FacultyMember.findActiveByDepartmentId", query = "SELECT f FROM FacultyMember f WHERE f.active = :active AND f.department.id = :departmentId"),
-    @NamedQuery(name = "FacultyMember.findByPersonId", query = "SELECT f FROM FacultyMember f WHERE f.person.id = :personId"),
-    @NamedQuery(name = "FacultyMember.findAll", query = "SELECT f FROM FacultyMember f"),
-    @NamedQuery(name = "FacultyMember.findById", query = "SELECT f FROM FacultyMember f WHERE f.id = :id"),
-    @NamedQuery(name = "FacultyMember.findByAdmissionYear", query = "SELECT f FROM FacultyMember f WHERE f.admissionYear = :admissionYear"),
+    @NamedQuery(name = "FacultyMember.findByPersonId", query = "SELECT f FROM FacultyMember f WHERE f.person.id = :personId AND f.active = :active"),
+    @NamedQuery(name = "FacultyMember.findAll", query = "SELECT f FROM FacultyMember f WHERE f.active = :active"),
+    @NamedQuery(name = "FacultyMember.findById", query = "SELECT f FROM FacultyMember f WHERE f.id = :id AND f.active = :active"),
+    @NamedQuery(name = "FacultyMember.findByAdmissionYear", query = "SELECT f FROM FacultyMember f WHERE f.admissionYear = :admissionYear AND f.active = :active"),
     @NamedQuery(name = "FacultyMember.findByActive", query = "SELECT f FROM FacultyMember f WHERE f.active = :active"),
-    @NamedQuery(name = "FacultyMember.findByVersion", query = "SELECT f FROM FacultyMember f WHERE f.version = :version")})
+    @NamedQuery(name = "FacultyMember.findByVersion", query = "SELECT f FROM FacultyMember f WHERE f.version = :version AND f.active = :active")})
 public class FacultyMember implements Serializable {
 
     private static final long serialVersionUID = 1L;

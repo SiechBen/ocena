@@ -33,15 +33,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "person", catalog = "ocena", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
-    @NamedQuery(name = "Person.findById", query = "SELECT p FROM Person p WHERE p.id = :id"),
-    @NamedQuery(name = "Person.findByFirstName", query = "SELECT p FROM Person p WHERE p.firstName = :firstName"),
-    @NamedQuery(name = "Person.findByLastName", query = "SELECT p FROM Person p WHERE p.lastName = :lastName"),
-    @NamedQuery(name = "Person.findByReferenceNumber", query = "SELECT p FROM Person p WHERE p.referenceNumber = :referenceNumber"),
-    @NamedQuery(name = "Person.findByNationalIdOrPassport", query = "SELECT p FROM Person p WHERE p.nationalIdOrPassport = :nationalIdOrPassport"),
+    @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p WHERE p.active = :active"),
+    @NamedQuery(name = "Person.findById", query = "SELECT p FROM Person p WHERE p.id = :id AND p.active = :active"),
+    @NamedQuery(name = "Person.findByFirstName", query = "SELECT p FROM Person p WHERE p.firstName = :firstName AND p.active = :active"),
+    @NamedQuery(name = "Person.findByLastName", query = "SELECT p FROM Person p WHERE p.lastName = :lastName AND p.active = :active"),
+    @NamedQuery(name = "Person.findByReferenceNumber", query = "SELECT p FROM Person p WHERE p.referenceNumber = :referenceNumber AND p.active = :active"),
+    @NamedQuery(name = "Person.findByNationalIdOrPassport", query = "SELECT p FROM Person p WHERE p.nationalIdOrPassport = :nationalIdOrPassport AND p.active = :active"),
     @NamedQuery(name = "Person.findByActive", query = "SELECT p FROM Person p WHERE p.active = :active"),
     @NamedQuery(name = "Person.findActiveById", query = "SELECT p FROM Person p WHERE p.id = :id AND p.active = :active"),
-    @NamedQuery(name = "Person.findByVersion", query = "SELECT p FROM Person p WHERE p.version = :version")})
+    @NamedQuery(name = "Person.findByVersion", query = "SELECT p FROM Person p WHERE p.version = :version AND p.active = :active")})
 public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;

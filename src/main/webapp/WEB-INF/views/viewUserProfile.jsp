@@ -120,7 +120,6 @@
                                 <td id="matching-password-information"></td>
                             </tr>
 
-                            <tr><td colspan="4"></td></tr>
                         </table>
                         <div>
                             <table>

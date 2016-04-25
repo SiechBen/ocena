@@ -87,8 +87,10 @@ public class PersonController extends Controller {
             urlPatterns.add("/retrieveUser");
             urlPatterns.add("/adminUserView");
             urlPatterns.add("/retrieveUsers");
+            urlPatterns.add("/updateFaculties");
             urlPatterns.add("/validatePassword");
             urlPatterns.add("/viewAdminProfile");
+            urlPatterns.add("/updateDepartments");
             urlPatterns.add("/updateEditFaculties");
             urlPatterns.add("/updateAdminFaculties");
             urlPatterns.add("/updateEditDepartments");
@@ -115,8 +117,10 @@ public class PersonController extends Controller {
                 urlPatterns.add("/upgradeUser");
                 urlPatterns.add("/retrieveUser");
                 urlPatterns.add("/adminUserView");
-                urlPatterns.add("/viewAdminProfile");
+                urlPatterns.add("/updateFaculties");
                 urlPatterns.add("/validatePassword");
+                urlPatterns.add("/viewAdminProfile");
+                urlPatterns.add("/updateDepartments");
                 urlPatterns.add("/removeFacultyUser");
                 urlPatterns.add("/updateEditFaculties");
                 urlPatterns.add("/retrieveFacultyUsers");
@@ -1027,7 +1031,7 @@ public class PersonController extends Controller {
                         return;
                     }
 
-                    if (userAccount.getUserGroup().equals(UserGroupDetail.STUDENT)) {
+                    if (facultyMember.getFacultyMemberRole().equals(FacultyMemberRoleDetail.STUDENT)) {
                         try {
                             admissionYear = userDateFormat.parse(request.getParameter("admission-year"));
                         } catch (ParseException e) {

@@ -102,6 +102,7 @@ public class OverallAdminRequests extends EntityRequests implements OverallAdmin
         overallAdmin = new OverallAdmin();
         q = em.createNamedQuery("OverallAdmin.findByUsernameAndPassword");
         q.setParameter("username", username);
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("password", encryptedPassword);
         try {
             overallAdmin = (OverallAdmin) q.getSingleResult();

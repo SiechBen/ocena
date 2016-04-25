@@ -13,7 +13,6 @@ import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import ke.co.miles.ocena.defaults.EntityRequests;
-import ke.co.miles.ocena.entities.FacultyMember;
 import ke.co.miles.ocena.entities.Person;
 import ke.co.miles.ocena.entities.UserAccount;
 import ke.co.miles.ocena.entities.UserGroup;
@@ -66,6 +65,7 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         LOGGER.log(Level.INFO, "Checking if the username is unique to a faculty");
         q = em.createNamedQuery("UserAccount.findByUsername");
         q.setParameter("username", details.getUsername());
+        q.setParameter("active", Boolean.TRUE);
         try {
             userAccount = (UserAccount) q.getSingleResult();
         } catch (NoResultException e) {
@@ -133,6 +133,7 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         q = em.createNamedQuery("UserAccount.findByUsernameAndPassword");
         q.setParameter("username", username.toUpperCase());
         q.setParameter("password", hashedPassword);
+        q.setParameter("active", Boolean.TRUE);
         try {
             userAccount = (UserAccount) q.getSingleResult();
         } catch (NoResultException e) {
@@ -167,6 +168,7 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         LOGGER.log(Level.INFO, "Retrieving person record from the database");
         q = em.createNamedQuery("UserAccount.findByUsername");
         q.setParameter("username", referenceNumber.toUpperCase());
+        q.setParameter("active", Boolean.TRUE);
         try {
             userAccount = (UserAccount) q.getSingleResult();
         } catch (NoResultException e) {
@@ -198,6 +200,7 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         LOGGER.log(Level.INFO, "Retrieving person record from the database");
         q = em.createNamedQuery("UserAccount.findByPersonId");
         q.setParameter("personId", personId);
+        q.setParameter("active", Boolean.TRUE);
         try {
             userAccount = (UserAccount) q.getSingleResult();
         } catch (NoResultException e) {
@@ -221,6 +224,7 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         //Retrieving user account records from the database
         LOGGER.log(Level.INFO, "Retrieving user account records from the database");
         q = em.createNamedQuery("UserAccount.findAll");
+        q.setParameter("active", Boolean.TRUE);
         List<UserAccount> userAccounts = new ArrayList<>();
         try {
             userAccounts = q.getResultList();
@@ -273,6 +277,7 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         LOGGER.log(Level.INFO, "Checking if the username is unique");
         q = em.createNamedQuery("UserAccount.findByUsername");
         q.setParameter("username", details.getUsername());
+        q.setParameter("active", Boolean.TRUE);
         try {
             userAccount = (UserAccount) q.getSingleResult();
         } catch (NoResultException e) {
@@ -328,6 +333,7 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
         LOGGER.log(Level.INFO, "Getting the user account record to be removed");
         q = em.createNamedQuery("UserAccount.findByPersonId");
         q.setParameter("personId", personId);
+        q.setParameter("active", Boolean.TRUE);
         try {
             userAccount = (UserAccount) q.getSingleResult();
         } catch (Exception e) {
@@ -348,7 +354,8 @@ public class UserAccountRequests extends EntityRequests implements UserAccountRe
 
 //        //Removing a faculty record from the database
 //        LOGGER.log(Level.INFO, "Removing a faculty record from the database");
-//        userAccount = em.find(UserAccount.class, id);
+//         q.setParameter("active", Boolean.TRUE);
+//         userAccount = em.find(UserAccount.class, id);
 //        try {
 //            em.remove(userAccount);
 //        } catch (Exception e) {

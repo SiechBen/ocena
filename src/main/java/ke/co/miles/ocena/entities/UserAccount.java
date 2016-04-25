@@ -32,16 +32,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "user_account", catalog = "ocena", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "UserAccount.findByUsernameAndPassword", query = "SELECT u FROM UserAccount u WHERE u.username = :username AND u.password = :password"),
-    @NamedQuery(name = "UserAccount.findByPersonId", query = "SELECT u FROM UserAccount u WHERE u.person.id = :personId"),
-    @NamedQuery(name = "UserAccount.findAll", query = "SELECT u FROM UserAccount u"),
-    @NamedQuery(name = "UserAccount.findById", query = "SELECT u FROM UserAccount u WHERE u.id = :id"),
-    @NamedQuery(name = "UserAccount.findByUsername", query = "SELECT u FROM UserAccount u WHERE u.username = :username"),
-    @NamedQuery(name = "UserAccount.findByPassword", query = "SELECT u FROM UserAccount u WHERE u.password = :password"),
+    @NamedQuery(name = "UserAccount.findByUsernameAndPassword", query = "SELECT u FROM UserAccount u WHERE u.username = :username AND u.password = :password AND u.active = :active"),
+    @NamedQuery(name = "UserAccount.findByPersonId", query = "SELECT u FROM UserAccount u WHERE u.person.id = :personId AND u.active = :active"),
+    @NamedQuery(name = "UserAccount.findAll", query = "SELECT u FROM UserAccount u WHERE u.active = :active"),
+    @NamedQuery(name = "UserAccount.findById", query = "SELECT u FROM UserAccount u WHERE u.id = :id AND u.active = :active"),
+    @NamedQuery(name = "UserAccount.findByUsername", query = "SELECT u FROM UserAccount u WHERE u.username = :username AND u.active = :active"),
+    @NamedQuery(name = "UserAccount.findByPassword", query = "SELECT u FROM UserAccount u WHERE u.password = :password AND u.active = :active"),
     @NamedQuery(name = "UserAccount.findByActive", query = "SELECT u FROM UserAccount u WHERE u.active = :active"),
-    @NamedQuery(name = "UserAccount.findByActiveFrom", query = "SELECT u FROM UserAccount u WHERE u.activeFrom = :activeFrom"),
-    @NamedQuery(name = "UserAccount.findByDeactivatedOn", query = "SELECT u FROM UserAccount u WHERE u.deactivatedOn = :deactivatedOn"),
-    @NamedQuery(name = "UserAccount.findByVersion", query = "SELECT u FROM UserAccount u WHERE u.version = :version")})
+    @NamedQuery(name = "UserAccount.findByActiveFrom", query = "SELECT u FROM UserAccount u WHERE u.activeFrom = :activeFrom AND u.active = :active"),
+    @NamedQuery(name = "UserAccount.findByDeactivatedOn", query = "SELECT u FROM UserAccount u WHERE u.deactivatedOn = :deactivatedOn AND u.active = :active"),
+    @NamedQuery(name = "UserAccount.findByVersion", query = "SELECT u FROM UserAccount u WHERE u.version = :version AND u.active = :active")})
 public class UserAccount implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

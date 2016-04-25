@@ -88,6 +88,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking if the reference number is a duplicate
         LOGGER.log(Level.INFO, "Checking if the reference number is a duplicate");
         q = em.createNamedQuery("Person.findByReferenceNumber");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("referenceNumber", personDetails.getReferenceNumber());
         try {
             person = (Person) q.getSingleResult();
@@ -106,6 +107,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking if the national id or passport number is a duplicate
         LOGGER.log(Level.INFO, "Checking if the national id or passport number is a duplicate");
         q = em.createNamedQuery("Person.findByNationalIdOrPassport");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("nationalIdOrPassport", personDetails.getNationalIdOrPassport());
         try {
             person = (Person) q.getSingleResult();
@@ -212,7 +214,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             LOGGER.log(Level.SEVERE, "An error occurred while finding the hashing algorithm");
             throw new AlgorithmException("error_007_01");
         }
-        
+
         String hashedPassword = accessService.generateSHAPassword(messageDigest, password);
 
         //Retrieve the user account record from the database
@@ -234,7 +236,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         LOGGER.log(Level.INFO, "Returning the details list of person records");
         return personUserGroupMap;
     }
-    
+
     @Override
     public HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> retrievePersons() throws InvalidStateException {
         //Method for retrieving person records from the database
@@ -243,7 +245,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Retrieve person records from the database
         LOGGER.log(Level.INFO, "Retrieving person records from the database");
         q = em.createNamedQuery("Person.findByActive");
-        q.setParameter("active", true);
+        q.setParameter("active", Boolean.TRUE);
         List<Person> people = new ArrayList<>();
         try {
             people = q.getResultList();
@@ -251,16 +253,17 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             LOGGER.log(Level.SEVERE, "An error occurred during record retrieval", e);
             throw new EJBException("error_000_01");
         }
-        
+
         HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> usersMap = new HashMap<>();
         HashMap<UserGroupDetail, FacultyMemberRoleDetail> enumMap;
         for (Person p : people) {
-            
+
             enumMap = new HashMap<>();
 
             //Retrieve this person's user account
             LOGGER.log(Level.FINE, "Retrieving this person's user account from the database");
             q = em.createNamedQuery("UserAccount.findByPersonId");
+            q.setParameter("active", Boolean.TRUE);
             q.setParameter("personId", p.getId());
             try {
                 userAccountDetails = userAccountService.retrieveUserAccountByPersonId(p.getId());
@@ -272,6 +275,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             //Retrieve this person's faculty member record user group
             LOGGER.log(Level.FINE, "Retrieving this person's faculty member role from the database");
             q = em.createNamedQuery("FacultyMember.findByPersonId");
+            q.setParameter("active", Boolean.TRUE);
             q.setParameter("personId", p.getId());
             try {
                 facultyMemberDetails = facultyMemberService.retrieveFacultyMemberByPerson(p.getId());
@@ -280,7 +284,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
                 return null;
             }
             enumMap.put(userAccountDetails.getUserGroup(), facultyMemberDetails.getFacultyMemberRole());
-            
+
             usersMap.put(convertPersonToPersonDetails(p), enumMap);
         }
 
@@ -288,7 +292,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         LOGGER.log(Level.INFO, "Returning the details map of person records");
         return usersMap;
     }
-    
+
     @Override
     public HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> retrieveFacultyPersons(Object object) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving person records from the database
@@ -298,7 +302,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         if (object == null) {
             throw new InvalidArgumentException("error_005_06");
         }
-        
+
         if (object instanceof FacultyDetails) {
             facultyDetails = (FacultyDetails) object;
             if (facultyDetails.getId() == null) {
@@ -306,6 +310,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             }
             q = em.createNamedQuery("FacultyMember.findActiveByFacultyId");
             q.setParameter("facultyId", facultyDetails.getId());
+            q.setParameter("active", Boolean.TRUE);
         } else if (object instanceof DepartmentDetails) {
             departmentDetails = (DepartmentDetails) object;
             if (departmentDetails.getId() == null) {
@@ -313,14 +318,15 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             }
             q = em.createNamedQuery("FacultyMember.findActiveByDepartmentId");
             q.setParameter("departmentId", departmentDetails.getId());
+            q.setParameter("active", Boolean.TRUE);
         }
 
         //Retrieve faculty members
         LOGGER.log(Level.INFO, "Retrieving faculty member records from the database");
-        
-        q.setParameter("active", true);
+
+        q.setParameter("active", Boolean.TRUE);
         List<FacultyMember> facultyMembers = new ArrayList<>();
-        
+
         try {
             facultyMembers = q.getResultList();
         } catch (Exception e) {
@@ -331,11 +337,11 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Retrieve person records from the database
         LOGGER.log(Level.INFO, "Retrieving person records from the database");
         q = em.createNamedQuery("Person.findActiveById");
-        q.setParameter("active", true);
+        q.setParameter("active", Boolean.TRUE);
         List<Person> people = new ArrayList<>();
         for (FacultyMember fm : facultyMembers) {
             q.setParameter("id", fm.getPerson().getId());
-            
+
             try {
                 people.add((Person) q.getSingleResult());
             } catch (Exception e) {
@@ -343,17 +349,18 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
                 throw new EJBException("error_000_01");
             }
         }
-        
+
         HashMap<PersonDetails, HashMap<UserGroupDetail, FacultyMemberRoleDetail>> usersMap = new HashMap<>();
         HashMap<UserGroupDetail, FacultyMemberRoleDetail> enumMap;
         for (Person p : people) {
-            
+
             enumMap = new HashMap<>();
 
             //Retrieve this person's user account
             LOGGER.log(Level.FINE, "Retrieving this person's user account from the database");
             q = em.createNamedQuery("UserAccount.findByPersonId");
             q.setParameter("personId", p.getId());
+            q.setParameter("active", Boolean.TRUE);
             try {
                 userAccountDetails = userAccountService.retrieveUserAccountByPersonId(p.getId());
             } catch (InvalidArgumentException | InvalidStateException e) {
@@ -365,6 +372,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
             LOGGER.log(Level.FINE, "Retrieving this person's faculty member role from the database");
             q = em.createNamedQuery("FacultyMember.findByPersonId");
             q.setParameter("personId", p.getId());
+            q.setParameter("active", Boolean.TRUE);
             try {
                 facultyMemberDetails = facultyMemberService.retrieveFacultyMemberByPerson(p.getId());
             } catch (InvalidArgumentException | InvalidStateException e) {
@@ -372,7 +380,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
                 return null;
             }
             enumMap.put(userAccountDetails.getUserGroup(), facultyMemberDetails.getFacultyMemberRole());
-            
+
             usersMap.put(convertPersonToPersonDetails(p), enumMap);
         }
 
@@ -381,7 +389,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
                 "Returning the details map of person records");
         return usersMap;
     }
-    
+
     @Override
     public PersonDetails retrievePerson(String referenceNumber) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving a person record from the database
@@ -398,6 +406,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         LOGGER.log(Level.INFO, "Retrieving person record from the database");
         q = em.createNamedQuery("Person.findByReferenceNumber");
         q.setParameter("referenceNumber", referenceNumber);
+        q.setParameter("active", Boolean.TRUE);
         person = new Person();
         try {
             person = (Person) q.getSingleResult();
@@ -413,7 +422,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         LOGGER.log(Level.INFO, "Returning the details of the person");
         return convertPersonToPersonDetails(person);
     }
-    
+
     @Override
     public PersonDetails retrievePerson(Integer personId) throws InvalidArgumentException, InvalidStateException {
         //Method for retrieving a person record from the database
@@ -429,6 +438,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Retrieve person record from the database
         LOGGER.log(Level.INFO, "Retrieving person record from the database");
         q = em.createNamedQuery("Person.findById");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("id", personId);
         person = new Person();
         try {
@@ -493,6 +503,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking if the reference number is a duplicate
         LOGGER.log(Level.INFO, "Checking if the reference number is a duplicate");
         q = em.createNamedQuery("Person.findByReferenceNumber");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("referenceNumber", personDetails.getReferenceNumber());
         try {
             person = (Person) q.getSingleResult();
@@ -513,6 +524,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Checking if the national id or passport number is a duplicate
         LOGGER.log(Level.INFO, "Checking if the national id or passport number is a duplicate");
         q = em.createNamedQuery("Person.findByNationalIdOrPassport");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("nationalIdOrPassport", personDetails.getNationalIdOrPassport());
         try {
             person = (Person) q.getSingleResult();
@@ -532,8 +544,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
 
         //Creating a container to hold person record
         LOGGER.log(Level.INFO, "Creating a container to hold person record");
-        person
-                = em.find(Person.class, personDetails.getId());
+        person = em.find(Person.class, personDetails.getId());
         if (personDetails.getContact() != null) {
             contactDetails = new ContactDetails();
             contactDetails.setId(personDetails.getContact().getId());
@@ -569,6 +580,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Create the person's user account
         LOGGER.log(Level.INFO, "Creating the person's user account");
         q = em.createNamedQuery("UserAccount.findByPersonId");
+        q.setParameter("active", Boolean.TRUE);
         q.setParameter("personId", person.getId());
         try {
             userAccount = (UserAccount) q.getSingleResult();
@@ -580,10 +592,8 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         userAccount.setActiveFrom(null);
         userAccount.setDeactivatedOn(null);
         userAccount.setUsername(personDetails.getReferenceNumber());
-        userAccount
-                .setPerson(em.find(Person.class, person.getId()));
-        userAccount
-                .setUserGroup(em.find(UserGroup.class, userAccountDetails.getUserGroup().getId()));
+        userAccount.setPerson(em.find(Person.class, person.getId()));
+        userAccount.setUserGroup(em.find(UserGroup.class, userAccountDetails.getUserGroup().getId()));
         if (userAccount.getPassword().equals(userAccountDetails.getPassword())) {
             userAccount.setPassword(userAccountDetails.getPassword());
         } else {
@@ -648,7 +658,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         //Deactivate the person record in the database
         LOGGER.log(Level.INFO, "Deactivating the person record in the database");
         person.setActive(Boolean.FALSE);
-        
+
         try {
             em.merge(person);
             em.flush();
@@ -680,7 +690,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         LOGGER.log(Level.FINE, "Returning converted person details list");
         return details;
     }
-    
+
     @Override
     public PersonDetails convertPersonToPersonDetails(Person person) {
         //Entered method for converting person to person details
@@ -690,7 +700,7 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
         LOGGER.log(Level.FINE, "Convert list of person to person details");
         contactDetails = new ContactDetails();
         contactDetails.setId(person.getContact().getId());
-        
+
         PersonDetails details = new PersonDetails();
         details.setNationalIdOrPassport(person.getNationalIdOrPassport());
         details.setReferenceNumber(person.getReferenceNumber());
@@ -709,5 +719,5 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
 
     private static final Logger LOGGER = Logger.getLogger(PersonRequests.class
             .getSimpleName());
-    
+
 }
