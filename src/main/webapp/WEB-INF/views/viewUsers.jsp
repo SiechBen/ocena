@@ -33,7 +33,7 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td colspan="5"> List of people</td>
+                            <td colspan="8"> List of people</td>
                         </tr>
                     </tfoot>
                     <tbody>    

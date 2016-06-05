@@ -30,10 +30,6 @@
 
         <title> ${title} </title>
 
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-
         <!-- Bootstrap core CSS -->
         <link href="static/plugins/bootstrap/bootstrap.min.css" rel="stylesheet" />
 
@@ -51,6 +47,54 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
 
+    </head>
+
+    <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" onload="checkEvaluationSession()">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+            <div class="container">
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+                    <ul class="nav navbar-nav"> 
+                        <li>
+                            <a href="http://www.uonbi.ac.ke/" id="uonbi-logo">
+                                <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
+                                THE UNIVERSITY OF NAIROBI
+                            </a>
+                        </li>
+
+                        ${menuitems} 
+
+                    </ul>
+
+                </div>
+                <!-- /.navbar-collapse -->
+
+            </div>
+            <!-- /.container -->
+
+        </nav>
+
+        <div>
+
+            <jsp:invoke fragment="content" />
+
+        </div>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="static/plugins/jquery/jquery.min.js"></script>
+        <script src="static/plugins/jquery/jquery.js"></script>
+        <script src="static/plugins/bootstrap/bootstrap.min.js"></script>
+        <script src="static/plugins/i18n/jquery.i18n.properties.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="static/plugins/ie/ie10-viewport-bug-workaround.js"></script>
+        <script src="static/plugins/jquery-ui/jquery-ui.js"></script>
+       
         <script>
 
             $(function () {
@@ -152,53 +196,7 @@
             });
 
         </script>
-
-    </head>
-
-    <body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top" onload="checkEvaluationSession()">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-
-            <div class="container">
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse navbar-ex1-collapse">
-
-                    <ul class="nav navbar-nav"> 
-                        <li>
-                            <a href="http://www.uonbi.ac.ke/" id="uonbi-logo">
-                                <img src="static/img/logo.png" alt="The University of Nairobi logo"/>
-                                THE UNIVERSITY OF NAIROBI
-                            </a>
-                        </li>
-
-                        ${menuitems} 
-
-                    </ul>
-
-                </div>
-                <!-- /.navbar-collapse -->
-
-            </div>
-            <!-- /.container -->
-
-        </nav>
-
-        <div>
-
-            <jsp:invoke fragment="content" />
-
-        </div>
-
-        <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script src="static/plugins/jquery/jquery.min.js"></script>
-        <script src="static/plugins/bootstrap/bootstrap.min.js"></script>
-        <script src="static/plugins/i18n/jquery.i18n.properties.min.js"></script>
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="static/plugins/ie/ie10-viewport-bug-workaround.js"></script>
-        <script src="static/plugins/jquery-ui/jquery-ui.js"></script>
+        
         <script src="static/js/actions.js"></script>
 
     </body>
