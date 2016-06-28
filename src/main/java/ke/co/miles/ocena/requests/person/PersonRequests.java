@@ -717,7 +717,6 @@ public class PersonRequests extends EntityRequests implements PersonRequestsLoca
     }
 //</editor-fold>
 
-    private static final Logger LOGGER = Logger.getLogger(PersonRequests.class
-            .getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(PersonRequests.class.getSimpleName());
 
 }
